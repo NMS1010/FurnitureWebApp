@@ -1,0 +1,52 @@
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Domain.Configurations
+{
+    public class AppUserConfigurations : IEntityTypeConfiguration<AppUser>
+    {
+        public void Configure(EntityTypeBuilder<AppUser> builder)
+        {
+            builder.ToTable("AppUser");
+
+            builder.Property(x => x.FirstName)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(x => x.LastName)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(x => x.DateOfBirth)
+                .IsRequired();
+            builder.Property(x => x.DateCreated)
+                .IsRequired();
+            builder.Property(x => x.Address)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(x => x.Gender)
+                .IsRequired();
+            builder.Property(x => x.Status)
+                .IsRequired();
+            builder
+                .HasMany(x => x.Orders)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+            builder
+                .HasMany(x => x.CartItems)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+            builder
+                .HasMany(x => x.Reviews)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+        }
+    }
+}
