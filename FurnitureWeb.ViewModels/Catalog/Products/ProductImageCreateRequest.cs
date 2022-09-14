@@ -6,6 +6,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 {
     public class ProductImageCreateRequest
     {
+        [Required]
         public int ProductId { get; set; }
 
         [Required]

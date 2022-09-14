@@ -20,4 +20,9 @@
     <None Include="D:\Learning\Projects\FurnitureWebApp\FurnitureWeb.Services\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\FurnitureWeb.ViewModels\FurnitureWeb.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

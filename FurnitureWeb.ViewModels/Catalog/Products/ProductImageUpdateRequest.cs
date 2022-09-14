@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureWeb.ViewModels.Catalog.Products
 {
     public class ProductImageUpdateRequest
     {
-        public int ProductId { get; set; }
+        [Required]
         public int ProductImageId { get; set; }
+
+        [Required]
         public IFormFile Image { get; set; }
     }
 }

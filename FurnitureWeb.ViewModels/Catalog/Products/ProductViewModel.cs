@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FurnitureWeb.ViewModels.Catalog.Products
 {
-    public class ProductViewModels
+    public class ProductViewModel
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
