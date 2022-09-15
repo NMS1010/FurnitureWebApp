@@ -4,7 +4,10 @@ using FluentValidation.AspNetCore;
 using FurnitureWeb.Services.Catalog.Brands;
 using FurnitureWeb.Services.Catalog.Categories;
 using FurnitureWeb.Services.Catalog.Discounts;
+using FurnitureWeb.Services.Catalog.Orders;
+using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Catalog.Products;
+using FurnitureWeb.Services.Catalog.Reviews;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
 using Microsoft.AspNetCore.Builder;
@@ -39,9 +42,12 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
             services.AddScoped<IProductServices, ProductServices>();
+            services.AddScoped<IProductImageServices, ProductImageServices>();
             services.AddScoped<ICategoryServices, CategoryServices>();
             services.AddScoped<IBrandServices, BrandServices>();
             services.AddScoped<IDiscountServices, DiscountServices>();
+            services.AddScoped<IReviewServices, ReviewServices>();
+            services.AddScoped<IOrderServices, OrderServices>();
             services.AddScoped<IFileStorageService, FileStorageService>();
 
             services.AddControllers()

@@ -255,7 +255,7 @@ namespace Domain.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateDone")
+                    b.Property<DateTime?>("DateDone")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DiscountId")

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220914125653_InitDB")]
+    [Migration("20220915164903_InitDB")]
     partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -257,7 +257,7 @@ namespace Domain.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateDone")
+                    b.Property<DateTime?>("DateDone")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DiscountId")

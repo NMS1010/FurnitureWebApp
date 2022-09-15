@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.Products
+namespace FurnitureWeb.ViewModels.Catalog.ProductImages
 {
     public class ProductImageGetPagingRequest : PagingRequest
     {

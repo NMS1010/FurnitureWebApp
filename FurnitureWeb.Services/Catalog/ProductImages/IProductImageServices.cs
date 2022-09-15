@@ -3,16 +3,14 @@ using FurnitureWeb.Services.Common.Interfaces;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
-using FurnitureWeb.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace FurnitureWeb.Services.Catalog.Products
+namespace FurnitureWeb.Services.Catalog.ProductImages
 {
-    public interface IProductServices : IModifyEntity<ProductCreateRequest, ProductUpdateRequest, int>,
-        IRetrieveEntity<ProductViewModel, ProductGetPagingRequest, int>
+    public interface IProductImageServices : IModifyEntity<ProductImageCreateRequest, ProductImageUpdateRequest, int>,
+        IRetrieveEntity<ProductImage, ProductImageGetPagingRequest, int>
     {
     }
 }

@@ -38,8 +38,7 @@ namespace Domain.Configurations
                 .Property(x => x.DateCreated)
                 .IsRequired();
             builder
-                .Property(x => x.DateDone)
-                .IsRequired();
+                .Property(x => x.DateDone);
             builder
                 .Property(x => x.Status)
                 .IsRequired();

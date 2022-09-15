@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
+using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Catalog.Products;
+using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,12 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductServices _productService;
+        private readonly IProductImageServices _productImageService;
 
-        public ProductsController(IProductServices productService)
+        public ProductsController(IProductServices productService, IProductImageServices productImageService)
         {
             _productService = productService;
+            _productImageService = productImageService;
         }
 
         [HttpGet("all")]
@@ -37,14 +41,14 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             int productId = await _productService.Create(request);
             if (productId <= 0)
                 return BadRequest();
-            var product = await _productService.RetrieveByProductId(productId);
+            var product = await _productService.RetrieveById(productId);
             return CreatedAtAction(nameof(RetrieveById), new { Id = productId }, product);
         }
 
         [HttpGet("{productId}")]
         public async Task<IActionResult> RetrieveById(int productId)
         {
-            var product = await _productService.RetrieveByProductId(productId);
+            var product = await _productService.RetrieveById(productId);
             if (product == null)
                 return NotFound($"Can't find product with id: {productId}");
             return Ok(product);
@@ -71,54 +75,54 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         ////Product Images
-        [HttpGet("product/images/all")]
+        [HttpGet("images/all")]
         public async Task<IActionResult> RetrieveImageAllPaging([FromQuery] ProductImageGetPagingRequest request)
         {
-            var productImages = await _productService.RetrieveImages(request);
+            var productImages = await _productImageService.RetrieveAll(request);
             if (productImages == null)
                 return BadRequest();
             return Ok(productImages);
         }
 
-        [HttpGet("product/images/{productImageId}")]
+        [HttpGet("images/{productImageId}")]
         public async Task<IActionResult> RetrieveImageById(int productImageId)
         {
-            var productImage = await _productService.RetrieveImageById(productImageId);
+            var productImage = await _productImageService.RetrieveById(productImageId);
             if (productImage == null)
                 return NotFound($"Can't find product with id: {productImageId}");
             return Ok(productImage);
         }
 
-        [HttpPost("product/images/add")]
+        [HttpPost("images/add")]
         public async Task<IActionResult> CreateImages([FromForm] ProductImageCreateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            int count = await _productService.AddImages(request);
+            int count = await _productImageService.Create(request);
             if (count <= 0)
                 return BadRequest();
             var pagingRequest = new ProductImageGetPagingRequest() { ProductId = request.ProductId };
-            var productImages = await _productService.RetrieveImages(pagingRequest);
+            var productImages = await _productImageService.RetrieveAll(pagingRequest);
             return CreatedAtAction(nameof(RetrieveImageAllPaging), new { request = pagingRequest }, productImages);
         }
 
-        [HttpPut("product/images/update")]
+        [HttpPut("images/update")]
         public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            int records = await _productService.UpdateImage(request);
+            int records = await _productImageService.Update(request);
             if (records <= 0)
                 return BadRequest();
             return Ok();
         }
 
-        [HttpDelete("product/images/delete/{imageId}")]
+        [HttpDelete("images/delete/{imageId}")]
         public async Task<IActionResult> DeleteImage(int imageId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            int records = await _productService.DeleteImage(imageId);
+            int records = await _productImageService.Delete(imageId);
             if (records == 0)
                 return BadRequest();
             return Ok();

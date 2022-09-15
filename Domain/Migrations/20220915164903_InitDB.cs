@@ -208,7 +208,7 @@ namespace Domain.Migrations
                     TotalPrice = table.Column<decimal>(type: "DECIMAL", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateDone = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateDone = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

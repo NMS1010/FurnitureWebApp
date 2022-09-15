@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FurnitureWeb.ViewModels.Catalog.Products
+namespace FurnitureWeb.ViewModels.Catalog.ProductImages
 {
     public class ProductImageCreateRequest
     {
