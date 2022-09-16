@@ -12,13 +12,6 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-  <ItemGroup>
-    <EditorConfigFiles Remove="D:\Learning\Projects\FurnitureWebApp\FurnitureWeb.Services\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="D:\Learning\Projects\FurnitureWebApp\FurnitureWeb.Services\.editorconfig" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />

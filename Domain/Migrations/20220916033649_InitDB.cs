@@ -283,7 +283,7 @@ namespace Domain.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "DECIMAL", nullable: false),
-                    UnitlPrice = table.Column<decimal>(type: "DECIMAL", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "DECIMAL", nullable: false),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

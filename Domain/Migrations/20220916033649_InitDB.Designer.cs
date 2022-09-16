@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220915164903_InitDB")]
+    [Migration("20220916033649_InitDB")]
     partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,7 +167,7 @@ namespace Domain.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("DECIMAL");
 
-                    b.Property<decimal>("UnitlPrice")
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("DECIMAL");
 
                     b.Property<string>("UserId")

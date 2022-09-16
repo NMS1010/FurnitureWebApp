@@ -165,7 +165,7 @@ namespace Domain.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("DECIMAL");
 
-                    b.Property<decimal>("UnitlPrice")
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("DECIMAL");
 
                     b.Property<string>("UserId")

@@ -52,6 +52,7 @@ namespace FurnitureWeb.Services.Catalog.Reviews
         public async Task<PagedResult<ReviewViewModel>> RetrieveAll(ReviewGetPagingRequest request)
         {
             var query = await _context.Reviews
+                .Include(x => x.User)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -71,7 +72,8 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                     Rating = x.Rating,
                     Content = x.Content,
                     DateCreated = x.DateCreated,
-                    Status = x.Status
+                    Status = x.Status,
+                    UserName = x.User.UserName
                 }).ToList();
 
             return new PagedResult<ReviewViewModel>
@@ -83,7 +85,10 @@ namespace FurnitureWeb.Services.Catalog.Reviews
 
         public async Task<ReviewViewModel> RetrieveById(int reviewId)
         {
-            var review = await _context.Reviews.FindAsync(reviewId);
+            var review = await _context.Reviews
+                .Include(x => x.User)
+                .Where(x => x.ReviewId == reviewId)
+                .FirstOrDefaultAsync();
             if (review == null)
                 return null;
             return new ReviewViewModel()
@@ -95,7 +100,8 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 Rating = review.Rating,
                 DateCreated = review.DateCreated,
                 Status = review.Status,
-                ParentReviewId = review.ParentReviewId
+                ParentReviewId = review.ParentReviewId,
+                UserName = review.User.UserName
             };
         }
 

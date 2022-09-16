@@ -60,6 +60,8 @@ namespace FurnitureWeb.Services.Catalog.Orders
         public async Task<PagedResult<OrderViewModel>> RetrieveAll(OrderGetPagingRequest request)
         {
             var query = await _context.Orders
+                .Include(x => x.User)
+                .Include(x => x.Discount)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -74,7 +76,10 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 {
                     OrderId = x.OrderId,
                     UserId = x.UserId,
+                    UserName = x.User.UserName,
                     DiscountId = x.DiscountId,
+                    DiscountCode = x.Discount.DiscountCode,
+                    DiscountValue = x.Discount.DiscountValue,
                     Shipping = x.Shipping,
                     TotalItemPrice = x.TotalItemPrice,
                     TotalPrice = x.TotalPrice,
@@ -93,14 +98,21 @@ namespace FurnitureWeb.Services.Catalog.Orders
 
         public async Task<OrderViewModel> RetrieveById(int orderId)
         {
-            var order = await _context.Orders.FindAsync(orderId);
+            var order = await _context.Orders
+                .Include(x => x.User)
+                .Include(x => x.Discount)
+                .Where(x => x.OrderId == orderId)
+                .FirstOrDefaultAsync();
             if (order == null)
                 return null;
             return new OrderViewModel()
             {
                 OrderId = order.OrderId,
                 UserId = order.UserId,
+                UserName = order.User.UserName,
                 DiscountId = order.DiscountId,
+                DiscountCode = order.Discount.DiscountCode,
+                DiscountValue = order.Discount.DiscountValue,
                 Shipping = order.Shipping,
                 TotalItemPrice = order.TotalItemPrice,
                 TotalPrice = order.TotalPrice,

@@ -9,6 +9,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Reviews
         public int ReviewId { get; set; }
         public int ProductId { get; set; }
         public string UserId { get; set; }
+        public string UserName { get; set; }
         public DateTime DateCreated { get; set; }
         public int? ParentReviewId { get; set; }
         public string Content { get; set; }

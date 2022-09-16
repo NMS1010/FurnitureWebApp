@@ -24,7 +24,7 @@ namespace Domain.Configurations
                 .HasColumnType("DECIMAL")
                 .IsRequired();
             builder
-                .Property(x => x.UnitlPrice)
+                .Property(x => x.UnitPrice)
                 .HasColumnType("DECIMAL")
                 .IsRequired();
             builder

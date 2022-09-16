@@ -1,28 +1,37 @@
 using Domain.EF;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FurnitureWeb.Services.Catalog.Brands;
+using FurnitureWeb.Services.Catalog.CartItems;
 using FurnitureWeb.Services.Catalog.Categories;
 using FurnitureWeb.Services.Catalog.Discounts;
+using FurnitureWeb.Services.Catalog.OrderItemItems;
+using FurnitureWeb.Services.Catalog.OrderItems;
 using FurnitureWeb.Services.Catalog.Orders;
 using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Catalog.Products;
 using FurnitureWeb.Services.Catalog.Reviews;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Services.System.Users;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI
@@ -41,6 +50,10 @@ namespace FurnitureWeb.BackendWebAPI
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
             services.AddScoped<IProductServices, ProductServices>();
             services.AddScoped<IProductImageServices, ProductImageServices>();
             services.AddScoped<ICategoryServices, CategoryServices>();
@@ -48,11 +61,70 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IDiscountServices, DiscountServices>();
             services.AddScoped<IReviewServices, ReviewServices>();
             services.AddScoped<IOrderServices, OrderServices>();
+            services.AddScoped<IOrderItemServices, OrderItemServices>();
+            services.AddScoped<ICartItemServices, CartItemServices>();
+
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddControllers()
                 .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<DiscountCreateRequestValidator>()); ;
-            services.AddSwaggerGen();
+
+            services.AddSwaggerGen(s =>
+            {
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = @"JWT authorization header using the Bearer sheme. \r\n\r\n
+                        Enter 'Bearer' [space] and then your token in the text input below.
+                        \r\n\r\nExample: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+            string issuer = Configuration.GetValue<string>("Tokens:Issuer");
+            string signingKey = Configuration.GetValue<string>("Tokens:Key");
+            byte[] signingKeyBytes = Encoding.UTF8.GetBytes(signingKey);
+            services
+                .AddAuthentication(opts =>
+                {
+                    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opts =>
+                {
+                    opts.RequireHttpsMetadata = false;
+                    opts.SaveToken = true;
+                    opts.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = issuer,
+                        ValidateAudience = true,
+                        ValidAudience = issuer,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
+                    };
+                });
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -68,8 +140,8 @@ namespace FurnitureWeb.BackendWebAPI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseRouting();
-
             app.UseAuthorization();
             app.UseSwagger(c =>
             {
