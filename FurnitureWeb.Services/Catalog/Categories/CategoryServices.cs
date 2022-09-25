@@ -1,4 +1,6 @@
 ﻿using Domain.EF;
+using Domain.Entities;
+using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +12,22 @@ namespace FurnitureWeb.Services.Catalog.Categories
     public class CategoryServices : ICategoryServices
     {
         private readonly AppDbContext _context;
+        private readonly IFileStorageService _fileStorageService;
 
-        public CategoryServices(AppDbContext context)
+        public CategoryServices(AppDbContext context, IFileStorageService fileStorageService)
         {
             _context = context;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<int> Create(CategoryCreateRequest request)
         {
-            var category = new Domain.Entities.Category()
+            var category = new Category()
             {
                 Name = request.Name,
                 Content = request.Content,
                 ParentCategoryId = request.ParentCategoryId ?? null,
+                ImagePath = await _fileStorageService.SaveFile(request.Image),
             };
 
             _context.Categories.Add(category);
@@ -60,7 +65,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                     Name = x.Name,
                     ParentCategoryId = x.ParentCategoryId ?? null,
                     ParentCategoryName = _context.Categories.Find(x.ParentCategoryId)?.Name,
-                    Content = x.Content
+                    Content = x.Content,
+                    ImagePath = x.ImagePath,
                 }).ToList();
 
             return new PagedResult<CategoryViewModel>
@@ -83,7 +89,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                 Name = category.Name,
                 ParentCategoryId = category.ParentCategoryId ?? null,
                 ParentCategoryName = _context.Categories.Find(category.ParentCategoryId)?.Name,
-                Content = category.Content
+                Content = category.Content,
+                ImagePath = category.ImagePath
             };
         }
 
@@ -97,6 +104,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
             category.Name = request.Name;
             category.ParentCategoryId = request.ParentCategoryId ?? null;
             category.Content = request.Content;
+            await _fileStorageService.DeleteFile(category.ImagePath);
+            category.ImagePath = await _fileStorageService.SaveFile(request.Image);
             return await _context.SaveChangesAsync();
         }
     }

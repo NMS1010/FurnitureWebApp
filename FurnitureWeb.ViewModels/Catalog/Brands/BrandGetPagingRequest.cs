@@ -7,6 +7,5 @@ namespace FurnitureWeb.ViewModels.Catalog.Brands
 {
     public class BrandGetPagingRequest : PagingRequest
     {
-        public string Keyword { get; set; }
     }
 }

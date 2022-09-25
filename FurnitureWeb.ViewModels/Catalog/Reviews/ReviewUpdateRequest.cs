@@ -13,7 +13,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Reviews
         [MaxLength(255)]
         public string Content { get; set; }
 
-        public double? Rating { get; set; }
+        public int? Rating { get; set; }
 
         public int Status { get; set; }
     }

@@ -15,6 +15,8 @@ namespace Domain.Entities
 
         public string Content { get; set; }
 
+        public string ImagePath { get; set; }
+
         public HashSet<Product> Products { get; set; }
     }
 }

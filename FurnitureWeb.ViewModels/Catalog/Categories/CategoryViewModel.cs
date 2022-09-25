@@ -7,5 +7,7 @@
         public string Content { get; set; }
         public int? ParentCategoryId { get; set; }
         public string ParentCategoryName { get; set; }
+
+        public string ImagePath { get; set; }
     }
 }

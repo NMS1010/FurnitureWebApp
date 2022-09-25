@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureWeb.ViewModels.Catalog.Categories
 {
@@ -14,5 +15,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Categories
 
         [MaxLength(255)]
         public string Content { get; set; }
+
+        [Required]
+        public IFormFile Image { get; set; }
     }
 }

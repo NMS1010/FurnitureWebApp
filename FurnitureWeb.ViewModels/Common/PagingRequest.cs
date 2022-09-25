@@ -6,7 +6,11 @@ namespace FurnitureWeb.ViewModels.Common
 {
     public class PagingRequest : RequestBase
     {
+        public string Keyword { get; set; }
         public int PageIndex { get; set; } = 1;
-        public int PageSize { get; set; } = 100;
+        public int PageSize { get; set; } = 10;
+
+        public string ColumnName { get; set; }
+        public string TypeSort { get; set; }
     }
 }

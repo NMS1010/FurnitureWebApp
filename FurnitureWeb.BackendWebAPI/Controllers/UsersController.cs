@@ -50,7 +50,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("user/all")]
-        public async Task<IActionResult> GetAllPaging([FromQuery] UserGetPagingRequest request)
+        public async Task<IActionResult> RetrieveAll([FromQuery] UserGetPagingRequest request)
         {
             return Ok(await _userService.RetrieveAll(request));
         }

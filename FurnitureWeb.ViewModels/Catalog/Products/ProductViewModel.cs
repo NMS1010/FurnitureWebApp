@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,5 +28,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
         public string CategoryName { get; set; }
 
         public string BrandName { get; set; }
+
+        public string Size { get; set; }
+        public string Color { get; set; }
     }
 }

@@ -7,7 +7,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 {
     public class ProductGetPagingRequest : PagingRequest
     {
-        public string Keyword { get; set; }
         public List<int> CategoryIds { get; set; } = new List<int>();
     }
 }

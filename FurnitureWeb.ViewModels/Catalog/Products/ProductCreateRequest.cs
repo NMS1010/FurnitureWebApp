@@ -38,5 +38,11 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 
         [Required]
         public int BrandId { get; set; }
+
+        [Required]
+        public string Size { get; set; }
+
+        [Required]
+        public string Color { get; set; }
     }
 }

@@ -24,7 +24,6 @@ namespace FurnitureWeb.Services.Catalog.Reviews
         {
             var review = new Review()
             {
-                ParentReviewId = request.ParentReviewId,
                 ProductId = request.ProductId,
                 UserId = request.UserId,
                 Content = request.Content,
@@ -66,7 +65,6 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 .Select(x => new ReviewViewModel()
                 {
                     ReviewId = x.ReviewId,
-                    ParentReviewId = x.ParentReviewId,
                     UserId = x.UserId,
                     ProductId = x.ProductId,
                     Rating = x.Rating,
@@ -100,7 +98,6 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 Rating = review.Rating,
                 DateCreated = review.DateCreated,
                 Status = review.Status,
-                ParentReviewId = review.ParentReviewId,
                 UserName = review.User.UserName
             };
         }

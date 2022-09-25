@@ -16,6 +16,8 @@ namespace Domain.Entities
         public int Quantity { get; set; }
         public DateTime DateCreated { get; set; }
         public string Origin { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
         public int Status { get; set; }
         public Category Category { get; set; }
         public Brand Brand { get; set; }

@@ -7,6 +7,5 @@ namespace FurnitureWeb.ViewModels.Catalog.OrderItems
 {
     public class OrderItemGetPagingRequest : PagingRequest
     {
-        public string Keyword { get; set; }
     }
 }

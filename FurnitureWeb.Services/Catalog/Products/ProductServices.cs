@@ -36,7 +36,9 @@ namespace FurnitureWeb.Services.Catalog.Products
                 Origin = request.Origin,
                 Status = request.Status,
                 CategoryId = request.CategoryId,
-                BrandId = request.BrandId
+                BrandId = request.BrandId,
+                Size = request.Size,
+                Color = request.Color
             };
 
             _context.Products.Add(product);
@@ -106,7 +108,9 @@ namespace FurnitureWeb.Services.Catalog.Products
                     ImagePath = x.ProductImages
                         .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
                         .FirstOrDefault()
-                        ?.Path
+                        ?.Path,
+                    Size = x.Size,
+                    Color = x.Color
                 }).ToList();
 
             return new PagedResult<ProductViewModel>
@@ -141,7 +145,9 @@ namespace FurnitureWeb.Services.Catalog.Products
                 ImagePath = product.ProductImages
                         .Where(c => c.IsDefault == true && c.ProductId == product.ProductId)
                         .FirstOrDefault()
-                        .Path
+                        .Path,
+                Size = product.Size,
+                Color = product.Color
             };
         }
 
@@ -161,6 +167,8 @@ namespace FurnitureWeb.Services.Catalog.Products
             product.Origin = request.Origin;
             product.BrandId = request.BrandId;
             product.CategoryId = request.CategoryId;
+            product.Color = request.Color;
+            product.Size = request.Size;
 
             if (request.Image != null)
             {

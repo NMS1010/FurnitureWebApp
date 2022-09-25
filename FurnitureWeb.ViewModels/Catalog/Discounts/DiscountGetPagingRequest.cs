@@ -7,6 +7,5 @@ namespace FurnitureWeb.ViewModels.Catalog.Discounts
 {
     public class DiscountGetPagingRequest : PagingRequest
     {
-        public string Keyword { get; set; }
     }
 }

@@ -7,6 +7,5 @@ namespace FurnitureWeb.ViewModels.System.Users
 {
     public class UserGetPagingRequest : PagingRequest
     {
-        public string Keyword { get; set; }
     }
 }
