@@ -25,6 +25,6 @@ namespace Domain.Entities
         public HashSet<ProductImage> ProductImages { get; set; }
         public HashSet<CartItem> CartItems { get; set; }
         public HashSet<OrderItem> OrderItems { get; set; }
-        public HashSet<WishList> WishLists { get; set; }
+        public HashSet<WishListItem> WishLists { get; set; }
     }
 }

@@ -12,9 +12,11 @@ using FurnitureWeb.Services.Catalog.Orders;
 using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Catalog.Products;
 using FurnitureWeb.Services.Catalog.Reviews;
+using FurnitureWeb.Services.Catalog.WishListItems;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Services.System.Users;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
+using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,12 +65,12 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IOrderServices, OrderServices>();
             services.AddScoped<IOrderItemServices, OrderItemServices>();
             services.AddScoped<ICartItemServices, CartItemServices>();
+            services.AddScoped<IWishListItemServices, WishListItemServices>();
 
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IUserService, UserService>();
 
-            services.AddControllers()
-                .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<DiscountCreateRequestValidator>()); ;
+            services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
             services.AddSwaggerGen(s =>
             {

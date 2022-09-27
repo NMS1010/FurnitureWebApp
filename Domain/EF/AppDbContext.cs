@@ -36,6 +36,7 @@ namespace Domain.EF
             modelBuilder.ApplyConfiguration(new OrderConfigurations());
             modelBuilder.ApplyConfiguration(new OrderItemConfigurations());
             modelBuilder.ApplyConfiguration(new ReviewConfigurations());
+            modelBuilder.ApplyConfiguration(new WishListItemConfigurations());
         }
 
         public DbSet<Product> Products { get; set; }
@@ -47,5 +48,6 @@ namespace Domain.EF
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<WishListItem> WishLists { get; set; }
     }
 }

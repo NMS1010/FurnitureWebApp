@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220927111356_AddWishListEntity")]
-    partial class AddWishListEntity
+    [Migration("20220927121709_AddWishListItemEntity")]
+    partial class AddWishListItemEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -471,11 +471,13 @@ namespace Domain.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WishList", b =>
+            modelBuilder.Entity("Domain.Entities.WishListItem", b =>
                 {
-                    b.Property<int>("WishListId")
+                    b.Property<int>("WishListItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("DateAdded")
@@ -488,15 +490,16 @@ namespace Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("WishListId");
+                    b.HasKey("WishListItemId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WishList");
+                    b.ToTable("WishListItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -736,7 +739,7 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WishList", b =>
+            modelBuilder.Entity("Domain.Entities.WishListItem", b =>
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany("WishLists")
@@ -746,7 +749,9 @@ namespace Domain.Migrations
 
                     b.HasOne("Domain.Entities.AppUser", "User")
                         .WithMany("WishLists")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
 

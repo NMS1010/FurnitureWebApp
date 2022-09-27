@@ -7,14 +7,14 @@ using System.Text;
 
 namespace Domain.Configurations
 {
-    public class WishListConfigurations : IEntityTypeConfiguration<WishList>
+    public class WishListItemConfigurations : IEntityTypeConfiguration<WishListItem>
     {
-        public void Configure(EntityTypeBuilder<WishList> builder)
+        public void Configure(EntityTypeBuilder<WishListItem> builder)
         {
-            builder.ToTable("WishList");
-            builder.HasKey(x => x.WishListId);
+            builder.ToTable("WishListItem");
+            builder.HasKey(x => x.WishListItemId);
 
-            builder.Property(x => x.WishListId)
+            builder.Property(x => x.WishListItemId)
                 .UseIdentityColumn();
 
             builder

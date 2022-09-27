@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class WishList
+    public class WishListItem
     {
-        public int WishListId { get; set; }
+        public int WishListItemId { get; set; }
         public int ProductId { get; set; }
         public string UserId { get; set; }
         public int Status { get; set; }
