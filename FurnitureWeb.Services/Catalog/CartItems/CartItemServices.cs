@@ -53,6 +53,7 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             var query = await _context.CartItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -68,6 +69,9 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                     CartItemId = x.CartItemId,
                     ProductId = x.ProductId,
                     ProductName = x.Product.Name,
+                    ImageProduct = x.Product.ProductImages
+                        .Where(c => c.ProductId == x.ProductId && c.IsDefault == true)
+                        .FirstOrDefault()?.Path,
                     UserId = x.UserId,
                     UserName = x.User.UserName,
                     UnitPrice = x.UnitPrice,
@@ -88,6 +92,7 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             var cartItem = await _context.CartItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
                 .Where(p => p.CartItemId == cartItemId)
                 .FirstOrDefaultAsync();
             if (cartItem == null)
@@ -97,6 +102,9 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 CartItemId = cartItem.CartItemId,
                 ProductId = cartItem.ProductId,
                 ProductName = cartItem.Product.Name,
+                ImageProduct = cartItem.Product.ProductImages
+                    .Where(x => x.ProductId == cartItem.ProductId && x.IsDefault == true)
+                    .FirstOrDefault()?.Path,
                 UserId = cartItem.UserId,
                 UserName = cartItem.User.UserName,
                 UnitPrice = cartItem.UnitPrice,

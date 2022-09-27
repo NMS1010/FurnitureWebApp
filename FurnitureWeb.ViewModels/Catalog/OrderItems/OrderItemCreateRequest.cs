@@ -18,8 +18,5 @@ namespace FurnitureWeb.ViewModels.Catalog.OrderItems
 
         [Required]
         public decimal UnitPrice { get; set; }
-
-        [Required]
-        public decimal TotalPrice { get; set; }
     }
 }

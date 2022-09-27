@@ -69,7 +69,6 @@ namespace FurnitureWeb.Services.Catalog.Brands
                     BrandName = x.BrandName,
                     Origin = x.Origin,
                     ImagePath = x.ImagePath,
-                    ImageSize = x.ImageSize,
                 }).ToList();
 
             return new PagedResult<BrandViewModel>
@@ -90,7 +89,6 @@ namespace FurnitureWeb.Services.Catalog.Brands
                 BrandName = brand.BrandName,
                 Origin = brand.Origin,
                 ImagePath = brand.ImagePath,
-                ImageSize = brand.ImageSize,
             };
         }
 

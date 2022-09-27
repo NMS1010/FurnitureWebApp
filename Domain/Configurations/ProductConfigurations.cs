@@ -32,10 +32,24 @@ namespace Domain.Configurations
                 .Property(p => p.Quantity)
                 .IsRequired();
             builder
+                .Property(p => p.BrandId)
+                .IsRequired();
+            builder
+                .Property(p => p.CategoryId)
+                .IsRequired();
+            builder
                 .Property(p => p.DateCreated)
                 .IsRequired();
             builder
                 .Property(p => p.Origin)
+                .HasMaxLength(30)
+                .IsRequired();
+            builder
+                .Property(p => p.Color)
+                .HasMaxLength(30)
+                .IsRequired();
+            builder
+                .Property(p => p.Size)
                 .HasMaxLength(30)
                 .IsRequired();
             builder
@@ -67,6 +81,11 @@ namespace Domain.Configurations
 
             builder
                 .HasMany(p => p.OrderItems)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            builder
+                .HasMany(p => p.WishLists)
                 .WithOne(p => p.Product)
                 .HasForeignKey(p => p.ProductId);
         }

@@ -47,6 +47,10 @@ namespace Domain.Configurations
                 .HasMany(x => x.Reviews)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
+            builder
+                .HasMany(x => x.WishLists)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

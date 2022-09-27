@@ -16,6 +16,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Reviews
         [MaxLength(255)]
         public string Content { get; set; }
 
-        public int? Rating { get; set; }
+        [Required]
+        public int Rating { get; set; }
     }
 }

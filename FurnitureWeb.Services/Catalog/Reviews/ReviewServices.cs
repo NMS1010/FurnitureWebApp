@@ -52,6 +52,8 @@ namespace FurnitureWeb.Services.Catalog.Reviews
         {
             var query = await _context.Reviews
                 .Include(x => x.User)
+                .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -67,6 +69,10 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                     ReviewId = x.ReviewId,
                     UserId = x.UserId,
                     ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ProductImage = x.Product.ProductImages
+                        .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
+                        .FirstOrDefault()?.Path,
                     Rating = x.Rating,
                     Content = x.Content,
                     DateCreated = x.DateCreated,
@@ -85,6 +91,8 @@ namespace FurnitureWeb.Services.Catalog.Reviews
         {
             var review = await _context.Reviews
                 .Include(x => x.User)
+                .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
                 .Where(x => x.ReviewId == reviewId)
                 .FirstOrDefaultAsync();
             if (review == null)
@@ -93,6 +101,10 @@ namespace FurnitureWeb.Services.Catalog.Reviews
             {
                 ReviewId = review.ReviewId,
                 ProductId = review.ProductId,
+                ProductName = review.Product.Name,
+                ProductImage = review.Product.ProductImages
+                    .Where(c => c.IsDefault == true && c.ProductId == review.ProductId)
+                    .FirstOrDefault()?.Path,
                 UserId = review.UserId,
                 Content = review.Content,
                 Rating = review.Rating,

@@ -32,6 +32,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 Address = request.Address,
                 DateCreated = DateTime.Now,
                 Status = request.Status,
+                Name = request.Name,
+                Email = request.Email,
+                Phone = request.Phone,
             };
             if (request.Status == 1)
             {
@@ -87,6 +90,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                     DateCreated = x.DateCreated,
                     DateDone = x.DateDone,
                     Status = x.Status,
+                    Name = x.Name,
+                    Email = x.Email,
+                    Phone = x.Phone
                 }).ToList();
 
             return new PagedResult<OrderViewModel>
@@ -120,6 +126,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 DateCreated = order.DateCreated,
                 DateDone = order.DateDone,
                 Status = order.Status,
+                Name = order.Name,
+                Email = order.Email,
+                Phone = order.Phone
             };
         }
 

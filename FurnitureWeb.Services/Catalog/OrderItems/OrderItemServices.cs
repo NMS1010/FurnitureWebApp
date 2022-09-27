@@ -25,6 +25,12 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
         {
             var orderItem = new OrderItem()
             {
+                OrderId = request.OrderId,
+                ProductId = request.ProductId,
+                Quantity = request.Quantity,
+                UnitPrice = request.UnitPrice,
+                TotalPrice = request.UnitPrice * request.Quantity,
+                DateCreated = DateTime.Now
             };
 
             _context.OrderItems.Add(orderItem);
@@ -60,9 +66,13 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                     OrderId = x.OrderId,
                     ProductId = x.ProductId,
                     ProductName = x.Product.Name,
+                    ProductImage = x.Product.ProductImages
+                        .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
+                        .FirstOrDefault()?.Path,
                     Quantity = x.Quantity,
                     UnitPrice = x.UnitPrice,
-                    TotalPrice = x.TotalPrice
+                    TotalPrice = x.TotalPrice,
+                    DateCreated = x.DateCreated,
                 }).ToList();
 
             return new PagedResult<OrderItemViewModel>
@@ -76,6 +86,7 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
         {
             var orderItem = await _context.OrderItems
                 .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
                 .Where(x => x.OrderItemId == orderItemId)
                 .FirstOrDefaultAsync();
             if (orderItem == null)
@@ -86,9 +97,13 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                 OrderId = orderItem.OrderId,
                 ProductId = orderItem.ProductId,
                 ProductName = orderItem.Product.Name,
+                ProductImage = orderItem.Product.ProductImages
+                    .Where(c => c.IsDefault == true && c.ProductId == orderItem.ProductId)
+                    .FirstOrDefault()?.Path,
                 Quantity = orderItem.Quantity,
                 UnitPrice = orderItem.UnitPrice,
-                TotalPrice = orderItem.TotalPrice
+                TotalPrice = orderItem.TotalPrice,
+                DateCreated = orderItem.DateCreated
             };
         }
 

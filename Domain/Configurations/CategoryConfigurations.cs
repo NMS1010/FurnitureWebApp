@@ -24,6 +24,9 @@ namespace Domain.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
             builder
+                .Property(x => x.ImagePath)
+                .IsRequired();
+            builder
                .Property(x => x.Content)
                .HasMaxLength(255)
                .IsRequired(false);

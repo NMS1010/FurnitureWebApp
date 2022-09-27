@@ -32,7 +32,18 @@ namespace Domain.Configurations
             builder.Property(x => x.Address)
                 .HasMaxLength(200)
                 .IsRequired();
+            builder.Property(x => x.Name)
+                .HasMaxLength(200)
+                .IsRequired();
+            builder.Property(x => x.Phone)
+                .HasMaxLength(200)
+                .IsRequired();
+            builder.Property(x => x.Email)
+                .HasMaxLength(200)
+                .IsRequired();
             builder.Property(x => x.UserId)
+                .IsRequired();
+            builder.Property(x => x.DiscountId)
                 .IsRequired();
             builder
                 .Property(x => x.DateCreated)

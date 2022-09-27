@@ -25,8 +25,14 @@ namespace Domain.Configurations
                 .Property(x => x.UserId)
                 .IsRequired();
             builder
+                .Property(x => x.ProductId)
+                .IsRequired();
+            builder
                 .Property(x => x.Status)
                 .IsRequired();
+            builder
+                .Property(x => x.Rating)
+                .IsRequired(false);
             builder
                 .Property(x => x.Content)
                 .HasMaxLength(255)

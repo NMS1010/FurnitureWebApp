@@ -30,6 +30,12 @@ namespace Domain.Configurations
                 .Property(x => x.Quantity)
                 .IsRequired();
             builder
+                .Property(x => x.OrderId)
+                .IsRequired();
+            builder
+                .Property(x => x.ProductId)
+                .IsRequired();
+            builder
                 .Property(x => x.DateCreated)
                 .IsRequired();
             builder

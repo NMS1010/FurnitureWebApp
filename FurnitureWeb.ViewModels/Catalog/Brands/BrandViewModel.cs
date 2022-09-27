@@ -10,6 +10,5 @@ namespace FurnitureWeb.ViewModels.Catalog.Brands
         public string BrandName { get; set; }
         public string Origin { get; set; }
         public string ImagePath { get; set; }
-        public long ImageSize { get; set; }
     }
 }
