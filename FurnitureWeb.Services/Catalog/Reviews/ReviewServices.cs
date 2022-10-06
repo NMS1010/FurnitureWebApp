@@ -28,7 +28,7 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 UserId = request.UserId,
                 Content = request.Content,
                 Rating = request.Rating,
-                Status = 1,
+                Status = request.Status,
                 DateCreated = DateTime.Now
             };
 
@@ -76,6 +76,7 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                     Rating = x.Rating,
                     Content = x.Content,
                     DateCreated = x.DateCreated,
+                    DateUpdated = x.DateUpdated,
                     Status = x.Status,
                     UserName = x.User.UserName
                 }).ToList();
@@ -109,6 +110,7 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 Content = review.Content,
                 Rating = review.Rating,
                 DateCreated = review.DateCreated,
+                DateUpdated = review.DateUpdated,
                 Status = review.Status,
                 UserName = review.User.UserName
             };
@@ -121,7 +123,7 @@ namespace FurnitureWeb.Services.Catalog.Reviews
                 return -1;
             review.Content = request.Content;
             review.Rating = request.Rating;
-            review.DateCreated = DateTime.Now;
+            review.DateUpdated = DateTime.Now;
             review.Status = request.Status;
             _context.Reviews.Update(review);
 

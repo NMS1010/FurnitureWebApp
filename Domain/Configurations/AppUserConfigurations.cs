@@ -25,10 +25,13 @@ namespace Domain.Configurations
                 .IsRequired();
             builder.Property(x => x.DateCreated)
                 .IsRequired();
+            builder.Property(x => x.DateUpdated)
+                .IsRequired();
             builder.Property(x => x.Address)
                 .HasMaxLength(200)
                 .IsRequired();
-
+            builder.Property(x => x.Avatar)
+                .IsRequired();
             builder.Property(x => x.Gender)
                 .IsRequired();
             builder.Property(x => x.Status)

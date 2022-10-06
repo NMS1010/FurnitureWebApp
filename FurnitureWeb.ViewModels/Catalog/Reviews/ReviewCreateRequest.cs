@@ -18,5 +18,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Reviews
 
         [Required]
         public int Rating { get; set; }
+
+        [Required]
+        public int Status { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace FurnitureWeb.ViewModels.Catalog.CartItems
@@ -16,5 +17,6 @@ namespace FurnitureWeb.ViewModels.Catalog.CartItems
         public decimal TotalPrice { get; set; }
         public decimal UnitPrice { get; set; }
         public DateTime DateAdded { get; set; }
+        public int Status { get; set; }
     }
 }

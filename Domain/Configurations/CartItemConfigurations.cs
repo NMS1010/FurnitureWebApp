@@ -24,10 +24,6 @@ namespace Domain.Configurations
                 .HasColumnType("DECIMAL")
                 .IsRequired();
             builder
-                .Property(x => x.UnitPrice)
-                .HasColumnType("DECIMAL")
-                .IsRequired();
-            builder
                 .Property(x => x.UserId)
                 .IsRequired();
             builder
@@ -40,7 +36,9 @@ namespace Domain.Configurations
             builder
                 .Property(x => x.DateAdded)
                 .IsRequired();
-
+            builder
+                .Property(x => x.Status)
+                .IsRequired();
             builder
                 .HasOne(x => x.Product)
                 .WithMany(x => x.CartItems)

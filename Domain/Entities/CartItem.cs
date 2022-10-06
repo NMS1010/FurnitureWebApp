@@ -11,8 +11,8 @@ namespace Domain.Entities
         public string UserId { get; set; }
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal UnitPrice { get; set; }
         public DateTime DateAdded { get; set; }
+        public int Status { get; set; }
         public Product Product { get; set; }
         public AppUser User { get; set; }
     }

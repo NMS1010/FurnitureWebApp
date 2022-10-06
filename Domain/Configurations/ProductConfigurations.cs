@@ -45,14 +45,6 @@ namespace Domain.Configurations
                 .HasMaxLength(30)
                 .IsRequired();
             builder
-                .Property(p => p.Color)
-                .HasMaxLength(30)
-                .IsRequired();
-            builder
-                .Property(p => p.Size)
-                .HasMaxLength(30)
-                .IsRequired();
-            builder
                 .Property(p => p.Status)
                 .IsRequired();
 

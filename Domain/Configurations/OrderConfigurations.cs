@@ -54,6 +54,9 @@ namespace Domain.Configurations
                 .Property(x => x.Status)
                 .IsRequired();
             builder
+                .Property(x => x.Payment)
+                .IsRequired();
+            builder
                 .HasOne(x => x.Discount)
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.DiscountId);

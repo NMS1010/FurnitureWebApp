@@ -22,6 +22,9 @@ namespace Domain.Configurations
                 .Property(x => x.DateCreated)
                 .IsRequired();
             builder
+                .Property(x => x.DateUpdated)
+                .IsRequired();
+            builder
                 .Property(x => x.UserId)
                 .IsRequired();
             builder
@@ -32,11 +35,11 @@ namespace Domain.Configurations
                 .IsRequired();
             builder
                 .Property(x => x.Rating)
-                .IsRequired(false);
+                .IsRequired();
             builder
                 .Property(x => x.Content)
                 .HasMaxLength(255)
-                .IsRequired(false);
+                .IsRequired();
             builder
                 .HasOne(x => x.Product)
                 .WithMany(x => x.Reviews)

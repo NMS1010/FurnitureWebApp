@@ -13,6 +13,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Reviews
         public string UserId { get; set; }
         public string UserName { get; set; }
         public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public string Content { get; set; }
         public int? Rating { get; set; }
         public int Status { get; set; }

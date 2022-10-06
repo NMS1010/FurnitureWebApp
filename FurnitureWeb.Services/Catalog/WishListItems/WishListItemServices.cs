@@ -28,7 +28,7 @@ namespace FurnitureWeb.Services.Catalog.WishListItems
                 ProductId = request.ProductId,
                 UserId = request.UserId,
                 DateAdded = DateTime.Now,
-                Status = 1,
+                Status = request.Status,
             };
 
             _context.WishLists.Add(wishListItem);
@@ -117,7 +117,7 @@ namespace FurnitureWeb.Services.Catalog.WishListItems
             if (wishListItem == null)
                 return -1;
             _context.WishLists.Update(wishListItem);
-
+            wishListItem.Status = request.Status;
             return await _context.SaveChangesAsync();
         }
     }

@@ -26,10 +26,10 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             {
                 ProductId = request.ProductId,
                 UserId = request.UserId,
-                UnitPrice = request.UnitPrice,
                 Quantity = request.Quantity,
                 TotalPrice = request.UnitPrice * request.Quantity,
                 DateAdded = DateTime.Now,
+                Status = request.Status,
             };
 
             _context.CartItems.Add(cartItem);
@@ -74,10 +74,10 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                         .FirstOrDefault()?.Path,
                     UserId = x.UserId,
                     UserName = x.User.UserName,
-                    UnitPrice = x.UnitPrice,
                     Quantity = x.Quantity,
                     TotalPrice = x.TotalPrice,
-                    DateAdded = DateTime.Now
+                    DateAdded = DateTime.Now,
+                    Status = x.Status
                 }).ToList();
 
             return new PagedResult<CartItemViewModel>
@@ -107,10 +107,10 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                     .FirstOrDefault()?.Path,
                 UserId = cartItem.UserId,
                 UserName = cartItem.User.UserName,
-                UnitPrice = cartItem.UnitPrice,
                 Quantity = cartItem.Quantity,
                 TotalPrice = cartItem.TotalPrice,
-                DateAdded = DateTime.Now
+                DateAdded = DateTime.Now,
+                Status = cartItem.Status
             };
         }
 
@@ -119,10 +119,13 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             var cartItem = await _context.CartItems
                 .Where(c => c.CartItemId == request.CartItemId)
                 .FirstOrDefaultAsync();
+            var product = await _context.FindAsync<Product>(cartItem.ProductId);
             if (cartItem == null)
                 return -1;
             cartItem.Quantity = request.Quantity;
-            cartItem.TotalPrice = request.Quantity * cartItem.UnitPrice;
+
+            cartItem.TotalPrice = request.Quantity * product.Price;
+            cartItem.Status = request.Status;
             return await _context.SaveChangesAsync();
         }
     }

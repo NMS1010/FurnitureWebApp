@@ -74,7 +74,8 @@ namespace FurnitureWeb.Services.System.Users
                 Gender = request.Gender,
                 Status = request.Status,
                 DateCreated = DateTime.Now,
-                Address = request.Address
+                Address = request.Address,
+                DateUpdated = DateTime.Now
             };
             var res = await _userManager.CreateAsync(user, request.Password);
             if (res.Succeeded)

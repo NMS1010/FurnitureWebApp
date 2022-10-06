@@ -27,6 +27,9 @@ namespace Domain.Configurations
                 .HasColumnType("DECIMAL")
                 .IsRequired();
             builder
+                .Property(x => x.Quantity)
+                .IsRequired();
+            builder
                 .Property(x => x.StartDate)
                 .IsRequired();
             builder

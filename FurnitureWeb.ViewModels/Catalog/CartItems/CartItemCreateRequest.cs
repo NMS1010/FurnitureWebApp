@@ -18,5 +18,8 @@ namespace FurnitureWeb.ViewModels.Catalog.CartItems
 
         [Required]
         public decimal UnitPrice { get; set; }
+
+        [Required]
+        public int Status { get; set; }
     }
 }
