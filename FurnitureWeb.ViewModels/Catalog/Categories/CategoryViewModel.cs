@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace FurnitureWeb.ViewModels.Catalog.Categories
 {
@@ -12,7 +13,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Categories
 
         public string Image { get; set; }
         public int TotalProduct { get; set; }
-        public int TotalSell { get; set; }
-        public Hashtable SubCategories { get; set; }
+        public List<CategoryViewModel> SubCategories { get; set; }
     }
 }

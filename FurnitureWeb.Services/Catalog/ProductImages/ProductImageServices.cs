@@ -3,6 +3,7 @@ using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -56,32 +57,41 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<ProductImage> RetrieveById(int productImageId)
+        public async Task<ProductImageViewModel> RetrieveById(int productImageId)
         {
             var productImage = await _context.ProductImages.FindAsync(productImageId);
             if (productImage == null)
                 return null;
-            return productImage;
+            return new ProductImageViewModel()
+            {
+                Id = productImage.Id,
+                IsDefault = productImage.IsDefault,
+                Image = productImage.Path,
+                ProductId = productImage.ProductId,
+            };
         }
 
         public async Task<int> Update(ProductImageUpdateRequest request)
         {
-            var productImg = await _context.ProductImages.FindAsync(request.ProductImageId);
-            if (productImg == null)
-                return -1;
-            if (request.Image == null)
-                return -1;
+            foreach (KeyValuePair<int, IFormFile> keyValuePair in request.ProductImages)
+            {
+                var productImg = await _context.ProductImages.FindAsync(keyValuePair.Key);
+                if (productImg == null)
+                    return -1;
+                if (keyValuePair.Value == null)
+                    return -1;
 
-            await _fileStorageService.DeleteFile(productImg.Path);
-            productImg.IsDefault = false;
-            productImg.Path = await _fileStorageService.SaveFile(request.Image);
+                await _fileStorageService.DeleteFile(productImg.Path);
+                productImg.IsDefault = false;
+                productImg.Path = await _fileStorageService.SaveFile(keyValuePair.Value);
 
-            _context.ProductImages.Update(productImg);
+                _context.ProductImages.Update(productImg);
+            }
 
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<ProductImage>> RetrieveAll(ProductImageGetPagingRequest request)
+        public async Task<PagedResult<ProductImageViewModel>> RetrieveAll(ProductImageGetPagingRequest request)
         {
             var query = await _context.ProductImages
                 .Where(c => c.ProductId == request.ProductId)
@@ -90,9 +100,16 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
             var data = query
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
+                .Select(x => new ProductImageViewModel()
+                {
+                    Id = x.Id,
+                    Image = x.Path,
+                    IsDefault = x.IsDefault,
+                    ProductId = x.ProductId
+                })
                 .ToList();
 
-            return new PagedResult<ProductImage>
+            return new PagedResult<ProductImageViewModel>
             {
                 TotalItem = query.Count,
                 Items = data

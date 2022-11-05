@@ -45,9 +45,9 @@ namespace Domain.EF
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<ReviewItem> Reviews { get; set; }
+        public DbSet<ReviewItem> ReviewItems { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<WishItem> WishLists { get; set; }
+        public DbSet<WishItem> WishItems { get; set; }
     }
 }

@@ -28,9 +28,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
         public string Origin { get; set; }
 
         [Required]
-        public DateTime DateCreated { get; set; }
-
-        [Required]
         public IFormFile Image { get; set; }
 
         [Required]
@@ -38,11 +35,5 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 
         [Required]
         public int BrandId { get; set; }
-
-        [Required]
-        public string Size { get; set; }
-
-        [Required]
-        public string Color { get; set; }
     }
 }

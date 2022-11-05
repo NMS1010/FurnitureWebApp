@@ -1,5 +1,6 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Utilities.Constants.Orders;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +36,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 Name = request.Name,
                 Email = request.Email,
                 Phone = request.Phone,
+                Payment = request.Payment
             };
-            if (request.Status == 1)
+            if (request.Payment == ORDER_PAYMENT.PAID)
             {
                 order.DateDone = DateTime.Now;
             }
@@ -79,7 +81,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 {
                     OrderId = x.OrderId,
                     UserId = x.UserId,
-                    UserName = x.User.UserName,
+                    UserFullName = x.User.FirstName + x.User.LastName,
+                    UserAddress = x.User.Address,
+                    UserPhone = x.User.PhoneNumber,
                     DiscountId = x.DiscountId,
                     DiscountCode = x.Discount.DiscountCode,
                     DiscountValue = x.Discount.DiscountValue,
@@ -92,7 +96,11 @@ namespace FurnitureWeb.Services.Catalog.Orders
                     Status = x.Status,
                     Name = x.Name,
                     Email = x.Email,
-                    Phone = x.Phone
+                    Phone = x.Phone,
+                    Payment = x.Payment,
+                    PaymentMethod = ORDER_PAYMENT.OrderPayment[x.Payment],
+                    StatusCode = ORDER_STATUS.OrderStatus[x.Status],
+                    TotalItem = x.OrderItems.Count
                 }).ToList();
 
             return new PagedResult<OrderViewModel>
@@ -115,7 +123,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
             {
                 OrderId = order.OrderId,
                 UserId = order.UserId,
-                UserName = order.User.UserName,
+                UserFullName = order.User.UserName,
+                UserAddress = order.User.Address,
+                UserPhone = order.User.PhoneNumber,
                 DiscountId = order.DiscountId,
                 DiscountCode = order.Discount.DiscountCode,
                 DiscountValue = order.Discount.DiscountValue,
@@ -128,7 +138,11 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 Status = order.Status,
                 Name = order.Name,
                 Email = order.Email,
-                Phone = order.Phone
+                Phone = order.Phone,
+                Payment = order.Payment,
+                PaymentMethod = ORDER_PAYMENT.OrderPayment[order.Payment],
+                StatusCode = ORDER_STATUS.OrderStatus[order.Status],
+                TotalItem = order.OrderItems.Count
             };
         }
 
@@ -137,14 +151,14 @@ namespace FurnitureWeb.Services.Catalog.Orders
             var order = await _context.Orders.FindAsync(request.OrderId);
             if (order == null)
                 return -1;
-            if (request.Status != 1)
-            {
-                order.Status = request.Status;
-            }
 
-            if (request.Status == 1)
+            if (request.Status == ORDER_STATUS.DELIVERED)
             {
                 order.DateDone = DateTime.Now;
+            }
+            else
+            {
+                order.Status = request.Status;
             }
             _context.Orders.Update(order);
 

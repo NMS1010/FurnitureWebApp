@@ -58,7 +58,7 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IOrderServices, OrderServices>();
             services.AddScoped<IOrderItemServices, OrderItemServices>();
             services.AddScoped<ICartItemServices, CartItemServices>();
-            services.AddScoped<IWishListItemServices, WishListItemServices>();
+            services.AddScoped<IWishItemServices, WishItemServices>();
 
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IUserService, UserService>();

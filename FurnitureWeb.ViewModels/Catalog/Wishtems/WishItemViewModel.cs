@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Text;
 
 namespace FurnitureWeb.ViewModels.Catalog.Wishtems
@@ -15,5 +16,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Wishtems
         public int Status { get; set; }
         public decimal UnitPrice { get; set; }
         public DateTime DateAdded { get; set; }
+        public string ProductStatus { get; set; }
     }
 }

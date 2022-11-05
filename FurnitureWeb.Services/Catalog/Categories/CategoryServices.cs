@@ -5,6 +5,7 @@ using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,13 +48,28 @@ namespace FurnitureWeb.Services.Catalog.Categories
             return await _context.SaveChangesAsync();
         }
 
-        public Hashtable GetSubCategory(int categoryId)
+        public List<CategoryViewModel> GetSubCategory(int categoryId)
         {
-            var parentCategories = _context.Categories.Where(x => x.ParentCategoryId == categoryId).ToList();
-            Hashtable res = new Hashtable();
-            parentCategories.ForEach(x =>
+            var subCategories = _context.Categories
+                .Include(x => x.Products)
+                .ThenInclude(x => x.OrderItems)
+                .Where(x => x.ParentCategoryId == categoryId).ToList();
+            List<CategoryViewModel> res = new List<CategoryViewModel>();
+            if (subCategories.Count == 0)
+                return res;
+            subCategories.ForEach(x =>
             {
-                res.Add(x.CategoryId, x.Name);
+                res.Add(new CategoryViewModel()
+                {
+                    CategoryId = x.CategoryId,
+                    Content = x.Content,
+                    ParentCategoryId = x.ParentCategoryId,
+                    Image = x.Image,
+                    Name = x.Name,
+                    ParentCategoryName = _context.Categories.Find(x.ParentCategoryId)?.Name,
+                    TotalProduct = x.Products.Count,
+                    SubCategories = GetSubCategory(x.CategoryId)
+                });
             });
 
             return res;
@@ -80,7 +96,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                     ParentCategoryName = _context.Categories.Find(x.ParentCategoryId)?.Name,
                     Content = x.Content,
                     Image = x.Image,
-                    SubCategories = GetSubCategory(x.CategoryId)
+                    SubCategories = GetSubCategory(x.CategoryId),
+                    TotalProduct = x.Products.Count
                 }).ToList();
 
             return new PagedResult<CategoryViewModel>
@@ -105,7 +122,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                 ParentCategoryName = _context.Categories.Find(category.ParentCategoryId)?.Name,
                 Content = category.Content,
                 Image = category.Image,
-                SubCategories = GetSubCategory(category.CategoryId)
+                SubCategories = GetSubCategory(category.CategoryId),
+                TotalProduct = category.Products.Count
             };
         }
 

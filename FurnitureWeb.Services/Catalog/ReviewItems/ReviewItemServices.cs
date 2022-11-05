@@ -29,10 +29,11 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
                 Content = request.Content,
                 Rating = request.Rating,
                 Status = request.Status,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now,
             };
 
-            _context.Reviews.Add(review);
+            _context.ReviewItems.Add(review);
             await _context.SaveChangesAsync();
 
             return review.ReviewItemId;
@@ -40,17 +41,17 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
 
         public async Task<int> Delete(int reviewId)
         {
-            var review = await _context.Reviews.FindAsync(reviewId);
+            var review = await _context.ReviewItems.FindAsync(reviewId);
             if (review == null)
                 return -1;
-            _context.Reviews.Remove(review);
+            _context.ReviewItems.Remove(review);
 
             return await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<ReviewItemViewModel>> RetrieveAll(ReviewItemGetPagingRequest request)
         {
-            var query = await _context.Reviews
+            var query = await _context.ReviewItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
                 .ThenInclude(x => x.ProductImages)
@@ -78,7 +79,8 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
                     DateCreated = x.DateCreated,
                     DateUpdated = x.DateUpdated,
                     Status = x.Status,
-                    UserName = x.User.UserName
+                    UserName = x.User.UserName,
+                    UserAvatar = x.User.Avatar
                 }).ToList();
 
             return new PagedResult<ReviewItemViewModel>
@@ -90,7 +92,7 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
 
         public async Task<ReviewItemViewModel> RetrieveById(int reviewId)
         {
-            var review = await _context.Reviews
+            var review = await _context.ReviewItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
                 .ThenInclude(x => x.ProductImages)
@@ -112,20 +114,21 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
                 DateCreated = review.DateCreated,
                 DateUpdated = review.DateUpdated,
                 Status = review.Status,
-                UserName = review.User.UserName
+                UserName = review.User.UserName,
+                UserAvatar = review.User.Avatar
             };
         }
 
         public async Task<int> Update(ReviewItemUpdateRequest request)
         {
-            var review = await _context.Reviews.FindAsync(request.ReviewItemId);
+            var review = await _context.ReviewItems.FindAsync(request.ReviewItemId);
             if (review == null)
                 return -1;
             review.Content = request.Content;
             review.Rating = request.Rating;
             review.DateUpdated = DateTime.Now;
             review.Status = request.Status;
-            _context.Reviews.Update(review);
+            _context.ReviewItems.Update(review);
 
             return await _context.SaveChangesAsync();
         }

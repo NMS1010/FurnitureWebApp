@@ -12,6 +12,7 @@ namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
         public string ProductImage { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
+        public string UserAvatar { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public string Content { get; set; }

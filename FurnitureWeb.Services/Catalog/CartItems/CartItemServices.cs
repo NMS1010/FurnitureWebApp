@@ -1,5 +1,6 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Utilities.Constants.Products;
 using FurnitureWeb.ViewModels.Catalog.CartItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
@@ -71,13 +72,12 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                     ImageProduct = x.Product.ProductImages
                         .Where(c => c.ProductId == x.ProductId && c.IsDefault == true)
                         .FirstOrDefault()?.Path,
-                    UserId = x.UserId,
-                    UserName = x.User.UserName,
                     Quantity = x.Quantity,
                     TotalPrice = x.Quantity * x.Product.Price,
                     UnitPrice = x.Product.Price,
                     DateAdded = DateTime.Now,
-                    Status = x.Status
+                    Status = x.Status,
+                    ProductStatus = PRODUCT_STATUS.ProductStatus[x.Status]
                 }).ToList();
 
             return new PagedResult<CartItemViewModel>
@@ -105,13 +105,12 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 ImageProduct = cartItem.Product.ProductImages
                     .Where(x => x.ProductId == cartItem.ProductId && x.IsDefault == true)
                     .FirstOrDefault()?.Path,
-                UserId = cartItem.UserId,
-                UserName = cartItem.User.UserName,
                 Quantity = cartItem.Quantity,
                 TotalPrice = cartItem.Quantity * cartItem.Product.Price,
                 UnitPrice = cartItem.Product.Price,
                 DateAdded = DateTime.Now,
-                Status = cartItem.Status
+                Status = cartItem.Status,
+                ProductStatus = PRODUCT_STATUS.ProductStatus[cartItem.Status]
             };
         }
 

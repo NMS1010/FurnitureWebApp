@@ -70,7 +70,7 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                         .FirstOrDefault()?.Path,
                     Quantity = x.Quantity,
                     UnitPrice = x.UnitPrice,
-                    TotalPrice = x.TotalPrice,
+                    TotalPrice = x.TotalPrice
                 }).ToList();
 
             return new PagedResult<OrderItemViewModel>

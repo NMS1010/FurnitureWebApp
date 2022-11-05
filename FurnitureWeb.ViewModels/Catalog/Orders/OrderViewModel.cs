@@ -9,7 +9,9 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
     {
         public int OrderId { get; set; }
         public string UserId { get; set; }
-        public string UserName { get; set; }
+        public string UserFullName { get; set; }
+        public string UserAddress { get; set; }
+        public string UserPhone { get; set; }
         public int? DiscountId { get; set; }
         public string DiscountCode { get; set; }
         public decimal DiscountValue { get; set; }
@@ -23,5 +25,9 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
         public DateTime DateCreated { get; set; }
         public DateTime? DateDone { get; set; }
         public int Status { get; set; }
+        public string StatusCode { get; set; }
+        public int Payment { get; set; }
+        public string PaymentMethod { get; set; }
+        public int TotalItem { get; set; }
     }
 }

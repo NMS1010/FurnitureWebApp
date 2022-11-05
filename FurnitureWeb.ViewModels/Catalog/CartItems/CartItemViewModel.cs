@@ -11,12 +11,11 @@ namespace FurnitureWeb.ViewModels.Catalog.CartItems
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ImageProduct { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
         public decimal UnitPrice { get; set; }
         public DateTime DateAdded { get; set; }
         public int Status { get; set; }
+        public string ProductStatus { get; set; }
     }
 }

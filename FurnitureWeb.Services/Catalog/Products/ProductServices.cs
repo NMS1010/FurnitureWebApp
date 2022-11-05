@@ -1,6 +1,7 @@
 ﻿using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Utilities.Constants.Products;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
 using FurnitureWeb.ViewModels.Common;
@@ -32,11 +33,11 @@ namespace FurnitureWeb.Services.Catalog.Products
                 Description = request.Description,
                 Price = request.Price,
                 Quantity = request.Quantity,
-                DateCreated = request.DateCreated,
+                DateCreated = DateTime.Now,
                 Origin = request.Origin,
                 Status = request.Status,
                 CategoryId = request.CategoryId,
-                BrandId = request.BrandId,
+                BrandId = request.BrandId
             };
 
             _context.Products.Add(product);
@@ -106,6 +107,10 @@ namespace FurnitureWeb.Services.Catalog.Products
                         .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
                         .FirstOrDefault()
                         ?.Path,
+                    BrandId = x.BrandId,
+                    CategoryId = x.CategoryId,
+                    StatusCode = PRODUCT_STATUS.ProductStatus[x.Status],
+                    TotalPurchased = x.OrderItems.Sum(g => g.Quantity)
                 }).ToList();
 
             return new PagedResult<ProductViewModel>
@@ -141,6 +146,10 @@ namespace FurnitureWeb.Services.Catalog.Products
                         .Where(c => c.IsDefault == true && c.ProductId == product.ProductId)
                         .FirstOrDefault()
                         .Path,
+                BrandId = product.BrandId,
+                CategoryId = product.CategoryId,
+                StatusCode = PRODUCT_STATUS.ProductStatus[product.Status],
+                TotalPurchased = product.OrderItems.Sum(g => g.Quantity)
             };
         }
 

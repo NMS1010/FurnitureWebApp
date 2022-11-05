@@ -10,7 +10,7 @@ using System.Text;
 namespace FurnitureWeb.Services.Catalog.ProductImages
 {
     public interface IProductImageServices : IModifyEntity<ProductImageCreateRequest, ProductImageUpdateRequest, int>,
-        IRetrieveEntity<ProductImage, ProductImageGetPagingRequest, int>
+        IRetrieveEntity<ProductImageViewModel, ProductImageGetPagingRequest, int>
     {
     }
 }

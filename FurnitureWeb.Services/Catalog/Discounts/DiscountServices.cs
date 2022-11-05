@@ -1,5 +1,6 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Utilities.Constants.Discounts;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Common;
@@ -71,6 +72,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                     EndDate = x.EndDate,
                     Status = x.Status,
                     Quantity = x.Quantity,
+                    StatusCode = DISCOUNT_STATUS.DiscountStatus[x.Status]
                 }).ToList();
 
             return new PagedResult<DiscountViewModel>
@@ -96,6 +98,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                 EndDate = discount.EndDate,
                 Status = discount.Status,
                 Quantity = discount.Quantity,
+                StatusCode = DISCOUNT_STATUS.DiscountStatus[discount.Status]
             };
         }
 
@@ -110,8 +113,11 @@ namespace FurnitureWeb.Services.Catalog.Discounts
             discount.DiscountValue = request.DiscountValue;
             discount.StartDate = request.StartDate;
             discount.EndDate = request.EndDate;
-            discount.Status = request.Status;
             discount.Quantity = request.Quantity;
+            if (request.Quantity == 0)
+                discount.Status = DISCOUNT_STATUS.IN_ACTIVE;
+            else
+                discount.Status = request.Status;
             return await _context.SaveChangesAsync();
         }
     }

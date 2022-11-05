@@ -4,10 +4,17 @@ using System.Text;
 
 namespace FurnitureWeb.Utilities.Constants.Products
 {
-    public enum PRODUCT_STATUS
+    public class PRODUCT_STATUS
     {
-        IN_STOCK,
-        OUT_STOCK,
-        SUSPENDED
+        public const int IN_STOCK = 0;
+        public const int OUT_STOCK = 1;
+        public const int SUSPENDED = 2;
+
+        public static Dictionary<int, string> ProductStatus = new Dictionary<int, string>()
+        {
+            {IN_STOCK, "Còn hàng" },
+            {OUT_STOCK, "Hết hàng" },
+            {SUSPENDED, "Ngừng kinh doanh" }
+        };
     }
 }

@@ -12,5 +12,6 @@ namespace FurnitureWeb.ViewModels.Common
 
         public string ColumnName { get; set; }
         public string TypeSort { get; set; }
+        public string SortBy { get; set; }
     }
 }

@@ -33,5 +33,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
 
         [Required]
         public int Status { get; set; }
+
+        [Required]
+        public int Payment { get; set; }
     }
 }

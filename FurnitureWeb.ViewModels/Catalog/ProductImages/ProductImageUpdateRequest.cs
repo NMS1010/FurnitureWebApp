@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureWeb.ViewModels.Catalog.ProductImages
@@ -6,9 +7,6 @@ namespace FurnitureWeb.ViewModels.Catalog.ProductImages
     public class ProductImageUpdateRequest
     {
         [Required]
-        public int ProductImageId { get; set; }
-
-        [Required]
-        public IFormFile Image { get; set; }
+        public Dictionary<int, IFormFile> ProductImages { get; set; }
     }
 }

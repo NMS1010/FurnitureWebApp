@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
@@ -80,7 +81,7 @@ namespace FurnitureWeb.Services.System.Users
                 DateCreated = DateTime.Now,
                 Address = request.Address,
                 DateUpdated = DateTime.Now,
-                Avatar = await _fileStorage.SaveFile(request.Avatar)
+                Avatar = await _fileStorage.SaveFile(request.Avatar),
             };
             var res = await _userManager.CreateAsync(user, request.Password);
             if (res.Succeeded)
@@ -92,19 +93,24 @@ namespace FurnitureWeb.Services.System.Users
 
         public async Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request)
         {
-            var users = _userManager.Users;
+            var users = await _userManager.Users.Include(u => u.WishItems)
+                .Include(u => u.CartItems)
+                .Include(u => u.WishItems)
+                .Include(u => u.Orders)
+                .ThenInclude(u => u.OrderItems)
+                .ToListAsync();
             string keyWord = request.Keyword;
-            if (!String.IsNullOrEmpty(keyWord))
+            if (!string.IsNullOrEmpty(keyWord))
             {
-                users = users.Where(a =>
+                users = (List<AppUser>)users.Where(a =>
                     a.UserName.Contains(keyWord) ||
                     a.PhoneNumber.Contains(keyWord)
                 );
             }
 
-            int totalRow = await users.CountAsync();
+            int totalRow = users.Count;
 
-            var dt = await users
+            var dt = users
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
@@ -118,14 +124,54 @@ namespace FurnitureWeb.Services.System.Users
                     Address = x.Address,
                     Dob = x.DateOfBirth,
                     Gender = x.Gender,
-                    Avarar = x.Avatar
+                    Avatar = x.Avatar,
+                    DateCreated = x.DateCreated,
+                    DateUpdated = x.DateUpdated,
+                    Status = x.Status,
+                    Password = x.PasswordHash,
+                    TotalCartItem = x.CartItems.Count,
+                    TotalWishItem = x.WishItems.Count,
+                    TotalOrders = x.Orders.Count,
+                    TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
+                    TotalCost = x.Orders.Sum(o => o.TotalPrice),
+                    StatusCode = USER_STATUS.UserStatus[x.Status]
                 })
-                .ToListAsync();
+                .ToList();
 
             return new PagedResult<UserViewModel>()
             {
                 TotalItem = totalRow,
                 Items = dt
+            };
+        }
+
+        public async Task<UserViewModel> RetrieveById(string userId)
+        {
+            var x = await _userManager.FindByIdAsync(userId);
+            if (x == null)
+                return null;
+            return new UserViewModel()
+            {
+                UserId = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                PhoneNumber = x.PhoneNumber,
+                Email = x.Email,
+                UserName = x.UserName,
+                Address = x.Address,
+                Dob = x.DateOfBirth,
+                Gender = x.Gender,
+                Avatar = x.Avatar,
+                DateCreated = x.DateCreated,
+                DateUpdated = x.DateUpdated,
+                Status = x.Status,
+                Password = x.PasswordHash,
+                TotalCartItem = x.CartItems.Count,
+                TotalWishItem = x.WishItems.Count,
+                TotalOrders = x.Orders.Count,
+                TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
+                TotalCost = x.Orders.Sum(o => o.TotalPrice),
+                StatusCode = USER_STATUS.UserStatus[x.Status]
             };
         }
     }

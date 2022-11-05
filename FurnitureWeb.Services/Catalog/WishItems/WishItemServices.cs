@@ -1,5 +1,6 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Utilities.Constants.Products;
 using FurnitureWeb.ViewModels.Catalog.Wishtems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.WishItems
 {
-    public class WishListItemServices : IWishListItemServices
+    public class WishItemServices : IWishItemServices
     {
         private readonly AppDbContext _context;
 
-        public WishListItemServices(AppDbContext context)
+        public WishItemServices(AppDbContext context)
         {
             _context = context;
         }
 
         public async Task<int> Create(WishItemCreateRequest request)
         {
-            var wishListItem = new WishItem()
+            var wishItem = new WishItem()
             {
                 ProductId = request.ProductId,
                 UserId = request.UserId,
@@ -30,25 +31,25 @@ namespace FurnitureWeb.Services.Catalog.WishItems
                 Status = request.Status,
             };
 
-            _context.WishLists.Add(wishListItem);
+            _context.WishItems.Add(wishItem);
             await _context.SaveChangesAsync();
 
-            return wishListItem.WishItemId;
+            return wishItem.WishItemId;
         }
 
-        public async Task<int> Delete(int wishListItemId)
+        public async Task<int> Delete(int wishItemId)
         {
-            var wishListItem = await _context.WishLists.FindAsync(wishListItemId);
-            if (wishListItem == null)
+            var wishItem = await _context.WishItems.FindAsync(wishItemId);
+            if (wishItem == null)
                 return -1;
-            _context.WishLists.Remove(wishListItem);
+            _context.WishItems.Remove(wishItem);
 
             return await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<WishItemViewModel>> RetrieveAll(WishItemGetPagingRequest request)
         {
-            var query = await _context.WishLists
+            var query = await _context.WishItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
                 .ThenInclude(x => x.ProductImages)
@@ -74,7 +75,8 @@ namespace FurnitureWeb.Services.Catalog.WishItems
                     DateAdded = x.DateAdded,
                     Status = x.Status,
                     UnitPrice = x.Product.Price,
-                    UserName = x.User.UserName
+                    UserName = x.User.UserName,
+                    ProductStatus = PRODUCT_STATUS.ProductStatus[x.Status]
                 }).ToList();
 
             return new PagedResult<WishItemViewModel>
@@ -84,39 +86,40 @@ namespace FurnitureWeb.Services.Catalog.WishItems
             };
         }
 
-        public async Task<WishItemViewModel> RetrieveById(int wishListItemId)
+        public async Task<WishItemViewModel> RetrieveById(int wishItemId)
         {
-            var wishListItem = await _context.WishLists
+            var wishItem = await _context.WishItems
                 .Include(x => x.User)
                 .Include(x => x.Product)
                 .ThenInclude(x => x.ProductImages)
-                .Where(x => x.WishItemId == wishListItemId)
+                .Where(x => x.WishItemId == wishItemId)
                 .FirstOrDefaultAsync();
-            if (wishListItem == null)
+            if (wishItem == null)
                 return null;
             return new WishItemViewModel()
             {
-                WishItemId = wishListItem.WishItemId,
-                ProductId = wishListItem.ProductId,
-                ProductName = wishListItem.Product.Name,
-                ProductImage = wishListItem.Product.ProductImages
-                    .Where(c => c.IsDefault == true && c.ProductId == wishListItem.ProductId)
+                WishItemId = wishItem.WishItemId,
+                ProductId = wishItem.ProductId,
+                ProductName = wishItem.Product.Name,
+                ProductImage = wishItem.Product.ProductImages
+                    .Where(c => c.IsDefault == true && c.ProductId == wishItem.ProductId)
                     .FirstOrDefault()?.Path,
-                UserId = wishListItem.UserId,
-                DateAdded = wishListItem.DateAdded,
-                Status = wishListItem.Status,
-                UnitPrice = wishListItem.Product.Price,
-                UserName = wishListItem.User.UserName
+                UserId = wishItem.UserId,
+                DateAdded = wishItem.DateAdded,
+                Status = wishItem.Status,
+                UnitPrice = wishItem.Product.Price,
+                UserName = wishItem.User.UserName,
+                ProductStatus = PRODUCT_STATUS.ProductStatus[wishItem.Status]
             };
         }
 
         public async Task<int> Update(WishItemUpdateRequest request)
         {
-            var wishListItem = await _context.WishLists.FindAsync(request.WishItemId);
-            if (wishListItem == null)
+            var wishItem = await _context.WishItems.FindAsync(request.WishItemId);
+            if (wishItem == null)
                 return -1;
-            _context.WishLists.Update(wishListItem);
-            wishListItem.Status = request.Status;
+            _context.WishItems.Update(wishItem);
+            wishItem.Status = request.Status;
             return await _context.SaveChangesAsync();
         }
     }

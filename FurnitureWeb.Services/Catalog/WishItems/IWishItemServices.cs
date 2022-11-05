@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FurnitureWeb.Services.Catalog.WishItems
 {
-    public interface IWishListItemServices : IModifyEntity<WishItemCreateRequest, WishItemUpdateRequest, int>,
+    public interface IWishItemServices : IModifyEntity<WishItemCreateRequest, WishItemUpdateRequest, int>,
         IRetrieveEntity<WishItemViewModel, WishItemGetPagingRequest, int>
     {
     }

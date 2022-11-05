@@ -10,9 +10,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
     [ApiController]
     public class WishListItemsController : ControllerBase
     {
-        private readonly IWishListItemServices _wishListItemServices;
+        private readonly IWishItemServices _wishListItemServices;
 
-        public WishListItemsController(IWishListItemServices wishListItemServices)
+        public WishListItemsController(IWishItemServices wishListItemServices)
         {
             _wishListItemServices = wishListItemServices;
         }

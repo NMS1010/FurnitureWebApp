@@ -18,6 +18,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
         public int Quantity { get; set; }
 
         public int Status { get; set; }
+        public string StatusCode { get; set; }
 
         public string Origin { get; set; }
 
@@ -29,7 +30,9 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 
         public string BrandName { get; set; }
 
-        public string Size { get; set; }
-        public string Color { get; set; }
+        public int CategoryId { get; set; }
+        public int BrandId { get; set; }
+        public int TotalPurchased { get; set; }
+        public int AverageRating { get; set; }
     }
 }

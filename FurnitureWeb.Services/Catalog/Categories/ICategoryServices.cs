@@ -2,6 +2,7 @@
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.Categories
@@ -9,6 +10,6 @@ namespace FurnitureWeb.Services.Catalog.Categories
     public interface ICategoryServices : IModifyEntity<CategoryCreateRequest, CategoryUpdateRequest, int>,
         IRetrieveEntity<CategoryViewModel, CategoryGetPagingRequest, int>
     {
-        Hashtable GetSubCategory(int categoryId);
+        List<CategoryViewModel> GetSubCategory(int categoryId);
     }
 }
