@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.Reviews
+namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
 {
-    public class ReviewViewModel
+    public class ReviewItemViewModel
     {
-        public int ReviewId { get; set; }
+        public int ReviewItemId { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductImage { get; set; }

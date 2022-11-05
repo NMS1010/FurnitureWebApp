@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.Reviews
+namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
 {
-    public class ReviewCreateRequest
+    public class ReviewItemCreateRequest
     {
         [Required]
         public int ProductId { get; set; }

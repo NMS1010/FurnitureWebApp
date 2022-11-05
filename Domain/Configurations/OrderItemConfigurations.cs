@@ -36,9 +36,6 @@ namespace Domain.Configurations
                 .Property(x => x.ProductId)
                 .IsRequired();
             builder
-                .Property(x => x.DateCreated)
-                .IsRequired();
-            builder
                 .HasOne(x => x.Order)
                 .WithMany(x => x.OrderItems)
                 .HasForeignKey(x => x.OrderId);

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.Reviews
+namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
 {
-    public class ReviewGetPagingRequest : PagingRequest
+    public class ReviewItemGetPagingRequest : PagingRequest
     {
     }
 }

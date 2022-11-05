@@ -4,6 +4,7 @@ using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
                 Name = request.Name,
                 Content = request.Content,
                 ParentCategoryId = request.ParentCategoryId ?? null,
-                ImagePath = await _fileStorageService.SaveFile(request.Image),
+                Image = await _fileStorageService.SaveFile(request.Image),
             };
 
             _context.Categories.Add(category);
@@ -44,6 +45,18 @@ namespace FurnitureWeb.Services.Catalog.Categories
                 return -1;
             _context.Categories.Remove(category);
             return await _context.SaveChangesAsync();
+        }
+
+        public Hashtable GetSubCategory(int categoryId)
+        {
+            var parentCategories = _context.Categories.Where(x => x.ParentCategoryId == categoryId).ToList();
+            Hashtable res = new Hashtable();
+            parentCategories.ForEach(x =>
+            {
+                res.Add(x.CategoryId, x.Name);
+            });
+
+            return res;
         }
 
         public async Task<PagedResult<CategoryViewModel>> RetrieveAll(CategoryGetPagingRequest request)
@@ -66,7 +79,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                     ParentCategoryId = x.ParentCategoryId ?? null,
                     ParentCategoryName = _context.Categories.Find(x.ParentCategoryId)?.Name,
                     Content = x.Content,
-                    ImagePath = x.ImagePath,
+                    Image = x.Image,
+                    SubCategories = GetSubCategory(x.CategoryId)
                 }).ToList();
 
             return new PagedResult<CategoryViewModel>
@@ -90,7 +104,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
                 ParentCategoryId = category.ParentCategoryId ?? null,
                 ParentCategoryName = _context.Categories.Find(category.ParentCategoryId)?.Name,
                 Content = category.Content,
-                ImagePath = category.ImagePath
+                Image = category.Image,
+                SubCategories = GetSubCategory(category.CategoryId)
             };
         }
 
@@ -104,8 +119,8 @@ namespace FurnitureWeb.Services.Catalog.Categories
             category.Name = request.Name;
             category.ParentCategoryId = request.ParentCategoryId ?? null;
             category.Content = request.Content;
-            await _fileStorageService.DeleteFile(category.ImagePath);
-            category.ImagePath = await _fileStorageService.SaveFile(request.Image);
+            await _fileStorageService.DeleteFile(category.Image);
+            category.Image = await _fileStorageService.SaveFile(request.Image);
             return await _context.SaveChangesAsync();
         }
     }

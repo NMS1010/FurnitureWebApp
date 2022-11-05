@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -39,5 +40,8 @@ namespace FurnitureWeb.ViewModels.System.Users
 
         [Required]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public IFormFile Avatar { get; set; }
     }
 }

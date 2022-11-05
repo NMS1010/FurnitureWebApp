@@ -7,16 +7,16 @@ using System.Text;
 
 namespace Domain.Configurations
 {
-    public class ReviewConfigurations : IEntityTypeConfiguration<Review>
+    public class ReviewItemConfigurations : IEntityTypeConfiguration<ReviewItem>
     {
-        public void Configure(EntityTypeBuilder<Review> builder)
+        public void Configure(EntityTypeBuilder<ReviewItem> builder)
         {
             builder.ToTable("Review");
 
             builder
-                .HasKey(x => x.ReviewId);
+                .HasKey(x => x.ReviewItemId);
             builder
-                .Property(x => x.ReviewId)
+                .Property(x => x.ReviewItemId)
                 .UseIdentityColumn();
             builder
                 .Property(x => x.DateCreated)
@@ -42,12 +42,12 @@ namespace Domain.Configurations
                 .IsRequired();
             builder
                 .HasOne(x => x.Product)
-                .WithMany(x => x.Reviews)
+                .WithMany(x => x.ReviewItems)
                 .HasForeignKey(x => x.ProductId);
 
             builder
                 .HasOne(x => x.User)
-                .WithMany(x => x.Reviews)
+                .WithMany(x => x.ReviewItems)
                 .HasForeignKey(x => x.UserId);
         }
     }

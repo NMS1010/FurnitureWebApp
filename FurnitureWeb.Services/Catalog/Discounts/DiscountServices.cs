@@ -30,6 +30,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
                 Status = request.Status,
+                Quantity = request.Quantity,
             };
 
             _context.Discounts.Add(discount);
@@ -69,6 +70,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
                     Status = x.Status,
+                    Quantity = x.Quantity,
                 }).ToList();
 
             return new PagedResult<DiscountViewModel>
@@ -93,6 +95,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
                 Status = discount.Status,
+                Quantity = discount.Quantity,
             };
         }
 
@@ -108,6 +111,7 @@ namespace FurnitureWeb.Services.Catalog.Discounts
             discount.StartDate = request.StartDate;
             discount.EndDate = request.EndDate;
             discount.Status = request.Status;
+            discount.Quantity = request.Quantity;
             return await _context.SaveChangesAsync();
         }
     }

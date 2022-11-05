@@ -1,4 +1,6 @@
-﻿namespace FurnitureWeb.ViewModels.Catalog.Categories
+﻿using System.Collections;
+
+namespace FurnitureWeb.ViewModels.Catalog.Categories
 {
     public class CategoryViewModel
     {
@@ -8,6 +10,9 @@
         public int? ParentCategoryId { get; set; }
         public string ParentCategoryName { get; set; }
 
-        public string ImagePath { get; set; }
+        public string Image { get; set; }
+        public int TotalProduct { get; set; }
+        public int TotalSell { get; set; }
+        public Hashtable SubCategories { get; set; }
     }
 }

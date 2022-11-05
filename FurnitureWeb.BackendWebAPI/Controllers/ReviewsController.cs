@@ -1,5 +1,5 @@
-﻿using FurnitureWeb.Services.Catalog.Reviews;
-using FurnitureWeb.ViewModels.Catalog.Reviews;
+﻿using FurnitureWeb.Services.Catalog.ReviewItems;
+using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,15 +10,15 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly IReviewServices _reviewServices;
+        private readonly IReviewItemServices _reviewServices;
 
-        public ReviewsController(IReviewServices reviewServices)
+        public ReviewsController(IReviewItemServices reviewServices)
         {
             _reviewServices = reviewServices;
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> RetrieveAll([FromQuery] ReviewGetPagingRequest request)
+        public async Task<IActionResult> RetrieveAll([FromQuery] ReviewItemGetPagingRequest request)
         {
             var reviews = await _reviewServices.RetrieveAll(request);
 
@@ -38,7 +38,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Create([FromForm] ReviewCreateRequest request)
+        public async Task<IActionResult> Create([FromForm] ReviewItemCreateRequest request)
         {
             var reviewId = await _reviewServices.Create(request);
 
@@ -50,7 +50,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromForm] ReviewUpdateRequest request)
+        public async Task<IActionResult> Update([FromForm] ReviewItemUpdateRequest request)
         {
             var count = await _reviewServices.Update(request);
 

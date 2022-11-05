@@ -18,6 +18,7 @@ namespace Domain.Configurations
             builder
                 .Property(x => x.DiscountId)
                 .UseIdentityColumn();
+
             builder
                 .Property(x => x.DiscountCode)
                 .HasMaxLength(20)

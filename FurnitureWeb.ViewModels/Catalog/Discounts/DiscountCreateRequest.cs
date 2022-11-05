@@ -22,5 +22,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Discounts
 
         [Required]
         public int Status { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
     }
 }

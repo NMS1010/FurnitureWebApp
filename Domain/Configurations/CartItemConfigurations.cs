@@ -20,10 +20,6 @@ namespace Domain.Configurations
                 .UseIdentityColumn();
 
             builder
-                .Property(x => x.TotalPrice)
-                .HasColumnType("DECIMAL")
-                .IsRequired();
-            builder
                 .Property(x => x.UserId)
                 .IsRequired();
             builder

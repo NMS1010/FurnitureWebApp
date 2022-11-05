@@ -23,9 +23,6 @@ namespace Domain.Configurations
                 .Property(x => x.ProductId)
                 .IsRequired();
             builder
-                .Property(x => x.Size)
-                .IsRequired();
-            builder
                 .Property(x => x.IsDefault)
                 .IsRequired();
             builder

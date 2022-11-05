@@ -4,14 +4,16 @@ using Domain.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221006034212_RemoveImageSizeFiled")]
+    partial class RemoveImageSizeFiled
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,7 +118,7 @@ namespace Domain.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("User");
+                    b.ToTable("AppUser");
                 });
 
             modelBuilder.Entity("Domain.Entities.Brand", b =>
@@ -133,7 +135,7 @@ namespace Domain.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -169,6 +171,9 @@ namespace Domain.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("DECIMAL");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -195,7 +200,7 @@ namespace Domain.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -267,6 +272,7 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("DiscountId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -320,6 +326,9 @@ namespace Domain.Migrations
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -422,9 +431,9 @@ namespace Domain.Migrations
                     b.ToTable("ProductImage");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReviewItem", b =>
+            modelBuilder.Entity("Domain.Entities.Review", b =>
                 {
-                    b.Property<int>("ReviewItemId")
+                    b.Property<int>("ReviewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
@@ -455,7 +464,7 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ReviewItemId");
+                    b.HasKey("ReviewId");
 
                     b.HasIndex("ProductId");
 
@@ -464,9 +473,9 @@ namespace Domain.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WishItem", b =>
+            modelBuilder.Entity("Domain.Entities.WishListItem", b =>
                 {
-                    b.Property<int>("WishItemId")
+                    b.Property<int>("WishListItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
@@ -486,7 +495,7 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("WishItemId");
+                    b.HasKey("WishListItemId");
 
                     b.HasIndex("ProductId");
 
@@ -649,7 +658,9 @@ namespace Domain.Migrations
                 {
                     b.HasOne("Domain.Entities.Discount", "Discount")
                         .WithMany("Orders")
-                        .HasForeignKey("DiscountId");
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.AppUser", "User")
                         .WithMany("Orders")
@@ -711,16 +722,16 @@ namespace Domain.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReviewItem", b =>
+            modelBuilder.Entity("Domain.Entities.Review", b =>
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("ReviewItems")
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.AppUser", "User")
-                        .WithMany("ReviewItems")
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -730,16 +741,16 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WishItem", b =>
+            modelBuilder.Entity("Domain.Entities.WishListItem", b =>
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("WishItems")
+                        .WithMany("WishLists")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.AppUser", "User")
-                        .WithMany("WishItems")
+                        .WithMany("WishLists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -806,9 +817,9 @@ namespace Domain.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("ReviewItems");
+                    b.Navigation("Reviews");
 
-                    b.Navigation("WishItems");
+                    b.Navigation("WishLists");
                 });
 
             modelBuilder.Entity("Domain.Entities.Brand", b =>
@@ -839,9 +850,9 @@ namespace Domain.Migrations
 
                     b.Navigation("ProductImages");
 
-                    b.Navigation("ReviewItems");
+                    b.Navigation("Reviews");
 
-                    b.Navigation("WishItems");
+                    b.Navigation("WishLists");
                 });
 #pragma warning restore 612, 618
         }

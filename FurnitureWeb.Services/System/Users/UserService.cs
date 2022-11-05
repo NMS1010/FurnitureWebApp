@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
@@ -21,14 +22,17 @@ namespace FurnitureWeb.Services.System.Users
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IFileStorageService _fileStorage;
 
         public UserService(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IFileStorageService fileStorage)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _fileStorage = fileStorage;
         }
 
         public async Task<string> Authenticate(LoginRequest request)
@@ -75,7 +79,8 @@ namespace FurnitureWeb.Services.System.Users
                 Status = request.Status,
                 DateCreated = DateTime.Now,
                 Address = request.Address,
-                DateUpdated = DateTime.Now
+                DateUpdated = DateTime.Now,
+                Avatar = await _fileStorage.SaveFile(request.Avatar)
             };
             var res = await _userManager.CreateAsync(user, request.Password);
             if (res.Succeeded)
@@ -110,6 +115,10 @@ namespace FurnitureWeb.Services.System.Users
                     PhoneNumber = x.PhoneNumber,
                     Email = x.Email,
                     UserName = x.UserName,
+                    Address = x.Address,
+                    Dob = x.DateOfBirth,
+                    Gender = x.Gender,
+                    Avarar = x.Avatar
                 })
                 .ToListAsync();
 

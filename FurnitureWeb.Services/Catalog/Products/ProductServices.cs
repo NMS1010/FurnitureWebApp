@@ -48,7 +48,6 @@ namespace FurnitureWeb.Services.Catalog.Products
                 {
                     IsDefault = true,
                     ProductId = product.ProductId,
-                    Size = request.Image.Length,
                     Path = await _fileStorageService.SaveFile(request.Image)
                 });
             }
@@ -171,7 +170,6 @@ namespace FurnitureWeb.Services.Catalog.Products
                     await _fileStorageService.DeleteFile(productImg.Path);
                 productImg.IsDefault = true;
                 productImg.Path = await _fileStorageService.SaveFile(request.Image);
-                productImg.Size = request.Image.Length;
 
                 _context.ProductImages.Update(productImg);
             }

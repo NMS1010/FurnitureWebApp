@@ -27,7 +27,6 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 ProductId = request.ProductId,
                 UserId = request.UserId,
                 Quantity = request.Quantity,
-                TotalPrice = request.UnitPrice * request.Quantity,
                 DateAdded = DateTime.Now,
                 Status = request.Status,
             };
@@ -75,7 +74,8 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                     UserId = x.UserId,
                     UserName = x.User.UserName,
                     Quantity = x.Quantity,
-                    TotalPrice = x.TotalPrice,
+                    TotalPrice = x.Quantity * x.Product.Price,
+                    UnitPrice = x.Product.Price,
                     DateAdded = DateTime.Now,
                     Status = x.Status
                 }).ToList();
@@ -108,7 +108,8 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 UserId = cartItem.UserId,
                 UserName = cartItem.User.UserName,
                 Quantity = cartItem.Quantity,
-                TotalPrice = cartItem.TotalPrice,
+                TotalPrice = cartItem.Quantity * cartItem.Product.Price,
+                UnitPrice = cartItem.Product.Price,
                 DateAdded = DateTime.Now,
                 Status = cartItem.Status
             };
@@ -117,14 +118,13 @@ namespace FurnitureWeb.Services.Catalog.CartItems
         public async Task<int> Update(CartItemUpdateRequest request)
         {
             var cartItem = await _context.CartItems
+                .Include(x => x.Product)
                 .Where(c => c.CartItemId == request.CartItemId)
                 .FirstOrDefaultAsync();
-            var product = await _context.FindAsync<Product>(cartItem.ProductId);
             if (cartItem == null)
                 return -1;
             cartItem.Quantity = request.Quantity;
 
-            cartItem.TotalPrice = request.Quantity * product.Price;
             cartItem.Status = request.Status;
             return await _context.SaveChangesAsync();
         }

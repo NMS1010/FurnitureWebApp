@@ -11,7 +11,7 @@ namespace Domain.Configurations
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.ToTable("AppUser");
+            builder.ToTable("User");
 
             builder.Property(x => x.FirstName)
                 .HasMaxLength(100)
@@ -47,11 +47,11 @@ namespace Domain.Configurations
                 .HasForeignKey(x => x.UserId);
 
             builder
-                .HasMany(x => x.Reviews)
+                .HasMany(x => x.ReviewItems)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
             builder
-                .HasMany(x => x.WishLists)
+                .HasMany(x => x.WishItems)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
         }

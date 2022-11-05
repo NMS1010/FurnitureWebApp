@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.WishListItems
+namespace FurnitureWeb.ViewModels.Catalog.Wishtems
 {
-    public class WishListItemGetPagingRequest : PagingRequest
+    public class WishItemGetPagingRequest : PagingRequest
     {
     }
 }

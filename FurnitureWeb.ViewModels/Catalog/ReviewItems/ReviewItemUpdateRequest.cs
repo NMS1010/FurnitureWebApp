@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FurnitureWeb.ViewModels.Catalog.Reviews
+namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
 {
-    public class ReviewUpdateRequest
+    public class ReviewItemUpdateRequest
     {
         [Required]
-        public int ReviewId { get; set; }
+        public int ReviewItemId { get; set; }
 
         [MaxLength(255)]
         public string Content { get; set; }

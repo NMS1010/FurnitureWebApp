@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace FurnitureWeb.ViewModels.Catalog.Discounts
@@ -12,5 +11,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Discounts
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Status { get; set; }
+        public int Quantity { get; set; }
     }
 }

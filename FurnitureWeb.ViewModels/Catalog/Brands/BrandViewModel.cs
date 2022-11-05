@@ -9,6 +9,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Brands
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public string Origin { get; set; }
-        public string ImagePath { get; set; }
+        public string Image { get; set; }
+        public long TotalProduct { get; set; }
     }
 }

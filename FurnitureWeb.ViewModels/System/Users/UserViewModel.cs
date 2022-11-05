@@ -15,5 +15,6 @@ namespace FurnitureWeb.ViewModels.System.Users
         public string Address { get; set; }
         public DateTime Dob { get; set; }
         public string Gender { get; set; }
+        public string Avarar { get; set; }
     }
 }

@@ -30,7 +30,6 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                 Quantity = request.Quantity,
                 UnitPrice = request.UnitPrice,
                 TotalPrice = request.UnitPrice * request.Quantity,
-                DateCreated = DateTime.Now
             };
 
             _context.OrderItems.Add(orderItem);
@@ -72,7 +71,6 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                     Quantity = x.Quantity,
                     UnitPrice = x.UnitPrice,
                     TotalPrice = x.TotalPrice,
-                    DateCreated = x.DateCreated,
                 }).ToList();
 
             return new PagedResult<OrderItemViewModel>
@@ -103,7 +101,6 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                 Quantity = orderItem.Quantity,
                 UnitPrice = orderItem.UnitPrice,
                 TotalPrice = orderItem.TotalPrice,
-                DateCreated = orderItem.DateCreated
             };
         }
 

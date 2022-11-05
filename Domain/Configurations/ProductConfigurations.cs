@@ -57,7 +57,7 @@ namespace Domain.Configurations
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId);
             builder
-                .HasMany(p => p.Reviews)
+                .HasMany(p => p.ReviewItems)
                 .WithOne(r => r.Product)
                 .HasForeignKey(p => p.ProductId);
 
@@ -77,7 +77,7 @@ namespace Domain.Configurations
                 .HasForeignKey(p => p.ProductId);
 
             builder
-                .HasMany(p => p.WishLists)
+                .HasMany(p => p.WishItems)
                 .WithOne(p => p.Product)
                 .HasForeignKey(p => p.ProductId);
         }

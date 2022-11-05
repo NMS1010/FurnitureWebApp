@@ -30,8 +30,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
             {
                 BrandName = request.BrandName,
                 Origin = request.Origin,
-                ImagePath = await _fileStorage.SaveFile(request.Image),
-                ImageSize = request.Image.Length
+                Image = await _fileStorage.SaveFile(request.Image),
             };
             _context.Brands.Add(brand);
             await _context.SaveChangesAsync();
@@ -44,7 +43,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
             var brand = await _context.Brands.FindAsync(brandId);
             if (brand == null)
                 return -1;
-            await _fileStorage.DeleteFile(brand.ImagePath);
+            await _fileStorage.DeleteFile(brand.Image);
             _context.Brands.Remove(brand);
 
             return await _context.SaveChangesAsync();
@@ -53,6 +52,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
         public async Task<PagedResult<BrandViewModel>> RetrieveAll(BrandGetPagingRequest request)
         {
             var query = await _context.Brands
+                .Include(x => x.Products)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -68,7 +68,8 @@ namespace FurnitureWeb.Services.Catalog.Brands
                     BrandId = x.BrandId,
                     BrandName = x.BrandName,
                     Origin = x.Origin,
-                    ImagePath = x.ImagePath,
+                    Image = x.Image,
+                    TotalProduct = x.Products.Count
                 }).ToList();
 
             return new PagedResult<BrandViewModel>
@@ -88,7 +89,8 @@ namespace FurnitureWeb.Services.Catalog.Brands
                 BrandId = brand.BrandId,
                 BrandName = brand.BrandName,
                 Origin = brand.Origin,
-                ImagePath = brand.ImagePath,
+                Image = brand.Image,
+                TotalProduct = brand.Products.Count
             };
         }
 
@@ -101,9 +103,8 @@ namespace FurnitureWeb.Services.Catalog.Brands
             brand.Origin = request.Origin;
             if (request.Image != null)
             {
-                await _fileStorage.DeleteFile(brand.ImagePath);
-                brand.ImagePath = await _fileStorage.SaveFile(request.Image);
-                brand.ImageSize = request.Image.Length;
+                await _fileStorage.DeleteFile(brand.Image);
+                brand.Image = await _fileStorage.SaveFile(request.Image);
             }
             _context.Brands.Update(brand);
 

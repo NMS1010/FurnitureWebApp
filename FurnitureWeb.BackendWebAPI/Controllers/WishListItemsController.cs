@@ -1,5 +1,5 @@
-﻿using FurnitureWeb.Services.Catalog.WishListItems;
-using FurnitureWeb.ViewModels.Catalog.WishListItems;
+﻿using FurnitureWeb.Services.Catalog.WishItems;
+using FurnitureWeb.ViewModels.Catalog.Wishtems;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> RetrieveAll([FromQuery] WishListItemGetPagingRequest request)
+        public async Task<IActionResult> RetrieveAll([FromQuery] WishItemGetPagingRequest request)
         {
             var wishListItems = await _wishListItemServices.RetrieveAll(request);
 
@@ -38,7 +38,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Create([FromForm] WishListItemCreateRequest request)
+        public async Task<IActionResult> Create([FromForm] WishItemCreateRequest request)
         {
             var wishListItemId = await _wishListItemServices.Create(request);
 
@@ -50,7 +50,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromForm] WishListItemUpdateRequest request)
+        public async Task<IActionResult> Update([FromForm] WishItemUpdateRequest request)
         {
             var count = await _wishListItemServices.Update(request);
 

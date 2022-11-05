@@ -44,12 +44,13 @@ namespace Domain.Configurations
             builder.Property(x => x.UserId)
                 .IsRequired();
             builder.Property(x => x.DiscountId)
-                .IsRequired();
+                .IsRequired(false);
             builder
                 .Property(x => x.DateCreated)
                 .IsRequired();
             builder
-                .Property(x => x.DateDone);
+                .Property(x => x.DateDone)
+                .IsRequired(false);
             builder
                 .Property(x => x.Status)
                 .IsRequired();

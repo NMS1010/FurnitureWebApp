@@ -9,8 +9,7 @@ namespace Domain.Entities
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public string Origin { get; set; }
-        public string ImagePath { get; set; }
-        public long ImageSize { get; set; }
+        public string Image { get; set; }
 
         public HashSet<Product> Products { get; set; }
     }
