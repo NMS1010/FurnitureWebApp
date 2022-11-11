@@ -3,6 +3,7 @@ using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -81,11 +82,41 @@ namespace FurnitureWeb.Services.System.Users
                 DateCreated = DateTime.Now,
                 Address = request.Address,
                 DateUpdated = DateTime.Now,
-                Avatar = await _fileStorage.SaveFile(request.Avatar),
+                Avatar = await _fileStorage.SaveFile(request.Avatar)
             };
             var res = await _userManager.CreateAsync(user, request.Password);
             if (res.Succeeded)
                 return (true, "successfull");
+            string error = "";
+            res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
+            return (false, error);
+        }
+
+        public async Task<(bool, string)> Update(UserUpdateRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+                return (false, "not found");
+            string avatar = user.Avatar;
+
+            user.FirstName = request.FirstName;
+            user.DateOfBirth = request.Dob;
+            user.Email = request.Email;
+            user.LastName = request.LastName;
+            user.UserName = request.UserName;
+            user.PhoneNumber = request.PhoneNumber;
+            user.Gender = request.Gender;
+            user.Status = request.Status;
+            user.DateUpdated = DateTime.Now;
+            user.Address = request.Address;
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.Password);
+            user.Avatar = await _fileStorage.SaveFile(request.Avatar);
+            var res = await _userManager.UpdateAsync(user);
+            if (res.Succeeded)
+            {
+                await _fileStorage.DeleteFile(avatar);
+                return (true, "successfull");
+            }
             string error = "";
             res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
             return (false, error);
@@ -173,6 +204,17 @@ namespace FurnitureWeb.Services.System.Users
                 TotalCost = x.Orders.Sum(o => o.TotalPrice),
                 StatusCode = USER_STATUS.UserStatus[x.Status]
             };
+        }
+
+        public async Task<int> Delete(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return -1;
+            user.Status = USER_STATUS.IN_ACTIVE;
+            await _userManager.UpdateAsync(user);
+
+            return 1;
         }
     }
 }

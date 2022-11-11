@@ -21,6 +21,49 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             _context = context;
         }
 
+        public async Task<string> AddProductToCart(CartItemCreateRequest request)
+        {
+            string responseStatus;
+            var product = await _context.Products.FindAsync(request.ProductId);
+            var cartItem = await _context.CartItems
+                .Where(x => x.ProductId == request.ProductId && x.UserId == request.UserId)
+                .FirstOrDefaultAsync();
+
+            if (product.Quantity > 0)
+            {
+                if (cartItem != null)
+                {
+                    CartItemUpdateRequest req = new CartItemUpdateRequest()
+                    {
+                        CartItemId = cartItem.CartItemId,
+                        Quantity = request.Quantity + 1,
+                        Status = request.Status
+                    };
+
+                    responseStatus = await Update(req) > 0 ? "repeat" : "error";
+                }
+                else
+                {
+                    responseStatus = await Create(request) > 0 ? "success" : "error";
+                }
+            }
+            else
+            {
+                responseStatus = "expired";
+            }
+            return responseStatus;
+        }
+
+        public async Task<int> CanUpdateCartItemQuantity(int cartItemId, int quantity)
+        {
+            var cartItem = await _context.CartItems.FindAsync(cartItemId);
+            var product = await _context.Products.FindAsync(cartItem.ProductId);
+
+            if (product.Quantity < quantity)
+                return product.Quantity;
+            return -1;
+        }
+
         public async Task<int> Create(CartItemCreateRequest request)
         {
             var cartItem = new CartItem()
@@ -46,6 +89,18 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 return -1;
             _context.CartItems.Remove(cartItem);
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteCartByUserId(string userId)
+        {
+            var list = _context.CartItems.Where(x => x.UserId == userId);
+            foreach (var cartItem in list)
+            {
+                int res = await Delete(cartItem.CartItemId);
+                if (res <= 0)
+                    return false;
+            }
+            return true;
         }
 
         public async Task<PagedResult<CartItemViewModel>> RetrieveAll(CartItemGetPagingRequest request)
@@ -114,6 +169,38 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             };
         }
 
+        public async Task<PagedResult<CartItemViewModel>> RetrieveCartByUserId(string userId)
+        {
+            var query = await _context.CartItems
+                .Where(x => x.UserId == userId)
+                .Include(x => x.User)
+                .Include(x => x.Product)
+                .ThenInclude(x => x.ProductImages)
+                .ToListAsync();
+            var data = query
+                .Select(x => new CartItemViewModel()
+                {
+                    CartItemId = x.CartItemId,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ImageProduct = x.Product.ProductImages
+                        .Where(c => c.ProductId == x.ProductId && c.IsDefault == true)
+                        .FirstOrDefault()?.Path,
+                    Quantity = x.Quantity,
+                    TotalPrice = x.Quantity * x.Product.Price,
+                    UnitPrice = x.Product.Price,
+                    DateAdded = DateTime.Now,
+                    Status = x.Status,
+                    ProductStatus = PRODUCT_STATUS.ProductStatus[x.Status]
+                }).ToList();
+
+            return new PagedResult<CartItemViewModel>()
+            {
+                TotalItem = data.Count,
+                Items = data
+            };
+        }
+
         public async Task<int> Update(CartItemUpdateRequest request)
         {
             var cartItem = await _context.CartItems
@@ -126,6 +213,19 @@ namespace FurnitureWeb.Services.Catalog.CartItems
 
             cartItem.Status = request.Status;
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateQuantityByProductId(int productId, int quantity)
+        {
+            var cartItem = await _context.CartItems.Where(x => x.ProductId == productId).ToListAsync();
+
+            foreach (var item in cartItem)
+            {
+                item.Quantity = quantity;
+                _context.Update(item);
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

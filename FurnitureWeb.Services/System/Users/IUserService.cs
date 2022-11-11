@@ -16,5 +16,9 @@ namespace FurnitureWeb.Services.System.Users
         Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request);
 
         Task<UserViewModel> RetrieveById(string userId);
+
+        Task<(bool, string)> Update(UserUpdateRequest request);
+
+        Task<int> Delete(string userId);
     }
 }

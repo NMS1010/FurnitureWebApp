@@ -1,5 +1,6 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Products;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
@@ -18,11 +19,13 @@ namespace FurnitureWeb.Services.Catalog.Products
     {
         private readonly AppDbContext _context;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IProductImageServices _productImageService;
 
-        public ProductServices(AppDbContext context, IFileStorageService fileStorageService)
+        public ProductServices(AppDbContext context, IFileStorageService fileStorageService, IProductImageServices productImageService)
         {
             _context = context;
             _fileStorageService = fileStorageService;
+            _productImageService = productImageService;
         }
 
         public async Task<int> Create(ProductCreateRequest request)
@@ -41,7 +44,6 @@ namespace FurnitureWeb.Services.Catalog.Products
             };
 
             _context.Products.Add(product);
-            await _context.SaveChangesAsync();
 
             if (request.Image != null)
             {
@@ -65,11 +67,12 @@ namespace FurnitureWeb.Services.Catalog.Products
 
             if (product == null)
                 return -1;
-            _context.Products.Remove(product);
-            foreach (var item in product.ProductImages)
-            {
-                await _fileStorageService.DeleteFile(item.Path);
-            }
+            product.Status = PRODUCT_STATUS.SUSPENDED;
+            _context.Products.Update(product);
+            //foreach (var item in product.ProductImages)
+            //{
+            //    await _fileStorageService.DeleteFile(item.Path);
+            //}
             return await _context.SaveChangesAsync();
         }
 

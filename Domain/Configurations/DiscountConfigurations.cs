@@ -18,6 +18,9 @@ namespace Domain.Configurations
             builder
                 .Property(x => x.DiscountId)
                 .UseIdentityColumn();
+            builder
+                .HasIndex(x => x.DiscountCode)
+                .IsUnique();
 
             builder
                 .Property(x => x.DiscountCode)

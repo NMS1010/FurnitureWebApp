@@ -38,6 +38,13 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(discount);
         }
 
+        [HttpGet("aplly/{discountCode}")]
+        public async Task<IActionResult> ApplyDiscount(string discountCode)
+        {
+            var state = await _discountServices.ApllyDiscount(discountCode);
+            return Ok(state);
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> Create([FromForm] DiscountCreateRequest request)
         {

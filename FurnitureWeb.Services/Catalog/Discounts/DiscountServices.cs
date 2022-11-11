@@ -22,6 +22,29 @@ namespace FurnitureWeb.Services.Catalog.Discounts
             _context = context;
         }
 
+        public async Task<string> ApllyDiscount(string discountCode)
+        {
+            var discount = await _context.Discounts
+                .Where(p => p.DiscountCode == discountCode)
+                .FirstOrDefaultAsync();
+
+            if (discount == null)
+                return "error";
+            if (discount.Quantity <= 0)
+                return "out";
+            if (discount.StartDate > DateTime.Now || discount.EndDate < DateTime.Now)
+                return "expired";
+            discount.Quantity -= 1;
+            if (discount.Quantity <= 0)
+            {
+                discount.Status = DISCOUNT_STATUS.IN_ACTIVE;
+                discount.Quantity = 0;
+            }
+            _context.Discounts.Update(discount);
+            await _context.SaveChangesAsync();
+            return Newtonsoft.Json.JsonConvert.SerializeObject(discount);
+        }
+
         public async Task<int> Create(DiscountCreateRequest request)
         {
             var discount = new Discount()

@@ -8,11 +8,11 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReviewsController : ControllerBase
+    public class ReviewItemsController : ControllerBase
     {
         private readonly IReviewItemServices _reviewServices;
 
-        public ReviewsController(IReviewItemServices reviewServices)
+        public ReviewItemsController(IReviewItemServices reviewServices)
         {
             _reviewServices = reviewServices;
         }

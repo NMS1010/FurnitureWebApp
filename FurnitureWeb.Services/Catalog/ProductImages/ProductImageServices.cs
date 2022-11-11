@@ -73,20 +73,17 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
 
         public async Task<int> Update(ProductImageUpdateRequest request)
         {
-            foreach (KeyValuePair<int, IFormFile> keyValuePair in request.ProductImages)
-            {
-                var productImg = await _context.ProductImages.FindAsync(keyValuePair.Key);
-                if (productImg == null)
-                    return -1;
-                if (keyValuePair.Value == null)
-                    return -1;
+            var productImg = await _context.ProductImages.FindAsync(request.ProductImageId);
+            if (productImg == null)
+                return -1;
+            if (request.Image == null)
+                return -1;
 
-                await _fileStorageService.DeleteFile(productImg.Path);
-                productImg.IsDefault = false;
-                productImg.Path = await _fileStorageService.SaveFile(keyValuePair.Value);
+            await _fileStorageService.DeleteFile(productImg.Path);
+            productImg.IsDefault = false;
+            productImg.Path = await _fileStorageService.SaveFile(request.Image);
 
-                _context.ProductImages.Update(productImg);
-            }
+            _context.ProductImages.Update(productImg);
 
             return await _context.SaveChangesAsync();
         }

@@ -22,7 +22,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         [Route("login")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromForm] LoginRequest request)
+        public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -49,10 +49,28 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(status);
         }
 
-        [HttpGet("user/all")]
+        [HttpGet("all")]
         public async Task<IActionResult> RetrieveAll([FromQuery] UserGetPagingRequest request)
         {
             return Ok(await _userService.RetrieveAll(request));
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> RetrieveById(string userId)
+        {
+            return Ok(await _userService.RetrieveById(userId));
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> RetrieveAll([FromForm] UserUpdateRequest request)
+        {
+            return Ok(await _userService.Update(request));
+        }
+
+        [HttpDelete("delete/{userId}")]
+        public async Task<IActionResult> RetrieveAll(string userId)
+        {
+            return Ok(await _userService.Delete(userId));
         }
     }
 }
