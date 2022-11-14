@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.31" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.31" />
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FurnitureWeb.Utilities\FurnitureWeb.Utilities.csproj" />
+    <ProjectReference Include="..\FurnitureWeb.ViewModels\FurnitureWeb.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

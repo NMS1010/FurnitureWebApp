@@ -18,6 +18,7 @@ using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -63,6 +64,8 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IUserService, UserService>();
 
+            //services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpClient();
             services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
             services.AddSwaggerGen(s =>
@@ -120,6 +123,7 @@ namespace FurnitureWeb.BackendWebAPI
                         IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                     };
                 });
+            services.AddSession();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -135,6 +139,7 @@ namespace FurnitureWeb.BackendWebAPI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();

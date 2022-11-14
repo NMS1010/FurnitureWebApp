@@ -42,7 +42,7 @@ namespace FurnitureWeb.Services.Common.FileStorage
             {
                 await stream.CopyToAsync(fs);
             }
-            return fileName;
+            return GetFileUrl(fileName);
         }
 
         public async Task<string> SaveFile(IFormFile image)

@@ -9,4 +9,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.28" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FurnitureWeb.APICaller\FurnitureWeb.APICaller.csproj" />
+    <ProjectReference Include="..\FurnitureWeb.ViewModels\FurnitureWeb.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

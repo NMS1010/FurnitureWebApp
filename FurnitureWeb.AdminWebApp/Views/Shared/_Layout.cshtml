@@ -2,47 +2,220 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FurnitureWeb.AdminWebApp</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Ekka - Admin Dashboard">
+
+    <title>Ekka - Admin Dashboard eCommerce</title>
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&amp;family=Poppins:wght@300;400;500;600;700;800;900&amp;family=Roboto:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <link href="~/css/materialdesignicons.min.css" rel="stylesheet" />
+
+    <!-- PLUGINS CSS STYLE -->
+    <link href="~/plugins/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="~/plugins/simplebar/simplebar.css" rel="stylesheet" />
+    <link href='~/plugins/slick/slick.min.css' rel='stylesheet'>
+    <link href='~/plugins/swiper/swiper-bundle.min.css' rel='stylesheet'>
+
+    <link href='~/plugins/data-tables/datatables.bootstrap5.min.css' rel='stylesheet'>
+    <link href='~/plugins/data-tables/responsive.datatables.min.css' rel='stylesheet'>
+
+    <!-- Ekka CSS -->
+    <link id="ekka-css" href="~/css/ekka.css" rel="stylesheet" />
+
+    <!-- FAVICON -->
+    <link href="~/img/favicon.png" rel="shortcut icon" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FurnitureWeb.AdminWebApp</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+<body class="ec-header-fixed ec-sidebar-fixed ec-sidebar-light ec-header-light" id="body">
+    <div class="wrapper">
+        <!--Side Bar-->
+        <div class="ec-left-sidebar ec-bg-sidebar">
+            <div id="sidebar" class="sidebar ec-sidebar-footer">
+
+                <div class="ec-brand">
+                    <a href="" title="Ekka">
+                        <img class="ec-brand-icon" src="~/img/logo/ec-site-logo.png" alt="" />
+                        <span class="ec-brand-name text-truncate">Ekka</span>
+                    </a>
+                </div>
+
+                <!-- begin sidebar scrollbar -->
+                <div class="ec-navigation" data-simplebar>
+                    <!-- sidebar menu -->
+                    <ul class="nav sidebar-inner" id="sidebar-menu">
+                        <!-- Dashboard -->
+                        <li class="active">
+                            <a class="sidenav-item-link" href="~/admin/home">
+                                <i class="mdi mdi-view-dashboard-outline"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                            <hr>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                        <!-- Users -->
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="~/admin/users">
+                                <i class="mdi mdi-account-group"></i>
+                                <span class="nav-text">Quản lý <br> tài khoản</span>
+                            </a>
+                        </li>
+                        <!-- Roles -->
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="~/admin/roles">
+                                <i class="mdi mdi-account-group"></i>
+                                <span class="nav-text">QUản lý <br> vai trò <br> hệ thống</span>
+                            </a>
+                            <hr>
+                        </li>
+                        <!-- Category -->
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="~/admin/categories">
+                                <i class="mdi mdi-dns-outline"></i>
+                                <span class="nav-text">Quản lý <br> danh mục <br> sản phẩm</span>
+                            </a>
+                        </li>
+
+                        <!-- Products -->
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="~/admin/products">
+                                <i class="mdi mdi-palette-advanced"></i>
+                                <span class="nav-text">Quản lý <br> sản phẩm</span>
+                            </a>
+                        </li>
+
+                        <!-- Orders -->
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="~/admin/orders">
+                                <i class="mdi mdi-cart"></i>
+                                <span class="nav-text">Quản lý <br> đơn hàng</span>
+                            </a>
+                        </li>
+
+                        <!-- Reviews -->
+                        <li>
+                            <a class="sidenav-item-link" href="~/admin/reviews">
+                                <i class="mdi mdi-star-half"></i>
+                                <span class="nav-text">Quản lý <br> đánh giá <br> sản phẩm</span>
+                            </a>
+                        </li>
+
+                        <!-- Brands -->
+                        <li>
+                            <a class="sidenav-item-link" href="~/admin/brands">
+                                <i class="mdi mdi-tag-faces"></i>
+                                <span class="nav-text">Quản lý <br> thương hiệu</span>
+                            </a>
+                        </li>
+
+                        <!-- Discounts -->
+                        <li>
+                            <a class="sidenav-item-link" href="~/admin/discounts">
+                                <i class="mdi mdi-sale"></i>
+                                <span class="nav-text">Quản lý <br> mã giảm giá</span>
+                            </a>
+                            <hr>
                         </li>
                     </ul>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - FurnitureWeb.AdminWebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+        <div class="ec-page-wrapper">
+            <!--Header-->
+            <header class="ec-main-header" id="header">
+                <nav class="navbar navbar-static-top navbar-expand-lg d-flex justify-content-between">
+                    <!-- Sidebar toggle button -->
+                    <button id="sidebar-toggler" class="sidebar-toggle"></button>
+                    <!-- navbar right -->
+                    <div class="navbar-right">
+                        <ul class="nav navbar-nav">
+                            <!-- User Account -->
+                            <li class="dropdown user-menu">
+                                <button class="dropdown-toggle nav-link ec-drop" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <img src="" class="user-image" alt="User Image" />
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right ec-dropdown-menu">
+                                    <!-- User image -->
+                                    <li class="dropdown-header">
+                                        <img src="" class="img-circle" alt="User Image" />
+                                        <div class="">
+                                            ${admin.firstName} ${admin.lastName}<small class="pt-1">${admin.email}</small>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/user/detail?userId=${admin.id}">
+                                            <i class="mdi mdi-account"></i> Tài khoản của tôi
+                                        </a>
+                                    </li>
+                                    <li class="right-sidebar-in">
+                                        <a href="javascript:0"> <i class="mdi mdi-settings-outline"></i> Cài đặt </a>
+                                    </li>
+                                    <li class="dropdown-footer">
+                                        <a href="/admin/logout"> <i class="mdi mdi-logout"></i> Đăng xuất </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="right-sidebar-in right-sidebar-2-menu">
+                                <i class="mdi mdi-settings-outline mdi-spin"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--Content-->
+            <div class="ec-content-wrapper">
+                <div class="content">
+                    @RenderBody()
+                </div>
+            </div>
+            <!--Footer-->
+            <footer class="footer mt-auto">
+                <div class="copyright bg-white">
+                    <p>
+                        Copyright &copy; <span id="ec-year"></span><a class="text-primary"
+                                                                      href="https://themeforest.net/user/ashishmaraviya" target="_blank"> Ekka Admin Dashboard</a>. All Rights Reserved.
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="~/plugins/jquery/jquery-3.5.1.min.js"></script>
+    <script src="~/plugins/jquery/jquery.notify.min.js"></script>
+    <script src="~/plugins/jquery/jquery.bundle.notify.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/tags-input/bootstrap-tagsinput.js"></script>
+    <script src="~/plugins/simplebar/simplebar.min.js"></script>
+    <script src="~/plugins/jquery-zoom/jquery.zoom.min.js"></script>
+    <script src="~/plugins/slick/slick.min.js"></script>
+    <script src="~/plugins/swiper/swiper-bundle.min.js"></script>
+    <%-- Data-tables --%>
+
+    <script src='~/plugins/data-tables/jquery.datatables.min.js'></script>
+    <script src='~/plugins/data-tables/datatables.bootstrap5.min.js'></script>
+    <script src='~/plugins/data-tables/datatables.responsive.min.js'></script>
+    <!-- Chart -->
+    <script src="~/plugins/charts/Chart.min.js"></script>
+    <script src="~/js/chartjs.js"></script>
+
+    <!-- Google map chart -->
+    <script src="~/plugins/charts/google-map-loader.js"></script>
+    <script src="~/plugins/charts/google-map.js"></script>
+
+    <!-- Date Range Picker -->
+    <script src="~/plugins/daterangepicker/moment.min.js"></script>
+    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/js/date-range.js"></script>
+
+    <!-- Option Switcher -->
+    <script src="~/plugins/options-sidebar/optionswitcher.js"></script>
+
+    <!-- Ekka Custom -->
+    <script src="~/js/ekka.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

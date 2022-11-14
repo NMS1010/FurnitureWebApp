@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -81,7 +82,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
 
         public async Task<BrandViewModel> RetrieveById(int brandId)
         {
-            var brand = await _context.Brands.FindAsync(brandId);
+            var brand = await _context.Brands.Include(x => x.Products).Where(x => x.BrandId == brandId).FirstOrDefaultAsync();
             if (brand == null)
                 return null;
             return new BrandViewModel()

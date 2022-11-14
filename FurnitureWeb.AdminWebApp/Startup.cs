@@ -1,5 +1,7 @@
+using FurnitureWeb.APICaller.Brand;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp
@@ -23,6 +26,16 @@ namespace FurnitureWeb.AdminWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IBrandAPIClient, BrandAPIClient>();
+            services.AddHttpClient();
+            services.AddSingleton<IConfiguration>(sp =>
+            {
+                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+                configurationBuilder.AddJsonFile("appsettings.json");
+                return configurationBuilder.Build();
+            });
+            services.AddSession();
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
 
@@ -41,7 +54,7 @@ namespace FurnitureWeb.AdminWebApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();

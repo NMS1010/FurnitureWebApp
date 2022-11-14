@@ -1,0 +1,149 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.Brands;
+@using FurnitureWeb.ViewModels.Common;
+@model PagedResult<BrandViewModel>
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+}
+
+<div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+    <div>
+        <h1>Brand</h1>
+        <p class="breadcrumbs"><span><a href="<%=request.getContextPath()%>/admin/home">Home</a></span>
+            <span><i class="mdi mdi-chevron-right"></i></span> Brand</p>
+    </div>
+    <div>
+        <a type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-add-brand" href="#modal-add-brand">Thêm thương hiệu</a>
+    </div>
+</div>
+
+<div class="product-brand card card-default p-24px">
+    <div class="search-form d-lg-inline-block w-25">
+        <div class="input-group">
+            <input oninput="searchBrand(this)" type="text" name="query" id="search-input" class="form-control"
+                    placeholder="search.." autofocus autocomplete="off" />
+        </div>
+        <div id="search-results-container">
+            <ul id="search-results"></ul>
+        </div>
+    </div>
+    <div id="brand-content" class="row mb-m-24px">
+        @foreach(var item in Model.Items)
+        {
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="card card-default">
+                    <div class="card-body text-center p-24px">
+                        <div class="image mb-3">
+                            <img src=@Configuration["BaseAddress"]@item.Image class="img-fluid rounded-circle"
+                                    alt="Avatar Image">
+                        </div>
+
+                        <h3 class="card-title text-dark">@item.BrandName</h3>
+                        <h5 class="card-title text-dark">@item.Origin</h5>
+                        <p class="item-count">@item.TotalProduct<span> items</span></p>
+                        <span class="brand-delete mdi mdi-delete-outline" data-bs-toggle="modal"
+                                data-bs-target="#modal-delete-brand" data-backdrop="static" data-keyboard="false" data-id="@item.BrandId" href="#modal-delete-brand"></span>
+                        <a
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-add-brand"
+                            href="#modal-add-brand"
+                        >
+                        <span class="mdi mdi-account-edit "></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Add Brand Modal  -->
+<div class="modal fade" id="modal-add-brand" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <form class="modal-header border-bottom-0 text-center">
+                <h3>Brand</h3>
+            </form>
+
+            <div class="modal-body p-0">
+                <form id="form-add" class="p-4" asp-action="Create"
+                        method="post" enctype="multipart/form-data"
+                >
+                    <input type="hidden" id="brandId" name="brandId" />
+                    <div class="row">
+                        <label for="brandName" class="col-12 col-form-label">Tên thương hiệu</label>
+                        <div class="col-12">
+                            <input id="brandName" name="brandName" class="form-control here slug-title" type="text" required/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-12 col-form-label" for="origin">Nguồn gốc</label>
+                        <div class="col-12">
+                            <input type="text" id="origin" name="origin" cols="40" rows="4" class="form-control" required/>
+                        </div>
+                    </div>
+                    <div class="row ec-vendor-uploads">
+                        <label class="col-12 col-form-label" for="brand-logo">Logo</label>
+                        <div class="ec-vendor-img-upload">
+                            <div class="ec-vendor-main-img">
+                                <div class="thumb-upload-set col-md-12">
+                                    <div class="thumb-upload">
+                                        <div class="thumb-edit">
+                                            <input type='file' id="brand-logo" name="image"
+                                                    class="ec-image-upload"
+                                                    accept=".png, .jpg, .jpeg" />
+                                            <label for="brand-logo"><img
+                                                    src="~/img/icons/edit.svg"
+                                                    class="svg_img header_svg" alt="edit"/>
+                                            </label>
+                                        </div>
+                                        <div class="thumb-preview ec-preview">
+                                            <div class="image-thumb-preview">
+                                                <img class="image-thumb-preview ec-image-preview clear-img"
+                                                    src="~/img/products/vender-upload-thumb-preview.jpg"
+                                                    alt="edit" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col col-6">
+                            <input type="button" class="btn btn-secondary btn-pill clear-form"
+                                    data-bs-dismiss="modal" value="Huỷ">
+                        </div>
+                        <div class="col col-6">
+                            <input type="submit" class="btn btn-primary btn-pill" value="Xác nhận"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-delete-brand" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0">Bạn có muốn xoá danh mục sản phẩm này</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill"
+                        data-bs-dismiss="modal">Huỷ</button>
+                <a id="link-delete" class="btn btn-danger btn-pill" >Xoá</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
