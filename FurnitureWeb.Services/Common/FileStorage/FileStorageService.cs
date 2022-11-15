@@ -23,7 +23,7 @@ namespace FurnitureWeb.Services.Common.FileStorage
 
         public async Task DeleteFile(string fileName)
         {
-            string filePath = Path.Combine(_userContent, fileName);
+            string filePath = Path.Combine(_userContent, Path.GetFileName(fileName));
             if (File.Exists(filePath))
             {
                 await Task.Run(() => File.Delete(filePath));

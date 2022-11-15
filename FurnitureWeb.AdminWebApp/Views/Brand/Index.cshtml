@@ -10,7 +10,7 @@
 <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
     <div>
         <h1>Brand</h1>
-        <p class="breadcrumbs"><span><a href="<%=request.getContextPath()%>/admin/home">Home</a></span>
+        <p class="breadcrumbs"><span><a href="~/admin/home">Home</a></span>
             <span><i class="mdi mdi-chevron-right"></i></span> Brand</p>
     </div>
     <div>
@@ -48,6 +48,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#modal-add-brand"
                             href="#modal-add-brand"
+                            data-id="@item.BrandId"
                         >
                         <span class="mdi mdi-account-edit "></span>
                         </a>
@@ -102,7 +103,8 @@
                                             <div class="image-thumb-preview">
                                                 <img class="image-thumb-preview ec-image-preview clear-img"
                                                     src="~/img/products/vender-upload-thumb-preview.jpg"
-                                                    alt="edit" />
+                                                    alt="edit" 
+                                                    id="brand-image"/>
                                             </div>
                                         </div>
                                     </div>
@@ -147,3 +149,36 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+   <script>
+       
+        $(document).ready(function () {
+            $('#modal-delete-brand').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                let link = "brand/delete/" + id;
+                document.getElementById('link-delete').href = link
+            });
+            $('#modal-add-brand').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                $.ajax({
+                    url: "/admin/brand/get/" + id,
+                    method: "GET",
+                    async: false,
+                    success: function (data){
+                        console.log(data)
+                        document.getElementById("brandId").value = data.brandId
+                        document.getElementById("brandName").value = data.brandName
+                        document.getElementById("origin").value = data.origin
+                        document.getElementById("brand-image").src = '@Configuration["BaseAddress"]' + data.image
+                        document.getElementById("form-add").action = "brand/edit"
+                        
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+            });
+        });
+   </script>
+}

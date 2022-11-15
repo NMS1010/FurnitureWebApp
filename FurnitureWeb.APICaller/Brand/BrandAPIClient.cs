@@ -1,12 +1,16 @@
 ﻿using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Brands;
+using FurnitureWeb.ViewModels.Catalog.Products;
 using FurnitureWeb.ViewModels.Common;
+using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -34,7 +38,7 @@ namespace FurnitureWeb.APICaller.Brand
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
             var requestContent = new MultipartFormDataContent();
 
@@ -75,22 +79,31 @@ namespace FurnitureWeb.APICaller.Brand
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
             var requestContent = new MultipartFormDataContent();
 
             requestContent.Add(new StringContent(request.BrandId.ToString()), "brandId");
             requestContent.Add(new StringContent(request.BrandName), "brandName");
             requestContent.Add(new StringContent(request.Origin), "origin");
+
+            byte[] imageBytes;
             if (request.Image != null)
             {
-                byte[] dataImage;
                 using (var stream = new BinaryReader(request.Image.OpenReadStream()))
                 {
-                    dataImage = stream.ReadBytes((int)request.Image.Length);
+                    imageBytes = stream.ReadBytes((int)request.Image.Length);
                 }
-                requestContent.Add(new ByteArrayContent(dataImage), "image", request.Image.FileName);
             }
+            else
+            {
+                BrandViewModel brand = await GetById(request.BrandId);
+                string path = _configuration["BaseAddress"] + brand.Image;
+                WebClient webClient = new WebClient();
+                imageBytes = webClient.DownloadData(path);
+            }
+            requestContent.Add(new ByteArrayContent(imageBytes), "image", request.Image.FileName);
+
             var response = await httpClient.PutAsync($"/api/brands/update", requestContent);
 
             return response.IsSuccessStatusCode;
