@@ -1,5 +1,6 @@
 ﻿using FurnitureWeb.Services.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Brands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
@@ -9,6 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class BrandsController : ControllerBase
     {
         private readonly IBrandServices _brandServices;

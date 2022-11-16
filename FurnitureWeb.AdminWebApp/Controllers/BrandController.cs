@@ -1,11 +1,14 @@
 ﻿using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.ViewModels.Catalog.Brands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp.Controllers
 {
-    [Route("~/admin/brand/")]
+    [Route("~/admin/brands/")]
+    [Authorize(Roles = "Admin")]
     public class BrandController : Controller
     {
         private readonly IBrandAPIClient _brandAPIClient;

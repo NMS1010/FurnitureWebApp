@@ -1,4 +1,8 @@
 ﻿using FurnitureWeb.AdminWebApp.Models;
+using FurnitureWeb.APICaller.User;
+using FurnitureWeb.Utilities.Constants.Systems;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,24 +13,20 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [Route("~/admin/home")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
         {
+            var session = HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            if (session == null)
+                return Redirect("~/admin/login");
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

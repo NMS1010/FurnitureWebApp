@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\FurnitureWeb.Utilities\FurnitureWeb.Utilities.csproj" />
     <ProjectReference Include="..\FurnitureWeb.ViewModels\FurnitureWeb.ViewModels.csproj" />
   </ItemGroup>

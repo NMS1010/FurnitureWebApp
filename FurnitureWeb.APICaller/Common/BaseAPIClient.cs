@@ -9,6 +9,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using FurnitureWeb.Utilities.Constants.Systems;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FurnitureWeb.APICaller.Common
 {
@@ -40,25 +42,8 @@ namespace FurnitureWeb.APICaller.Common
                 return (TResponse)JsonConvert.DeserializeObject(body,
                         typeof(TResponse));
             }
-            return default(TResponse);
+            return default;
         }
-
-        //public async Task<List<TResponse>> GetListAsync<TResponse>(string url)
-        //{
-        //    var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
-
-        //    var httpClient = _httpClientFactory.CreateClient();
-        //    httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
-        //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
-        //    var response = await httpClient.GetAsync(url);
-        //    var body = await response.Content.ReadAsStringAsync();
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        return (List<TResponse>)JsonConvert.DeserializeObject(body,
-        //                typeof(List<TResponse>));
-        //    }
-        //    return default(List<TResponse>);
-        //}
 
         public async Task<bool> Delete(string url)
         {

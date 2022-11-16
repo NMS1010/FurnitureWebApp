@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
@@ -23,18 +24,21 @@ namespace FurnitureWeb.Services.System.Users
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IFileStorageService _fileStorage;
 
         public UserService(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
-            IFileStorageService fileStorage)
+            IFileStorageService fileStorage,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _fileStorage = fileStorage;
+            _roleManager = roleManager;
         }
 
         public async Task<string> Authenticate(LoginRequest request)
@@ -50,9 +54,10 @@ namespace FurnitureWeb.Services.System.Users
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Role, string.Join(';', roles)),
+                new Claim(ClaimTypes.Role, string.Join(',', roles)),
                 new Claim(ClaimTypes.Name, request.UserName)
             };
 
@@ -85,8 +90,12 @@ namespace FurnitureWeb.Services.System.Users
                 Avatar = await _fileStorage.SaveFile(request.Avatar)
             };
             var res = await _userManager.CreateAsync(user, request.Password);
+
             if (res.Succeeded)
+            {
+                await _userManager.AddToRolesAsync(user, request.Roles);
                 return (true, "successfull");
+            }
             string error = "";
             res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
             return (false, error);
@@ -115,6 +124,12 @@ namespace FurnitureWeb.Services.System.Users
             if (res.Succeeded)
             {
                 await _fileStorage.DeleteFile(avatar);
+
+                var roles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, roles);
+
+                await _userManager.AddToRolesAsync(user, request.Roles);
+
                 return (true, "successfull");
             }
             string error = "";
@@ -144,7 +159,7 @@ namespace FurnitureWeb.Services.System.Users
             var dt = users
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x => new UserViewModel()
+                .Select(async x => new UserViewModel()
                 {
                     UserId = x.Id,
                     FirstName = x.FirstName,
@@ -165,23 +180,39 @@ namespace FurnitureWeb.Services.System.Users
                     TotalOrders = x.Orders.Count,
                     TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
                     TotalCost = x.Orders.Sum(o => o.TotalPrice),
-                    StatusCode = USER_STATUS.UserStatus[x.Status]
-                })
-                .ToList();
+                    StatusCode = USER_STATUS.UserStatus[x.Status],
+                    RoleIds = (await _userManager.GetRolesAsync(x))
+                        .Select(s =>
+                            SystemConstants.UserRoles.Roles.FirstOrDefault(f => f.Value == s).Key)
+                        .ToList(),
+                }).ToList();
+            List<UserViewModel> us = new List<UserViewModel>();
+
+            foreach (var x in dt)
+            {
+                us.Add(await x);
+            }
 
             return new PagedResult<UserViewModel>()
             {
                 TotalItem = totalRow,
-                Items = dt
+                Items = us
             };
         }
 
         public async Task<UserViewModel> RetrieveById(string userId)
         {
-            var x = await _userManager.FindByIdAsync(userId);
+            var x = await _userManager.Users
+                .Where(x => x.Id == userId)
+                .Include(u => u.WishItems)
+                .Include(u => u.CartItems)
+                .Include(u => u.WishItems)
+                .Include(u => u.Orders)
+                .ThenInclude(u => u.OrderItems)
+                .FirstOrDefaultAsync();
             if (x == null)
                 return null;
-            return new UserViewModel()
+            var user = new UserViewModel()
             {
                 UserId = x.Id,
                 FirstName = x.FirstName,
@@ -202,8 +233,13 @@ namespace FurnitureWeb.Services.System.Users
                 TotalOrders = x.Orders.Count,
                 TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
                 TotalCost = x.Orders.Sum(o => o.TotalPrice),
-                StatusCode = USER_STATUS.UserStatus[x.Status]
+                StatusCode = USER_STATUS.UserStatus[x.Status],
             };
+            var roles = await _userManager.GetRolesAsync(x);
+            user.RoleIds = roles.Select(s =>
+                            SystemConstants.UserRoles.Roles.FirstOrDefault(f => f.Value == s).Key)
+                        .ToList();
+            return user;
         }
 
         public async Task<int> Delete(string userId)

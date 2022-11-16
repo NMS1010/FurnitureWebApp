@@ -3,13 +3,14 @@ using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -62,13 +63,13 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> RetrieveAll([FromForm] UserUpdateRequest request)
+        public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
         {
             return Ok(await _userService.Update(request));
         }
 
         [HttpDelete("delete/{userId}")]
-        public async Task<IActionResult> RetrieveAll(string userId)
+        public async Task<IActionResult> Delete(string userId)
         {
             return Ok(await _userService.Delete(userId));
         }

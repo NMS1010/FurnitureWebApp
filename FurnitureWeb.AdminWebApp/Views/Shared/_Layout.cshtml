@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using FurnitureWeb.APICaller.User;
+@using FurnitureWeb.ViewModels.System.Users;
+@using Microsoft.Extensions.Configuration
+
+
+@inject IConfiguration Configuration
+@inject IUserAPIClient _userAPIClient
+@{
+    UserViewModel user = new UserViewModel();
+    if (User.Identity.IsAuthenticated)
+    {
+        user = await _userAPIClient.RetrieveByClaimsPrincipal(User);
+    }
+}
+@if(user != null){
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -136,18 +151,18 @@
                             <li class="dropdown user-menu">
                                 <button class="dropdown-toggle nav-link ec-drop" data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <img src="" class="user-image" alt="User Image" />
+                                    <img src="@Configuration["BaseAddress"]@user.Avatar" class="user-image" alt="User Image" />
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right ec-dropdown-menu">
                                     <!-- User image -->
                                     <li class="dropdown-header">
-                                        <img src="" class="img-circle" alt="User Image" />
+                                        <img src="@Configuration["BaseAddress"]@user.Avatar" class="img-circle" alt="User Image" />
                                         <div class="">
-                                            ${admin.firstName} ${admin.lastName}<small class="pt-1">${admin.email}</small>
+                                            @user.FirstName @user.LastName<small class="pt-1">@user.Email</small>
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="/admin/user/detail?userId=${admin.id}">
+                                        <a href="/admin/user/detail?userId=">
                                             <i class="mdi mdi-account"></i> Tài khoản của tôi
                                         </a>
                                     </li>
@@ -155,7 +170,7 @@
                                         <a href="javascript:0"> <i class="mdi mdi-settings-outline"></i> Cài đặt </a>
                                     </li>
                                     <li class="dropdown-footer">
-                                        <a href="/admin/logout"> <i class="mdi mdi-logout"></i> Đăng xuất </a>
+                                        <a asp-action="SignOut" asp-controller="Login"> <i class="mdi mdi-logout"></i> Đăng xuất </a>
                                     </li>
                                 </ul>
                             </li>
@@ -219,3 +234,4 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+}

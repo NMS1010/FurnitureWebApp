@@ -14,6 +14,7 @@ using FurnitureWeb.Services.Catalog.ReviewItems;
 using FurnitureWeb.Services.Catalog.WishItems;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Services.System.Users;
+using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI
 {
@@ -41,8 +43,23 @@ namespace FurnitureWeb.BackendWebAPI
 
         public IConfiguration Configuration { get; }
 
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //adding customs roles : Question 1
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            foreach (var roleName in SystemConstants.UserRoles.Roles.Values)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public async void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
@@ -64,7 +81,7 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IUserService, UserService>();
 
-            //services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
             services.AddHttpClient();
             services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
@@ -106,6 +123,7 @@ namespace FurnitureWeb.BackendWebAPI
                 {
                     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(opts =>
                 {
@@ -122,11 +140,19 @@ namespace FurnitureWeb.BackendWebAPI
                         ClockSkew = TimeSpan.Zero,
                         IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                     };
-                });
+                }).AddCookie(options =>
+                {
+                    options.LoginPath = "/admin/login";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                }); ;
+            services.AddAuthorization();
             services.AddSession();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            await CreateRoles(serviceProvider);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
