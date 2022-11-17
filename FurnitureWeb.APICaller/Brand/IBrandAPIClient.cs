@@ -14,10 +14,10 @@ namespace FurnitureWeb.APICaller.Brand
 
         Task<CustomAPIResponse<NoContentAPIResponse>> UpdateBrand(BrandUpdateRequest request);
 
-        Task<CustomAPIResponse<PagedResult<BrandViewModel>>> GetAllAsync(BrandGetPagingRequest request);
+        Task<CustomAPIResponse<PagedResult<BrandViewModel>>> GetAllBrandAsync(BrandGetPagingRequest request);
 
-        Task<CustomAPIResponse<BrandViewModel>> GetById(int brandId);
+        Task<CustomAPIResponse<BrandViewModel>> GetBrandById(int brandId);
 
-        Task<CustomAPIResponse<NoContentAPIResponse>> Delete(int brandId);
+        Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(int brandId);
     }
 }

@@ -19,11 +19,11 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             _brandAPIClient = brandAPIClient;
         }
 
-        public async Task<IActionResult> Index(CustomAPIResponse<NoContentAPIResponse> response = null)
+        public async Task<IActionResult> Index(bool error = false)
         {
-            if (response != null && !response.IsSuccesss)
-                ViewData["Error"] = response.Errors;
-            var res = await _brandAPIClient.GetAllAsync(new BrandGetPagingRequest());
+            if (!error)
+                ViewData["Error"] = error;
+            var res = await _brandAPIClient.GetAllBrandAsync(new BrandGetPagingRequest());
             return View(res.Data);
         }
 
@@ -31,20 +31,20 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(BrandCreateRequest request)
         {
             var res = await _brandAPIClient.CreateBrand(request);
-            return RedirectToAction(nameof(Index), res);
+            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
         }
 
         [HttpGet("delete/{brandId}")]
         public async Task<IActionResult> Delete(int brandId)
         {
-            var res = await _brandAPIClient.Delete(brandId);
-            return RedirectToAction(nameof(Index), res);
+            var res = await _brandAPIClient.DeleteBrand(brandId);
+            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
         }
 
         [Route("get/{brandId}")]
-        public async Task<IActionResult> Get(int brandId)
+        public async Task<IActionResult> GetById(int brandId)
         {
-            var res = await _brandAPIClient.GetById(brandId);
+            var res = await _brandAPIClient.GetBrandById(brandId);
             if (!res.IsSuccesss)
                 return NotFound(res.Errors);
             return Ok(res.Data);
@@ -54,7 +54,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(BrandUpdateRequest request)
         {
             var res = await _brandAPIClient.UpdateBrand(request);
-            return RedirectToAction(nameof(Index), res);
+            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
         }
     }
 }

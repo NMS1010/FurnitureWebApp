@@ -78,6 +78,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
         public async Task<PagedResult<CategoryViewModel>> RetrieveAll(CategoryGetPagingRequest request)
         {
             var query = await _context.Categories
+                .Include(x => x.Products)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -111,6 +112,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
         {
             var category = await _context.Categories
                 .Where(p => p.CategoryId == categoryId)
+                .Include(x => x.Products)
                 .FirstOrDefaultAsync();
             if (category == null)
                 return null;

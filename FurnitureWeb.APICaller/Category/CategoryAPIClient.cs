@@ -1,9 +1,9 @@
-﻿using FurnitureWeb.APICaller.Common;
+﻿using Domain.Entities;
+using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Brands;
-using FurnitureWeb.ViewModels.Catalog.Products;
+using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
-using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -16,15 +16,15 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FurnitureWeb.APICaller.Brand
+namespace FurnitureWeb.APICaller.Category
 {
-    public class BrandAPIClient : BaseAPIClient, IBrandAPIClient
+    public class CategoryAPIClient : BaseAPIClient, ICategoryAPIClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
 
-        public BrandAPIClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public CategoryAPIClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
             : base(httpClientFactory, httpContextAccessor, configuration)
         {
             _httpClientFactory = httpClientFactory;
@@ -32,18 +32,20 @@ namespace FurnitureWeb.APICaller.Brand
             _configuration = configuration;
         }
 
-        public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateBrand(BrandCreateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateCategory(CategoryCreateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
-
             var requestContent = new MultipartFormDataContent();
 
-            requestContent.Add(new StringContent(request.BrandName), "brandName");
-            requestContent.Add(new StringContent(request.Origin), "origin");
+            requestContent.Add(new StringContent(request.Name), "name");
+            requestContent.Add(new StringContent(request.Content), "content");
+            if (request.ParentCategoryId.HasValue)
+                requestContent.Add(new StringContent(request.ParentCategoryId.Value.ToString()), "parentCategoryId");
             if (request.Image != null)
             {
                 byte[] dataImage;
@@ -53,28 +55,28 @@ namespace FurnitureWeb.APICaller.Brand
                 }
                 requestContent.Add(new ByteArrayContent(dataImage), "image", request.Image.FileName);
             }
-            var response = await httpClient.PostAsync($"/api/brands/add", requestContent);
+            var response = await httpClient.PostAsync($"/api/categories/add", requestContent);
 
             var body = await response.Content.ReadAsStringAsync();
             return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
         }
 
-        public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(int brandId)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteCategory(int categoryId)
         {
-            return await Delete($"/api/brands/delete/{brandId}");
+            return await Delete($"/api/categories/delete/{categoryId}");
         }
 
-        public async Task<CustomAPIResponse<PagedResult<BrandViewModel>>> GetAllBrandAsync(BrandGetPagingRequest request)
+        public async Task<CustomAPIResponse<PagedResult<CategoryViewModel>>> GetAllCategoryAsync(CategoryGetPagingRequest request)
         {
-            return await GetAsync<CustomAPIResponse<PagedResult<BrandViewModel>>>($"/api/brands/all");
+            return await GetAsync<CustomAPIResponse<PagedResult<CategoryViewModel>>>($"/api/categories/all");
         }
 
-        public async Task<CustomAPIResponse<BrandViewModel>> GetBrandById(int brandId)
+        public async Task<CustomAPIResponse<CategoryViewModel>> GetCategoryById(int categoryId)
         {
-            return await GetAsync<CustomAPIResponse<BrandViewModel>>($"/api/brands/{brandId}");
+            return await GetAsync<CustomAPIResponse<CategoryViewModel>>($"/api/categories/{categoryId}");
         }
 
-        public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateBrand(BrandUpdateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateCategory(CategoryUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -84,9 +86,11 @@ namespace FurnitureWeb.APICaller.Brand
 
             var requestContent = new MultipartFormDataContent();
 
-            requestContent.Add(new StringContent(request.BrandId.ToString()), "brandId");
-            requestContent.Add(new StringContent(request.BrandName), "brandName");
-            requestContent.Add(new StringContent(request.Origin), "origin");
+            requestContent.Add(new StringContent(request.CategoryId.ToString()), "categoryId");
+            requestContent.Add(new StringContent(request.Name), "name");
+            requestContent.Add(new StringContent(request.Content), "content");
+            if (request.ParentCategoryId.HasValue)
+                requestContent.Add(new StringContent(request.ParentCategoryId.Value.ToString()), "parentCategoryId");
 
             byte[] imageBytes;
             string fileName = "";
@@ -100,7 +104,7 @@ namespace FurnitureWeb.APICaller.Brand
             }
             else
             {
-                CustomAPIResponse<BrandViewModel> res = await GetBrandById(request.BrandId);
+                CustomAPIResponse<CategoryViewModel> res = await GetCategoryById(request.CategoryId);
                 if (!res.IsSuccesss)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
                 string path = _configuration["BaseAddress"] + res.Data.Image;
@@ -110,7 +114,7 @@ namespace FurnitureWeb.APICaller.Brand
             }
             requestContent.Add(new ByteArrayContent(imageBytes), "image", fileName);
 
-            var response = await httpClient.PutAsync($"/api/brands/update", requestContent);
+            var response = await httpClient.PutAsync($"/api/categories/update", requestContent);
             var body = await response.Content.ReadAsStringAsync();
             return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
         }

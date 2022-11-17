@@ -1,6 +1,7 @@
 using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
+using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,6 +39,7 @@ namespace FurnitureWeb.AdminWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IBrandAPIClient, BrandAPIClient>();
+            services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
@@ -67,7 +69,8 @@ namespace FurnitureWeb.AdminWebApp
                         ClockSkew = TimeSpan.Zero,
                         IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                     };
-                }).AddCookie(options =>
+                })
+                .AddCookie(options =>
                 {
                     options.LoginPath = "/admin/login";
                     options.ExpireTimeSpan = TimeSpan.FromDays(1);
