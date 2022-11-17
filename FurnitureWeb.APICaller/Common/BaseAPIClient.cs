@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using FurnitureWeb.Utilities.Constants.Systems;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using FurnitureWeb.ViewModels.Common;
 
 namespace FurnitureWeb.APICaller.Common
 {
@@ -45,7 +46,7 @@ namespace FurnitureWeb.APICaller.Common
             return default;
         }
 
-        public async Task<bool> Delete(string url)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> Delete(string url)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
 
@@ -54,7 +55,10 @@ namespace FurnitureWeb.APICaller.Common
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
             var response = await httpClient.DeleteAsync(url);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body,
+                    typeof(CustomAPIResponse<NoContentAPIResponse>));
         }
     }
 }

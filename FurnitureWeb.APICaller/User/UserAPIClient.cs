@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
@@ -31,17 +32,17 @@ namespace FurnitureWeb.APICaller.User
             _configuration = configuration;
         }
 
-        public async Task<PagedResult<UserViewModel>> GetAllAsync(UserGetPagingRequest request)
+        public async Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllAsync(UserGetPagingRequest request)
         {
-            return await GetAsync<PagedResult<UserViewModel>>("/api/users/all");
+            return await GetAsync<CustomAPIResponse<PagedResult<UserViewModel>>>("/api/users/all");
         }
 
-        public async Task<UserViewModel> GetById(string userId)
+        public async Task<CustomAPIResponse<UserViewModel>> GetById(string userId)
         {
-            return await GetAsync<UserViewModel>($"/api/users/{userId}");
+            return await GetAsync<CustomAPIResponse<UserViewModel>>($"/api/users/{userId}");
         }
 
-        public async Task<string> Login(LoginRequest request)
+        public async Task<CustomAPIResponse<string>> Login(LoginRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -56,11 +57,11 @@ namespace FurnitureWeb.APICaller.User
             };
 
             var response = await httpClient.PostAsync($"/api/users/login", requestContent);
-
-            return response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : null;
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<string>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<string>));
         }
 
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> Register(RegisterRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -95,20 +96,18 @@ namespace FurnitureWeb.APICaller.User
                 requestContent.Add(new ByteArrayContent(dataImage), "Avatar", request.Avatar.FileName);
             }
             var response = await httpClient.PostAsync($"/api/users/register", requestContent);
-
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
         }
 
-        public async Task<UserViewModel> RetrieveByClaimsPrincipal(ClaimsPrincipal claims)
+        public async Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims)
         {
             var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await GetById(userId);
-            if (user == null)
-                return new UserViewModel();
             return user;
         }
 
-        public async Task<bool> Update(UserUpdateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> Update(UserUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -142,16 +141,23 @@ namespace FurnitureWeb.APICaller.User
             }
             else
             {
-                UserViewModel user = await GetById(request.UserId);
-                string path = _configuration["BaseAddress"] + user.Avatar;
+                CustomAPIResponse<UserViewModel> user = await GetById(request.UserId);
+                if (!user.IsSuccesss)
+                    return CustomAPIResponse<NoContentAPIResponse>.Fail(user.StatusCode, user.Errors);
+                string path = _configuration["BaseAddress"] + user.Data.Avatar;
                 WebClient webClient = new WebClient();
                 userBytes = webClient.DownloadData(path);
             }
             requestContent.Add(new ByteArrayContent(userBytes), "Avatar", request.Avatar.FileName);
 
             var response = await httpClient.PutAsync($"/api/users/update", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
+        }
 
-            return response.IsSuccessStatusCode;
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(string userId)
+        {
+            return await Delete($"/api/users/delete/{userId}");
         }
     }
 }

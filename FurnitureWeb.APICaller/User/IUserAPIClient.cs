@@ -11,18 +11,18 @@ namespace FurnitureWeb.APICaller.User
 {
     public interface IUserAPIClient
     {
-        Task<bool> Register(RegisterRequest request);
+        Task<CustomAPIResponse<NoContentAPIResponse>> Register(RegisterRequest request);
 
-        Task<string> Login(LoginRequest request);
+        Task<CustomAPIResponse<string>> Login(LoginRequest request);
 
-        Task<PagedResult<UserViewModel>> GetAllAsync(UserGetPagingRequest request);
+        Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllAsync(UserGetPagingRequest request);
 
-        Task<UserViewModel> GetById(string userId);
+        Task<CustomAPIResponse<UserViewModel>> GetById(string userId);
 
-        Task<bool> Delete(string userId);
+        Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(string userId);
 
-        Task<bool> Update(UserUpdateRequest request);
+        Task<CustomAPIResponse<NoContentAPIResponse>> Update(UserUpdateRequest request);
 
-        Task<UserViewModel> RetrieveByClaimsPrincipal(ClaimsPrincipal claims);
+        Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims);
     }
 }

@@ -31,9 +31,10 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         }
 
         [Route("login")]
-        public IActionResult Index()
+        public IActionResult Index(string error = null)
         {
-            return View();
+            ViewData["error"] = error;
+            return View("Index");
         }
 
         [HttpGet]
@@ -41,15 +42,20 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index");
+            HttpContext.Session.Remove(SystemConstants.AppSettings.BearerTokenSession);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
-            var token = await _userAPIClient.Login(request);
-            if (token == null)
-                return RedirectToAction(nameof(Index));
+            var res = await _userAPIClient.Login(request);
+            if (!res.IsSuccesss)
+            {
+                return Index("Username/Password không chính xác");
+            }
+
+            string token = res.Data;
             var userPrincipal = ValidateJWT(token);
             var authProperties = new AuthenticationProperties()
             {

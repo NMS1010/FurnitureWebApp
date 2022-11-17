@@ -1,5 +1,7 @@
-﻿using FurnitureWeb.Services.Catalog.Brands;
+﻿using Domain.Entities;
+using FurnitureWeb.Services.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Brands;
+using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +26,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> RetrieveAll([FromQuery] BrandGetPagingRequest request)
         {
             var brands = await _brandServices.RetrieveAll(request);
-
             if (brands == null)
-                return BadRequest();
-            return Ok(brands);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get brand list"));
+            return Ok(CustomAPIResponse<PagedResult<BrandViewModel>>.Success(brands, StatusCodes.Status200OK));
         }
 
         [HttpGet("{brandId}")]
@@ -36,8 +37,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var brand = await _brandServices.RetrieveById(brandId);
 
             if (brand == null)
-                return BadRequest();
-            return Ok(brand);
+                return NotFound(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found this brand"));
+            return Ok(CustomAPIResponse<BrandViewModel>.Success(brand, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
@@ -46,7 +47,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var brandId = await _brandServices.Create(request);
 
             if (brandId <= 0)
-                return BadRequest();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status409Conflict, "Cannot create this brand"));
             var brand = await _brandServices.RetrieveById(brandId);
 
             return CreatedAtAction(nameof(RetrieveById), new { brandId = brandId }, brand);
@@ -58,8 +59,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _brandServices.Update(request);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this brand"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{brandId}")]
@@ -68,8 +69,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _brandServices.Delete(brandId);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this brand"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }
 }

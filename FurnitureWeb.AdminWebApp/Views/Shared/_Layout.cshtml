@@ -9,7 +9,7 @@
     UserViewModel user = new UserViewModel();
     if (User.Identity.IsAuthenticated)
     {
-        user = await _userAPIClient.RetrieveByClaimsPrincipal(User);
+        user = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data;
     }
 }
 @if(user != null){

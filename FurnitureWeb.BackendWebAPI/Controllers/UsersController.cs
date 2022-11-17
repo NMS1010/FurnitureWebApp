@@ -1,4 +1,5 @@
 ﻿using FurnitureWeb.Services.System.Users;
+using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,9 +31,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var resToken = await _userService.Authenticate(request);
             if (string.IsNullOrEmpty(resToken))
             {
-                return BadRequest("Username/password is incorrect");
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Username/password is incorrect"));
             }
-            return Ok(resToken);
+            return Ok(CustomAPIResponse<string>.Success(resToken, StatusCodes.Status200OK));
         }
 
         [Route("register")]
@@ -45,33 +46,45 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             (var res, var status) = await _userService.Register(request);
             if (!res)
             {
-                return BadRequest(status);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, status));
             }
-            return Ok(status);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> RetrieveAll([FromQuery] UserGetPagingRequest request)
         {
-            return Ok(await _userService.RetrieveAll(request));
+            var res = await _userService.RetrieveAll(request);
+            return Ok(CustomAPIResponse<PagedResult<UserViewModel>>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> RetrieveById(string userId)
         {
-            return Ok(await _userService.RetrieveById(userId));
+            var res = await _userService.RetrieveById(userId);
+            return Ok(CustomAPIResponse<UserViewModel>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
         {
-            return Ok(await _userService.Update(request));
+            (var res, var status) = await _userService.Update(request);
+            if (!res)
+            {
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, status));
+            }
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{userId}")]
         public async Task<IActionResult> Delete(string userId)
         {
-            return Ok(await _userService.Delete(userId));
+            var count = await _userService.Delete(userId);
+            if (count <= 0)
+            {
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this user"));
+            }
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }
 }

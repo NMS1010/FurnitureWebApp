@@ -10,14 +10,14 @@ namespace FurnitureWeb.APICaller.Brand
 {
     public interface IBrandAPIClient
     {
-        Task<bool> CreateBrand(BrandCreateRequest request);
+        Task<CustomAPIResponse<NoContentAPIResponse>> CreateBrand(BrandCreateRequest request);
 
-        Task<bool> UpdateBrand(BrandUpdateRequest request);
+        Task<CustomAPIResponse<NoContentAPIResponse>> UpdateBrand(BrandUpdateRequest request);
 
-        Task<PagedResult<BrandViewModel>> GetAllAsync(BrandGetPagingRequest request);
+        Task<CustomAPIResponse<PagedResult<BrandViewModel>>> GetAllAsync(BrandGetPagingRequest request);
 
-        Task<BrandViewModel> GetById(int brandId);
+        Task<CustomAPIResponse<BrandViewModel>> GetById(int brandId);
 
-        Task<bool> Delete(int brandId);
+        Task<CustomAPIResponse<NoContentAPIResponse>> Delete(int brandId);
     }
 }

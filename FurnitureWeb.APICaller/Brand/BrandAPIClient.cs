@@ -32,7 +32,7 @@ namespace FurnitureWeb.APICaller.Brand
             _configuration = configuration;
         }
 
-        public async Task<bool> CreateBrand(BrandCreateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateBrand(BrandCreateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -55,25 +55,26 @@ namespace FurnitureWeb.APICaller.Brand
             }
             var response = await httpClient.PostAsync($"/api/brands/add", requestContent);
 
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body);
         }
 
-        public async Task<bool> Delete(int brandId)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> Delete(int brandId)
         {
             return await Delete($"/api/brands/delete/{brandId}");
         }
 
-        public async Task<PagedResult<BrandViewModel>> GetAllAsync(BrandGetPagingRequest request)
+        public async Task<CustomAPIResponse<PagedResult<BrandViewModel>>> GetAllAsync(BrandGetPagingRequest request)
         {
-            return await GetAsync<PagedResult<BrandViewModel>>($"/api/brands/all");
+            return await GetAsync<CustomAPIResponse<PagedResult<BrandViewModel>>>($"/api/brands/all");
         }
 
-        public async Task<BrandViewModel> GetById(int brandId)
+        public async Task<CustomAPIResponse<BrandViewModel>> GetById(int brandId)
         {
-            return await GetAsync<BrandViewModel>($"/api/brands/{brandId}");
+            return await GetAsync<CustomAPIResponse<BrandViewModel>>($"/api/brands/{brandId}");
         }
 
-        public async Task<bool> UpdateBrand(BrandUpdateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateBrand(BrandUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -97,16 +98,18 @@ namespace FurnitureWeb.APICaller.Brand
             }
             else
             {
-                BrandViewModel brand = await GetById(request.BrandId);
-                string path = _configuration["BaseAddress"] + brand.Image;
+                CustomAPIResponse<BrandViewModel> res = await GetById(request.BrandId);
+                if (!res.IsSuccesss)
+                    return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
+                string path = _configuration["BaseAddress"] + res.Data.Image;
                 WebClient webClient = new WebClient();
                 imageBytes = webClient.DownloadData(path);
             }
             requestContent.Add(new ByteArrayContent(imageBytes), "image", request.Image.FileName);
 
             var response = await httpClient.PutAsync($"/api/brands/update", requestContent);
-
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body);
         }
     }
 }
