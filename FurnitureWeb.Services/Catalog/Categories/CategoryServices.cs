@@ -48,6 +48,32 @@ namespace FurnitureWeb.Services.Catalog.Categories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<PagedResult<CategoryViewModel>> GetParentCategory()
+        {
+            var query = await _context.Categories
+                .Where(x => x.ParentCategoryId != null)
+                .Include(x => x.Products)
+                .ToListAsync();
+            var data = query
+                .Select(x => new CategoryViewModel()
+                {
+                    CategoryId = x.CategoryId,
+                    Name = x.Name,
+                    ParentCategoryId = x.ParentCategoryId ?? null,
+                    ParentCategoryName = _context.Categories.Find(x.ParentCategoryId)?.Name,
+                    Content = x.Content,
+                    Image = x.Image,
+                    SubCategories = GetSubCategory(x.CategoryId),
+                    TotalProduct = x.Products.Count
+                }).ToList();
+
+            return new PagedResult<CategoryViewModel>
+            {
+                TotalItem = query.Count,
+                Items = data
+            };
+        }
+
         public List<CategoryViewModel> GetSubCategory(int categoryId)
         {
             var subCategories = _context.Categories

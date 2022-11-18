@@ -1,5 +1,220 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using FurnitureWeb.ViewModels.Catalog.Categories;
+@using FurnitureWeb.ViewModels.Common;
+@using Microsoft.Extensions.Configuration
+
+@model PagedResult<CategoryViewModel>
+@inject IConfiguration Configuration
+
+
 @{
+    var parentCategories = ViewData["parentCategories"] as List<CategoryViewModel>;
+}
+
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2 breadcrumb-contacts">
+    <div>
+        <a class="btn btn-outline-info active" asp-controller="Category" asp-action="Index">Main Category</a>
+        <a class="btn btn-outline-success" asp-controller="Category" asp-action="SubCategory">Sub Category</a>
+    </div>
+    <p class="breadcrumbs"><span><a href="~/admin/home">Home</a></span>
+        <span><i class="mdi mdi-chevron-right"></i></span>Sub Category</p>
+</div>
+<div class="row">
+    <div class="col-xl-4 col-lg-12">
+        <div class="ec-cat-list card card-default mb-24px">
+            <div class="card-body">
+                <div class="ec-cat-form">
+                    <h4>Add Sub Category</h4>
+                    <form id="form-add"
+                          action="~/admin/categories/add/sub"
+                            method="post" enctype="multipart/form-data"
+                    >
+                        <input type="hidden" id="categoryId" name="categoryId" value=""/>
+                        <div class="row">
+                            <label for="name" class="col-12 col-form-label">Tên danh mục</label>
+                            <div class="col-12">
+                                <input id="name" name="name" class="form-control here slug-title" type="text" value="" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-12 col-form-label" for="content">Mô tả</label>
+                            <div class="col-12">
+                                <input type="text" id="content" name="content" cols="40" rows="4" class="form-control" value="" required/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="parent-category" class="col-12 col-form-label">Danh mục cha</label>
+                            <div class="col-12">
+                                <select id="parent-category" name="parentCategoryId" class="custom-select" required>
+                                    @foreach(var parent in @parentCategories){
+                                        <option value="@parent.CategoryId">@parent.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row ec-vendor-uploads">
+                            <label class="col-12 col-form-label" for="category-logo">Logo</label>
+                            <div class="ec-vendor-img-upload">
+                                <div class="ec-vendor-main-img">
+                                    <div class="thumb-upload-set col-md-12">
+                                        <div class="thumb-upload">
+                                            <div class="thumb-edit">
+                                                <input type='file' id="category-logo" name="image"
+                                                        class="ec-image-upload"
+                                                        accept=".png, .jpg, .jpeg" required/>
+                                                <label for="category-logo"><img
+                                                        src="~/img/icons/edit.svg"
+                                                        class="svg_img header_svg" alt="edit"/>
+                                                </label>
+                                            </div>
+                                            <div class="thumb-preview ec-preview">
+                                                <div class="image-thumb-preview">
+                                                    <img class="image-thumb-preview ec-image-preview clear-img"
+                                                        src="~/img/products/vender-upload-thumb-preview.jpg"
+                                                        id="category-image-preview"
+                                                        alt="edit" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col col-6">
+                                <input type="button" class="btn btn-danger clear-form" value="Huỷ">
+                            </div>
+                            <div class="col col-6">
+                                <input name="submit" type="submit" class="btn btn-primary" value="Xác nhận"/>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8 col-lg-12">
+        <div class="ec-cat-list card card-default">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="responsive-data-table" class="table">
+                        <thead>
+                        <tr>
+                            <th>Thumb</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Main Category</th>
+                            <th>Total Product</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            @if(Model.Items.Count > 0){
+                                @foreach(var category in Model.Items){
+                                    <tr>
+                                        <td><img class="cat-thumb" src="@Configuration["BaseAddress"]@category.Image" alt="Product Image" /></td>
+                                        <td>@category.Name</td>
+                                        <td>@category.Content</td>
+                                        <td>
+                                            <span class="ec-sub-cat-list">
+                                                    <span class="ec-sub-cat-tag">@category.ParentCategoryName</span>
+                                            </span>
+                                        </td>
+                                        <td>@category.TotalProduct</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                        class="btn btn-outline-success">Info</button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false" data-display="static">
+                                                    <span class="sr-only">Info</span>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item btn btn-info" onclick="editCategory(this,'@category.CategoryId')">Sửa</a>
+                                                    <a type="button" class="dropdown-item btn btn-danger" data-bs-toggle="modal"
+                                               data-bs-target="#modal-delete-category" data-id="@category.CategoryId" href="#modal-delete-category">
+                                                        Xoá
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-delete-category" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0">Bạn có muốn xoá danh mục sản phẩm này</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill"
+                        data-bs-dismiss="modal">Huỷ</button>
+                <a id="link-delete" class="btn btn-danger btn-pill" >Xoá</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#modal-delete-category').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                document.getElementById('link-delete').href = "delete/" + id + "/sub";
+            });
+        });
+        $(window).on('load', function () {
+            if (window.location.href.includes("error")) {
+                $('#modal-error').modal('show');
+            }
+        });
+        $(".clear-form").on("click", function (e) {
+            e.preventDefault();
+            document.getElementById('form-add').reset();
+            $("input[type='text']").val('');
+            $("input[type='file']").val('');
+            document.querySelector('.clear-img').src = "/img/products/vender-upload-thumb-preview.jpg";
+        })
+        function editCategory(e, categoryId) {
+            $.ajax({
+                url: "/admin/categories/get/" + categoryId,
+                method: "GET",
+                async: false,
+                success: function (data) {
+                    console.log(data)
+                    document.getElementById("categoryId").value = data.categoryId
+                    document.getElementById("name").value = data.name
+                    document.getElementById("content").value = data.content
+                    document.getElementById("category-image-preview").src = '@Configuration["BaseAddress"]' + data.image
+                    document.getElementById("form-add").action = "edit/sub"
+                    document.getElementById("category-logo").required = false
+                    document.getElementById('parent-category').value = data.parentCategoryId
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
+    </script>
 }

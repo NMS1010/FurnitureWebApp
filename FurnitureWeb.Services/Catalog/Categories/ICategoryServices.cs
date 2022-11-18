@@ -11,5 +11,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
         IRetrieveEntity<CategoryViewModel, CategoryGetPagingRequest, int>
     {
         List<CategoryViewModel> GetSubCategory(int categoryId);
+
+        Task<PagedResult<CategoryViewModel>> GetParentCategory();
     }
 }

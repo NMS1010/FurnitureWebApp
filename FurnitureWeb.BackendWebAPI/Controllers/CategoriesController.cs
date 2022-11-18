@@ -31,6 +31,15 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<PagedResult<CategoryViewModel>>.Success(categories, StatusCodes.Status200OK));
         }
 
+        [HttpGet("all/parent-categories")]
+        public async Task<IActionResult> RetrieveParentCategories()
+        {
+            var categories = await _categoryService.GetParentCategory();
+            if (categories == null)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get parent categories list"));
+            return Ok(CustomAPIResponse<PagedResult<CategoryViewModel>>.Success(categories, StatusCodes.Status200OK));
+        }
+
         [HttpGet("{categoryId}")]
         public async Task<IActionResult> RetrieveById(int categoryId)
         {

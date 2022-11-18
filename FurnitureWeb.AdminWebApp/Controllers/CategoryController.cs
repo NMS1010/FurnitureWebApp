@@ -4,6 +4,7 @@ using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp.Controllers
@@ -19,27 +20,41 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             _categoryAPIClient = categoryAPIClient;
         }
 
+        [Route("sub")]
+        public async Task<IActionResult> SubCategory(bool error = false)
+        {
+            if (error)
+                ViewData["Error"] = error;
+            var res = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
+            ViewData["parentCategories"] = res.Data.Items.Where(x => x.ParentCategoryId == null).ToList();
+            res.Data.Items.RemoveAll(x => x.ParentCategoryId == null);
+            return View(res.Data);
+        }
+
         public async Task<IActionResult> Index(bool error = false)
         {
             if (error)
                 ViewData["Error"] = error;
             var res = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
+            res.Data.Items.RemoveAll(x => x.ParentCategoryId != null);
             return View(res.Data);
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> Create(CategoryCreateRequest request)
+        [HttpPost("add/{sub?}")]
+        public async Task<IActionResult> Create(CategoryCreateRequest request, string sub = null)
         {
             var res = await _categoryAPIClient.CreateCategory(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            string action = sub == null ? nameof(Index) : nameof(SubCategory);
+            return RedirectToAction(action, res.IsSuccesss ? false : true);
         }
 
-        [HttpGet("delete/{categoryId}")]
-        public async Task<IActionResult> Delete(int categoryId)
+        [HttpGet("delete/{categoryId}/{sub?}")]
+        public async Task<IActionResult> Delete(int categoryId, string sub = null)
         {
             var res = await _categoryAPIClient.DeleteCategory(categoryId);
 
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            string action = sub == null ? nameof(Index) : nameof(SubCategory);
+            return RedirectToAction(action, res.IsSuccesss ? false : true);
         }
 
         [Route("get/{categoryId}")]
@@ -51,11 +66,12 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             return Ok(res.Data);
         }
 
-        [HttpPost("edit")]
-        public async Task<IActionResult> Edit(CategoryUpdateRequest request)
+        [HttpPost("edit/{sub?}")]
+        public async Task<IActionResult> Edit(CategoryUpdateRequest request, string sub = null)
         {
             var res = await _categoryAPIClient.UpdateCategory(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            string action = sub == null ? nameof(Index) : nameof(SubCategory);
+            return RedirectToAction(action, res.IsSuccesss ? false : true);
         }
     }
 }
