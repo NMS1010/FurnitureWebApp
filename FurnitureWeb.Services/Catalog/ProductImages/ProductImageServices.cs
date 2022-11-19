@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
             if (productImage == null)
                 return -1;
             _context.ProductImages.Remove(productImage);
-            await _fileStorageService.DeleteFile(productImage.Path);
+            await _fileStorageService.DeleteFile(Path.GetFileName(productImage.Path));
             return await _context.SaveChangesAsync();
         }
 
@@ -79,7 +80,7 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
             if (request.Image == null)
                 return -1;
 
-            await _fileStorageService.DeleteFile(productImg.Path);
+            await _fileStorageService.DeleteFile(Path.GetFileName(productImg.Path));
             productImg.IsDefault = false;
             productImg.Path = await _fileStorageService.SaveFile(request.Image);
 

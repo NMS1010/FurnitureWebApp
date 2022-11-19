@@ -32,12 +32,12 @@ namespace FurnitureWeb.APICaller.User
             _configuration = configuration;
         }
 
-        public async Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllAsync(UserGetPagingRequest request)
+        public async Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllUserAsync(UserGetPagingRequest request)
         {
             return await GetAsync<CustomAPIResponse<PagedResult<UserViewModel>>>("/api/users/all");
         }
 
-        public async Task<CustomAPIResponse<UserViewModel>> GetById(string userId)
+        public async Task<CustomAPIResponse<UserViewModel>> GetUserById(string userId)
         {
             return await GetAsync<CustomAPIResponse<UserViewModel>>($"/api/users/{userId}");
         }
@@ -103,11 +103,11 @@ namespace FurnitureWeb.APICaller.User
         public async Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims)
         {
             var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await GetById(userId);
+            var user = await GetUserById(userId);
             return user;
         }
 
-        public async Task<CustomAPIResponse<NoContentAPIResponse>> Update(UserUpdateRequest request)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
             var httpClient = _httpClientFactory.CreateClient();
@@ -141,7 +141,7 @@ namespace FurnitureWeb.APICaller.User
             }
             else
             {
-                CustomAPIResponse<UserViewModel> user = await GetById(request.UserId);
+                CustomAPIResponse<UserViewModel> user = await GetUserById(request.UserId);
                 if (!user.IsSuccesss)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(user.StatusCode, user.Errors);
                 string path = _configuration["BaseAddress"] + user.Data.Avatar;
@@ -155,7 +155,7 @@ namespace FurnitureWeb.APICaller.User
             return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
         }
 
-        public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(string userId)
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteUser(string userId)
         {
             return await Delete($"/api/users/delete/{userId}");
         }

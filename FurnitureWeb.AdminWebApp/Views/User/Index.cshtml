@@ -1,0 +1,292 @@
+﻿@using FurnitureWeb.Utilities.Constants.Users;
+@using FurnitureWeb.ViewModels.Common;
+@using FurnitureWeb.ViewModels.System.Users;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.Extensions.Configuration
+
+@model PagedResult<UserViewModel>
+@inject IConfiguration Configuration
+
+@{
+    var roles = ViewData["roles"] as List<IdentityRole>;
+}
+<div class="breadcrumb-wrapper breadcrumb-contacts">
+    <div>
+        <h1>User List</h1>
+        <p class="breadcrumbs">
+            <span><a href="~/admin/home">Home</a></span>
+            <span><i class="mdi mdi-chevron-right"></i></span>Quản lý tài khoản
+        </p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#addUser">
+            Thêm Người dùng
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="ec-vendor-list card card-default">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="responsive-data-table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Username</th>
+                                <th>Họ</th>
+                                <th>Tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Email</th>
+                                <th>Điện thoại</th>
+                                <th>Đã mua</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tham gia</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if(Model != null && Model.Items?.Count > 0)
+                            {
+                                @foreach(var user in Model.Items)
+                                {
+                                    <tr>
+                                        <td><img class="vendor-thumb" src="@Configuration["BaseAddress"]@user.Avatar" alt="user profile" /></td>
+                                        <td>@user.UserName</td>
+                                        <td>@user.FirstName</td>
+                                        <td>@user.LastName</td>
+                                        <td>@user.Dob</td>
+                                        <td>@user.Gender</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.PhoneNumber</td>
+                                        <td>@user.TotalBought</td>
+                                        <td>@user.StatusCode</td>
+                                        <td>@user.DateCreated</td>
+                                        <td>
+                                            <div class="btn-group mb-1">
+                                                <button type="button"
+                                                class="btn btn-outline-success">
+                                                    Info
+                                                </button>
+                                                <button type="button"
+                                                class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false" data-display="static">
+                                                    <span class="sr-only">Info</span>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="GetDetail" asp-controller="User" asp-route-userId="@user.UserId">Edit</a>
+                                                    <a class="dropdown-item" asp-action="Delete" asp-controller="User" asp-route-userId="@user.UserId">Delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add User Modal  -->
+<div class="modal fade modal-add-contact" id="addUser" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <form id="form-add" action="~/admin/users/add" method="post" enctype="multipart/form-data">
+                <div class="modal-header px-4">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Thêm tài khoản mới</h5>
+                </div>
+
+                <div class="modal-body px-4">
+
+                    <div class="row ec-vendor-uploads">
+                        <label class="col-12 col-form-label" for="avatar">Avatar</label>
+                        <div class="ec-vendor-img-upload">
+                            <div class="ec-vendor-main-img">
+                                <div class="thumb-upload-set col-md-12">
+                                    <div class="thumb-upload">
+                                        <div class="thumb-edit">
+                                            <input type='file' id="avatar" name="avatar"
+                                                    class="ec-image-upload"
+                                                    accept=".png, .jpg, .jpeg" required title="Vui lòng chọn ảnh" />
+                                            <label for="avatar">
+                                                <img src="~/img/icons/edit.svg"
+                                                        class="svg_img header_svg" alt="edit" />
+                                            </label>
+                                        </div>
+                                        <div class="thumb-preview ec-preview">
+                                            <div class="image-thumb-preview">
+                                                <img class="image-thumb-preview ec-image-preview clear-img"
+                                                        src="~/img/products/vender-upload-thumb-preview.jpg"
+                                                        alt="edit" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="firstName">Họ</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required title="Vui lòng nhập họ">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="lastName">Tên</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required title="Vui lòng nhập tên">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email"
+                                        name="email" required title="Vui lòng nhập đúng định dạng email">
+                                <p class="mt-3" id='emailValidateMessage'></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="phone">Phone</label>
+                                <input type="text" class="form-control" id="phone" pattern="[0-9]{10}"
+                                        name="phone" required title="Vui lòng nhập số điện thoại gồm 10 chữ số">
+                                <p class="mt-3" id='phoneValidateMessage'></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="dob">Birthday</label>
+                                <input type="date" class="form-control" id="dob" name="dob" required title="Vui lòng chọn ngày sinh">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="gender">Giới tính</label>
+                                <select id="gender" name="gender" class="form-select" required title="Vui lòng chọn giới tính">
+                                    @foreach (var g in @USER_GENDER.Gender)
+                                    {
+                                        <option value="@g">@g</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="address">Địa chỉ</label>
+                                <input type="text" class="form-control" id="address" name="address" required title="Vui lòng nhập địa chỉ" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="username">User name</label>
+                                <input type="text" class="form-control" id="username"
+                                        name="username" required title="Vui lòng nhập tên tài khoản">
+                                <p class="mt-3 text-danger" id="userValidateMessage"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password"
+                                        name="password" required title="Vui lòng nhập mật khẩu">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword"
+                                        name="confirmPassword" required>
+                                <p class="mt-3" id='confirmPasswordNotMatch'></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="status">Trạng thái</label>
+                                <select id="status" name="status" class="form-select" required>
+                                    @foreach (var g in @USER_STATUS.UserStatus)
+                                    {
+                                        <option value="@g.Key">@g.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="dropdown button-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-bs-toggle="dropdown">Roles</button>
+                                <ul class="role dropdown-menu">
+                                    @foreach (var role in roles)
+                                    {
+                                        <li>
+                                            <a href="#" class="small" data-value="@role.Id" tabIndex="-1">
+                                                <input type="checkbox" class="roleCheckBox" id="roleCheckBox-@role.Id" name="roleCheckBox" value="@role.Id" />&nbsp;@role.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                                <p class="mt-3" id='roleEmpty'></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer px-4">
+                    <button type="button" class="btn btn-secondary btn-pill clear-form"
+                            data-bs-dismiss="modal">
+                        Huỷ
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-pill">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">
+                    Thoát
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type ="text/javascript">
+        $(window).on('load', function() {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if(window.location.href.includes("error")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $('#form-add').submit(function (e){
+            validateForm(e)
+        })
+    </script>
+    <script src="~/js/validate/admin/user/user-validation.js"></script>
+}

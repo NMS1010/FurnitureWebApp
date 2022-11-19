@@ -23,9 +23,10 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         [Route("sub")]
         public async Task<IActionResult> SubCategory(bool error = false)
         {
-            if (error)
-                ViewData["Error"] = error;
             var res = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
+
+            if (error || !res.IsSuccesss)
+                ViewData["Error"] = res.Errors;
             ViewData["parentCategories"] = res.Data.Items.Where(x => x.ParentCategoryId == null).ToList();
             res.Data.Items.RemoveAll(x => x.ParentCategoryId == null);
             return View(res.Data);

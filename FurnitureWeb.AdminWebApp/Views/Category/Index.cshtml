@@ -181,6 +181,14 @@
             });
         });
         $(window).on('load', function () {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
             if (window.location.href.includes("error")){
                 $('#modal-error').modal('show');
             }

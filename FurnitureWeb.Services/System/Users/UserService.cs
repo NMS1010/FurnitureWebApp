@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.EF;
+using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.Utilities.Constants.Users;
@@ -27,18 +28,20 @@ namespace FurnitureWeb.Services.System.Users
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IFileStorageService _fileStorage;
+        private readonly AppDbContext _context;
 
         public UserService(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
             IFileStorageService fileStorage,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _fileStorage = fileStorage;
             _roleManager = roleManager;
+            _context = context;
         }
 
         public async Task<string> Authenticate(LoginRequest request)
@@ -183,10 +186,7 @@ namespace FurnitureWeb.Services.System.Users
                     TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
                     TotalCost = x.Orders.Sum(o => o.TotalPrice),
                     StatusCode = USER_STATUS.UserStatus[x.Status],
-                    RoleIds = (await _userManager.GetRolesAsync(x))
-                        .Select(s =>
-                            SystemConstants.UserRoles.Roles.FirstOrDefault(f => f.Value == s).Key)
-                        .ToList(),
+                    RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync())
                 }).ToList();
             List<UserViewModel> us = new List<UserViewModel>();
 
@@ -238,9 +238,7 @@ namespace FurnitureWeb.Services.System.Users
                 StatusCode = USER_STATUS.UserStatus[x.Status],
             };
             var roles = await _userManager.GetRolesAsync(x);
-            user.RoleIds = roles.Select(s =>
-                            SystemConstants.UserRoles.Roles.FirstOrDefault(f => f.Value == s).Key)
-                        .ToList();
+            user.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync());
             return user;
         }
 

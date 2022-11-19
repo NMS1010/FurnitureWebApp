@@ -6,6 +6,7 @@ using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,6 +45,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
 
             if (category == null)
                 return -1;
+            await _fileStorageService.DeleteFile(Path.GetFileName(category.Image));
             _context.Categories.Remove(category);
             return await _context.SaveChangesAsync();
         }
@@ -165,7 +167,7 @@ namespace FurnitureWeb.Services.Catalog.Categories
             category.Name = request.Name;
             category.ParentCategoryId = request.ParentCategoryId ?? null;
             category.Content = request.Content;
-            await _fileStorageService.DeleteFile(category.Image);
+            await _fileStorageService.DeleteFile(Path.GetFileName(category.Image));
             category.Image = await _fileStorageService.SaveFile(request.Image);
             return await _context.SaveChangesAsync();
         }

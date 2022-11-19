@@ -9,6 +9,7 @@ using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,10 +70,7 @@ namespace FurnitureWeb.Services.Catalog.Products
                 return -1;
             product.Status = PRODUCT_STATUS.SUSPENDED;
             _context.Products.Update(product);
-            //foreach (var item in product.ProductImages)
-            //{
-            //    await _fileStorageService.DeleteFile(item.Path);
-            //}
+
             return await _context.SaveChangesAsync();
         }
 
@@ -115,7 +113,6 @@ namespace FurnitureWeb.Services.Catalog.Products
                     StatusCode = PRODUCT_STATUS.ProductStatus[x.Status],
                     TotalPurchased = x.OrderItems.Sum(g => g.Quantity)
                 }).ToList();
-
             return new PagedResult<ProductViewModel>
             {
                 TotalItem = query.Count,
@@ -179,7 +176,7 @@ namespace FurnitureWeb.Services.Catalog.Products
                     .Where(c => c.IsDefault == true && c.ProductId == request.ProductId)
                     .FirstOrDefaultAsync();
                 if (productImg != null)
-                    await _fileStorageService.DeleteFile(productImg.Path);
+                    await _fileStorageService.DeleteFile(Path.GetFileName(productImg.Path));
                 productImg.IsDefault = true;
                 productImg.Path = await _fileStorageService.SaveFile(request.Image);
 

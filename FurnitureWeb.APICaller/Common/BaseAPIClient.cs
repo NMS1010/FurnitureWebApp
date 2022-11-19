@@ -43,7 +43,7 @@ namespace FurnitureWeb.APICaller.Common
                 return (TResponse)JsonConvert.DeserializeObject(body,
                         typeof(TResponse));
             }
-            return default;
+            return (TResponse)Activator.CreateInstance(typeof(TResponse));
         }
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> Delete(string url)

@@ -55,6 +55,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> RetrieveAll([FromQuery] UserGetPagingRequest request)
         {
             var res = await _userService.RetrieveAll(request);
+            if (res.Items?.Count == 0)
+                return NotFound(CustomAPIResponse<PagedResult<UserViewModel>>.Fail(StatusCodes.Status404NotFound, "Cannot get user list"));
             return Ok(CustomAPIResponse<PagedResult<UserViewModel>>.Success(res, StatusCodes.Status200OK));
         }
 

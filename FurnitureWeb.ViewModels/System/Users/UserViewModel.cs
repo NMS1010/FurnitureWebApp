@@ -26,6 +26,6 @@ namespace FurnitureWeb.ViewModels.System.Users
         public int TotalCartItem { get; set; }
         public int TotalOrders { get; set; }
         public decimal TotalCost { get; set; }
-        public List<int> RoleIds { get; set; }
+        public List<string> RoleIds { get; set; }
     }
 }

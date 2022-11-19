@@ -15,13 +15,13 @@ namespace FurnitureWeb.APICaller.User
 
         Task<CustomAPIResponse<string>> Login(LoginRequest request);
 
-        Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllAsync(UserGetPagingRequest request);
+        Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllUserAsync(UserGetPagingRequest request);
 
-        Task<CustomAPIResponse<UserViewModel>> GetById(string userId);
+        Task<CustomAPIResponse<UserViewModel>> GetUserById(string userId);
 
-        Task<CustomAPIResponse<NoContentAPIResponse>> DeleteBrand(string userId);
+        Task<CustomAPIResponse<NoContentAPIResponse>> DeleteUser(string userId);
 
-        Task<CustomAPIResponse<NoContentAPIResponse>> Update(UserUpdateRequest request);
+        Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request);
 
         Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims);
     }

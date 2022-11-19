@@ -7,6 +7,7 @@ using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -44,7 +45,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
             var brand = await _context.Brands.FindAsync(brandId);
             if (brand == null)
                 return -1;
-            await _fileStorage.DeleteFile(brand.Image);
+            await _fileStorage.DeleteFile(Path.GetFileName(brand.Image));
             _context.Brands.Remove(brand);
 
             return await _context.SaveChangesAsync();
@@ -104,7 +105,7 @@ namespace FurnitureWeb.Services.Catalog.Brands
             brand.Origin = request.Origin;
             if (request.Image != null)
             {
-                await _fileStorage.DeleteFile(brand.Image);
+                await _fileStorage.DeleteFile(Path.GetFileName(brand.Image));
                 brand.Image = await _fileStorage.SaveFile(request.Image);
             }
             _context.Brands.Update(brand);

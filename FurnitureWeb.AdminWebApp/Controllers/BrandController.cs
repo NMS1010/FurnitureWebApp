@@ -21,9 +21,9 @@ namespace FurnitureWeb.AdminWebApp.Controllers
 
         public async Task<IActionResult> Index(bool error = false)
         {
-            if (!error)
-                ViewData["Error"] = error;
             var res = await _brandAPIClient.GetAllBrandAsync(new BrandGetPagingRequest());
+            if (error || !res.IsSuccesss)
+                ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
 
