@@ -10,10 +10,12 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.User
@@ -69,8 +71,6 @@ namespace FurnitureWeb.APICaller.User
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
-            request.Roles.Clear();
-            request.Roles.Add("Customer");
             var requestContent = new MultipartFormDataContent
             {
                 { new StringContent(request.Email), "Email" },
@@ -84,7 +84,7 @@ namespace FurnitureWeb.APICaller.User
                 { new StringContent(request.ConfirmPassword), "ConfirmPassword" },
                 { new StringContent(request.PhoneNumber), "PhoneNumber" },
                 { new StringContent(request.UserName), "UserName" },
-                { new StringContent(request.Roles.ToString()), "Roles" }
+                { new StringContent(JsonConvert.SerializeObject(request.Roles)), "Roles" }
             };
             if (request.Avatar != null)
             {
@@ -125,19 +125,27 @@ namespace FurnitureWeb.APICaller.User
                 { new StringContent(request.LastName), "LastName" },
                 { new StringContent(request.FirstName), "FirstName" },
                 { new StringContent(request.Gender), "Gender" },
-                { new StringContent(request.Password), "Password" },
-                { new StringContent(request.ConfirmPassword), "ConfirmPassword" },
                 { new StringContent(request.PhoneNumber), "PhoneNumber" },
                 { new StringContent(request.UserName), "UserName" },
-                { new StringContent(request.Roles.ToString()), "Roles" }
+                { new StringContent(JsonConvert.SerializeObject(request.Roles)), "Roles" }
             };
+            if (request.ConfirmPassword != null)
+            {
+                requestContent.Add(new StringContent(request.ConfirmPassword), "ConfirmPassword");
+            }
+            if (request.Password != null)
+            {
+                requestContent.Add(new StringContent(request.Password), "Password");
+            }
             byte[] userBytes;
+            string fileName = "";
             if (request.Avatar != null)
             {
                 using (var stream = new BinaryReader(request.Avatar.OpenReadStream()))
                 {
                     userBytes = stream.ReadBytes((int)request.Avatar.Length);
                 }
+                fileName = request.Avatar.FileName;
             }
             else
             {
@@ -147,8 +155,9 @@ namespace FurnitureWeb.APICaller.User
                 string path = _configuration["BaseAddress"] + user.Data.Avatar;
                 WebClient webClient = new WebClient();
                 userBytes = webClient.DownloadData(path);
+                fileName = Path.GetFileName(user.Data.Avatar);
             }
-            requestContent.Add(new ByteArrayContent(userBytes), "Avatar", request.Avatar.FileName);
+            requestContent.Add(new ByteArrayContent(userBytes), "Avatar", fileName);
 
             var response = await httpClient.PutAsync($"/api/users/update", requestContent);
             var body = await response.Content.ReadAsStringAsync();
@@ -158,6 +167,29 @@ namespace FurnitureWeb.APICaller.User
         public async Task<CustomAPIResponse<NoContentAPIResponse>> DeleteUser(string userId)
         {
             return await Delete($"/api/users/delete/{userId}");
+        }
+
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> CheckNewUser(UserCheckNewRequest request)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var requestContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync($"/api/users/check-add", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
+        }
+
+        public async Task<CustomAPIResponse<NoContentAPIResponse>> CheckEditUser(UserCheckEditRequest request)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var requestContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync($"/api/users/check-edit", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
         }
     }
 }

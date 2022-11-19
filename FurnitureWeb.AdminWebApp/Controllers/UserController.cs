@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("~/admin/users")]
     public class UserController : Controller
     {
@@ -59,6 +59,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         }
 
         [Route("get/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetById(string userId)
         {
             var res = await _userAPIClient.GetUserById(userId);
@@ -68,10 +69,11 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         }
 
         [HttpPost("edit")]
+        [Authorize]
         public async Task<IActionResult> Edit(UserUpdateRequest request)
         {
             var res = await _userAPIClient.UpdateUser(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return Redirect($"detail/{request.UserId}");
         }
     }
 }

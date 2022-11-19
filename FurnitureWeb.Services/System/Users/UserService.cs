@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -98,7 +99,13 @@ namespace FurnitureWeb.Services.System.Users
 
             if (res.Succeeded)
             {
-                await _userManager.AddToRolesAsync(user, request.Roles);
+                List<string> roles = new List<string>();
+                foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                {
+                    var role = await _context.Roles.FindAsync(roleId);
+                    roles.Add(role.Name);
+                }
+                await _userManager.AddToRolesAsync(user, roles);
                 return (true, "successfull");
             }
             string error = "";
@@ -123,17 +130,22 @@ namespace FurnitureWeb.Services.System.Users
             user.Status = request.Status;
             user.DateUpdated = DateTime.Now;
             user.Address = request.Address;
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.Password);
+            if (request.ConfirmPassword != null)
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.ConfirmPassword);
             user.Avatar = await _fileStorage.SaveFile(request.Avatar);
             var res = await _userManager.UpdateAsync(user);
             if (res.Succeeded)
             {
                 await _fileStorage.DeleteFile(avatar);
 
-                var roles = await _userManager.GetRolesAsync(user);
-                await _userManager.RemoveFromRolesAsync(user, roles);
-
-                await _userManager.AddToRolesAsync(user, request.Roles);
+                await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+                List<string> roles = new List<string>();
+                foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                {
+                    var role = await _context.Roles.FindAsync(roleId);
+                    roles.Add(role.Name);
+                }
+                await _userManager.AddToRolesAsync(user, roles);
 
                 return (true, "successfull");
             }
@@ -144,7 +156,7 @@ namespace FurnitureWeb.Services.System.Users
 
         public async Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request)
         {
-            var users = await _userManager.Users.Include(u => u.WishItems)
+            var users = await _userManager.Users
                 .Include(u => u.CartItems)
                 .Include(u => u.WishItems)
                 .Include(u => u.Orders)
@@ -164,7 +176,7 @@ namespace FurnitureWeb.Services.System.Users
             var dt = users
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(async x => new UserViewModel()
+                .Select(x => new UserViewModel()
                 {
                     UserId = x.Id,
                     FirstName = x.FirstName,
@@ -173,11 +185,11 @@ namespace FurnitureWeb.Services.System.Users
                     Email = x.Email,
                     UserName = x.UserName,
                     Address = x.Address,
-                    Dob = x.DateOfBirth,
+                    Dob = x.DateOfBirth.ToString("yyyy-MM-dd"),
                     Gender = x.Gender,
                     Avatar = x.Avatar,
-                    DateCreated = x.DateCreated,
-                    DateUpdated = x.DateUpdated,
+                    DateCreated = x.DateCreated.ToString(),
+                    DateUpdated = x.DateUpdated.ToString(),
                     Status = x.Status,
                     Password = x.PasswordHash,
                     TotalCartItem = x.CartItems.Count,
@@ -186,19 +198,17 @@ namespace FurnitureWeb.Services.System.Users
                     TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
                     TotalCost = x.Orders.Sum(o => o.TotalPrice),
                     StatusCode = USER_STATUS.UserStatus[x.Status],
-                    RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync())
                 }).ToList();
-            List<UserViewModel> us = new List<UserViewModel>();
 
             foreach (var x in dt)
             {
-                us.Add(await x);
+                x.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.UserId).Select(k => k.RoleId).ToListAsync());
             }
 
             return new PagedResult<UserViewModel>()
             {
                 TotalItem = totalRow,
-                Items = us
+                Items = dt
             };
         }
 
@@ -223,11 +233,11 @@ namespace FurnitureWeb.Services.System.Users
                 Email = x.Email,
                 UserName = x.UserName,
                 Address = x.Address,
-                Dob = x.DateOfBirth,
+                Dob = x.DateOfBirth.ToString("yyyy-MM-dd"),
                 Gender = x.Gender,
                 Avatar = x.Avatar,
-                DateCreated = x.DateCreated,
-                DateUpdated = x.DateUpdated,
+                DateCreated = x.DateCreated.ToString(),
+                DateUpdated = x.DateUpdated.ToString(),
                 Status = x.Status,
                 Password = x.PasswordHash,
                 TotalCartItem = x.CartItems.Count,
@@ -251,6 +261,58 @@ namespace FurnitureWeb.Services.System.Users
             await _userManager.UpdateAsync(user);
 
             return 1;
+        }
+
+        public async Task<List<string>> CheckNewUser(UserCheckNewRequest request)
+        {
+            List<string> exist = new List<string>();
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user != null)
+            {
+                exist.Add("username");
+            }
+            user = await _userManager.FindByEmailAsync(request.Email);
+            if (user != null)
+            {
+                exist.Add("email");
+            }
+
+            user = await _context.Users.Where(x => x.PhoneNumber == request.Phone).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                exist.Add("phone");
+            }
+
+            return exist;
+        }
+
+        public async Task<List<string>> CheckEditUser(UserCheckEditRequest request)
+        {
+            List<string> exist = new List<string>();
+            var user = await _context.Users.Where(x => x.UserName == request.UserName && x.Id != request.UserId).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                exist.Add("username");
+            }
+            user = await _context.Users.Where(x => x.Email == request.Email && x.Id != request.UserId).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                exist.Add("email");
+            }
+
+            user = await _context.Users.Where(x => x.PhoneNumber == request.Phone && x.Id != request.UserId).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                exist.Add("phone");
+            }
+            user = await _context.Users.Where(x => x.Id == request.UserId).FirstOrDefaultAsync();
+            if (user != null && request.Password != null)
+            {
+                var res = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+                if (res == PasswordVerificationResult.Failed && request.IsChangePassword)
+                    exist.Add("password");
+            }
+            return exist;
         }
     }
 }

@@ -21,5 +21,9 @@ namespace FurnitureWeb.Services.System.Users
         Task<(bool, string)> Update(UserUpdateRequest request);
 
         Task<int> Delete(string userId);
+
+        Task<List<string>> CheckNewUser(UserCheckNewRequest request);
+
+        Task<List<string>> CheckEditUser(UserCheckEditRequest request);
     }
 }

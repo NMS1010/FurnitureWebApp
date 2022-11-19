@@ -56,7 +56,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             var res = await _userService.RetrieveAll(request);
             if (res.Items?.Count == 0)
-                return NotFound(CustomAPIResponse<PagedResult<UserViewModel>>.Fail(StatusCodes.Status404NotFound, "Cannot get user list"));
+                return NotFound(CustomAPIResponse<PagedResult<NoContentAPIResponse>>.Fail(StatusCodes.Status404NotFound, "Cannot get user list"));
             return Ok(CustomAPIResponse<PagedResult<UserViewModel>>.Success(res, StatusCodes.Status200OK));
         }
 
@@ -64,6 +64,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> RetrieveById(string userId)
         {
             var res = await _userService.RetrieveById(userId);
+            if (res == null)
+                return NotFound(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot find this user"));
             return Ok(CustomAPIResponse<UserViewModel>.Success(res, StatusCodes.Status200OK));
         }
 
@@ -86,6 +88,26 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             {
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this user"));
             }
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
+        }
+
+        [HttpPost("check-add")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckNewUser(UserCheckNewRequest request)
+        {
+            var res = await _userService.CheckNewUser(request);
+            if (res.Count >= 0)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status200OK, res));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
+        }
+
+        [HttpPost("check-edit")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckEditUser(UserCheckEditRequest request)
+        {
+            var res = await _userService.CheckEditUser(request);
+            if (res.Count >= 0)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status200OK, res));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }

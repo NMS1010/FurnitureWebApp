@@ -45,6 +45,6 @@ namespace FurnitureWeb.ViewModels.System.Users
         public IFormFile Avatar { get; set; }
 
         [Required]
-        public List<string> Roles { get; set; }
+        public string[] Roles { get; set; }
     }
 }

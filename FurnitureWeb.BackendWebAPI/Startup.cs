@@ -64,7 +64,14 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
 
-            services.AddIdentity<AppUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>(opts =>
+            {
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequiredLength = 5;
+                opts.Password.RequireDigit = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+            })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             services.AddScoped<IProductServices, ProductServices>();

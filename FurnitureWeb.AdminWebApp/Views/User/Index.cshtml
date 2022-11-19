@@ -162,7 +162,7 @@
                             <div class="form-group mb-4">
                                 <label for="phone">Phone</label>
                                 <input type="text" class="form-control" id="phone" pattern="[0-9]{10}"
-                                        name="phone" required title="Vui lòng nhập số điện thoại gồm 10 chữ số">
+                                        name="phoneNumber" required title="Vui lòng nhập số điện thoại gồm 10 chữ số">
                                 <p class="mt-3" id='phoneValidateMessage'></p>
                             </div>
                         </div>
@@ -233,7 +233,7 @@
                                     {
                                         <li>
                                             <a href="#" class="small" data-value="@role.Id" tabIndex="-1">
-                                                <input type="checkbox" class="roleCheckBox" id="roleCheckBox-@role.Id" name="roleCheckBox" value="@role.Id" />&nbsp;@role.Name
+                                                <input type="checkbox" class="roleCheckBox" id="roleCheckBox-@role.Id" name="roles" value="@role.Id" />&nbsp;@role.Name
                                             </a>
                                         </li>
                                     }

@@ -68,55 +68,58 @@ function validateForm(e) {
     } else {
         url += `/users/check-edit`
     }
-    $.ajax({
-        url: url,
-        method: "POST",
-        data: {
-            'username': $('#username').val(),
-            'email': $('#email').val(),
-            'phone': $('#phone').val(),
-            'password': password.val(),
-            'userId': userId.val() === '' ? 0 : userId.val(),
-            'hasChangePass': newPassword.val() !== '' || confirmPassword.val() !== ''
-        },
-        async: false,
-        success: function (data) {
-            console.log(data)
-            let str = data.toString()
-            let arr = str.substring(0, str.lastIndexOf(']')).replace('[', '').replace(']', '').split(', ');
-            console.log(arr)
-            if (arr.includes('user')) {
-                $('#userValidateMessage').html('Tên tài khoản đã tồn tại').css('color', 'red')
-                noError = false;
-            } else {
-                $('#userValidateMessage').html('')
-            }
+    if (noError) {
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: {
+                'username': $('#username').val(),
+                'email': $('#email').val(),
+                'phone': $('#phone').val(),
+                'password': password.val(),
+                'userId': userId.val() === '' ? 0 : userId.val(),
+                'isChangePassword': newPassword.val() !== '' || confirmPassword.val() !== ''
+            },
+            async: false,
+            success: function (data) {
+                console.log(data.errors)
+                //let str = data.toString()
+                let arr = data.errors
+                console.log(data.errors)
+                if (arr.includes('username')) {
+                    $('#userValidateMessage').html('Tên tài khoản đã tồn tại').css('color', 'red')
+                    noError = false;
+                } else {
+                    $('#userValidateMessage').html('')
+                }
 
-            if (arr.includes('email')) {
-                $('#emailValidateMessage').html('Email đã tồn tại').css('color', 'red')
-                noError = false;
-            } else {
-                $('#emailValidateMessage').html('')
-            }
+                if (arr.includes('email')) {
+                    $('#emailValidateMessage').html('Email đã tồn tại').css('color', 'red')
+                    noError = false;
+                } else {
+                    $('#emailValidateMessage').html('')
+                }
 
-            if (arr.includes('phone')) {
-                $('#phoneValidateMessage').html('Số điện thoại đã tồn tại').css('color', 'red')
-                noError = false;
-            } else {
-                $('#phoneValidateMessage').html('')
-            }
+                if (arr.includes('phone')) {
+                    $('#phoneValidateMessage').html('Số điện thoại đã tồn tại').css('color', 'red')
+                    noError = false;
+                } else {
+                    $('#phoneValidateMessage').html('')
+                }
 
-            if (arr.includes('password')) {
-                $('#passwordValidateMessage').html('Mật khẩu sai').css('color', 'red')
+                if (arr.includes('password')) {
+                    $('#passwordValidateMessage').html('Mật khẩu sai').css('color', 'red')
+                    noError = false;
+                } else {
+                    $('#passwordValidateMessage').html('')
+                }
+            },
+            error: function (error) {
+                console.log(error)
                 noError = false;
-            } else {
-                $('#passwordValidateMessage').html('')
             }
-        },
-        error: function (error) {
-            noError = false;
-        }
-    })
+        })
+    }
     if (noError) {
         $('#form-add').unbind('submit').submit();
     }

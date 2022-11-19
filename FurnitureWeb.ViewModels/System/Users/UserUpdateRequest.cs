@@ -38,16 +38,14 @@ namespace FurnitureWeb.ViewModels.System.Users
         [MaxLength(100)]
         public string UserName { get; set; }
 
-        [Required]
         public string Password { get; set; }
 
-        [Required]
         public string ConfirmPassword { get; set; }
 
         [Required]
         public IFormFile Avatar { get; set; }
 
         [Required]
-        public List<string> Roles { get; set; }
+        public string[] Roles { get; set; }
     }
 }

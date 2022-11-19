@@ -23,6 +23,10 @@ namespace FurnitureWeb.APICaller.User
 
         Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request);
 
+        Task<CustomAPIResponse<NoContentAPIResponse>> CheckNewUser(UserCheckNewRequest request);
+
+        Task<CustomAPIResponse<NoContentAPIResponse>> CheckEditUser(UserCheckEditRequest request);
+
         Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims);
     }
 }
