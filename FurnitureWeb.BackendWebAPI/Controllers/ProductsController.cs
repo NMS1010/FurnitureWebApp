@@ -45,7 +45,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this product"));
 
             var product = await _productService.RetrieveById(productId);
-            return CreatedAtAction(nameof(RetrieveById), new { Id = productId }, product);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpGet("{productId}")]
@@ -106,7 +106,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create images for this product"));
             var pagingRequest = new ProductImageGetPagingRequest() { ProductId = request.ProductId };
             var productImages = await _productImageService.RetrieveAll(pagingRequest);
-            return CreatedAtAction(nameof(RetrieveImageByProductId), new { request = pagingRequest }, productImages);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpPost("image/add")]
@@ -118,7 +118,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             if (productImgId <= 0)
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create sub image for this product"));
             var productImage = await _productImageService.RetrieveById(productImgId);
-            return CreatedAtAction(nameof(RetrieveImageById), new { productImageId = productImgId }, productImage);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpPut("images/update")]

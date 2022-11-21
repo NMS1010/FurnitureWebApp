@@ -59,7 +59,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this caterogy"));
             var category = await _categoryService.RetrieveById(categoryId);
 
-            return CreatedAtAction(nameof(RetrieveById), new { categoryId = categoryId }, category);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]

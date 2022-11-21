@@ -36,14 +36,14 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(RegisterRequest request)
         {
             var res = await _userAPIClient.Register(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [HttpGet("delete/{userId}")]
         public async Task<IActionResult> Delete(string userId)
         {
             var res = await _userAPIClient.DeleteUser(userId);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [Route("detail/{userId}")]

@@ -46,7 +46,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         {
             var res = await _categoryAPIClient.CreateCategory(request);
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, res.IsSuccesss ? false : true);
+            return RedirectToAction(action, new { error = !res.IsSuccesss });
         }
 
         [HttpGet("delete/{categoryId}/{sub?}")]
@@ -55,7 +55,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             var res = await _categoryAPIClient.DeleteCategory(categoryId);
 
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, res.IsSuccesss ? false : true);
+            return RedirectToAction(action, new { error = !res.IsSuccesss });
         }
 
         [Route("get/{categoryId}")]
@@ -72,7 +72,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         {
             var res = await _categoryAPIClient.UpdateCategory(request);
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, res.IsSuccesss ? false : true);
+            return RedirectToAction(action, new { error = !res.IsSuccesss });
         }
     }
 }

@@ -31,6 +31,8 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             var res = await _productAPIClient.GetAllProductAsync(new ProductGetPagingRequest());
             if (error || !res.IsSuccesss)
                 ViewData["Error"] = res.Errors;
+            else
+                ViewData["Error"] = null;
             return View(res.Data);
         }
 
@@ -38,7 +40,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(ProductCreateRequest request)
         {
             var res = await _productAPIClient.CreateProduct(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [HttpGet("add/get")]
@@ -78,7 +80,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Delete(int productId)
         {
             var res = await _productAPIClient.DeleteProduct(productId);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [HttpGet("get/{productId}")]
@@ -115,7 +117,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(ProductUpdateRequest request)
         {
             var res = await _productAPIClient.UpdateProduct(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
     }
 }

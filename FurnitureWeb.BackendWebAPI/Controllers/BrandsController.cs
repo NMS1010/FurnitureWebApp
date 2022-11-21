@@ -50,7 +50,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this brand"));
             var brand = await _brandServices.RetrieveById(brandId);
 
-            return CreatedAtAction(nameof(RetrieveById), new { brandId = brandId }, brand);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]

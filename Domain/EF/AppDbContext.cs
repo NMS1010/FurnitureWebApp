@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Domain.EF
@@ -37,6 +38,11 @@ namespace Domain.EF
             modelBuilder.ApplyConfiguration(new OrderItemConfigurations());
             modelBuilder.ApplyConfiguration(new ReviewItemConfigurations());
             modelBuilder.ApplyConfiguration(new WishItemConfigurations());
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
 
         public DbSet<Product> Products { get; set; }

@@ -53,9 +53,10 @@ namespace FurnitureWeb.Services.Catalog.Brands
                 var brand = await _context.Brands.FindAsync(brandId);
                 if (brand == null)
                     return -1;
-                await _fileStorage.DeleteFile(Path.GetFileName(brand.Image));
                 _context.Brands.Remove(brand);
-                return await _context.SaveChangesAsync();
+                int count = await _context.SaveChangesAsync();
+                await _fileStorage.DeleteFile(Path.GetFileName(brand.Image));
+                return count;
             }
             catch
             {
@@ -131,14 +132,16 @@ namespace FurnitureWeb.Services.Catalog.Brands
                     return -1;
                 brand.BrandName = request.BrandName;
                 brand.Origin = request.Origin;
+                string filename = brand.Image;
                 if (request.Image != null)
                 {
-                    await _fileStorage.DeleteFile(Path.GetFileName(brand.Image));
                     brand.Image = await _fileStorage.SaveFile(request.Image);
                 }
                 _context.Brands.Update(brand);
 
-                return await _context.SaveChangesAsync();
+                int count = await _context.SaveChangesAsync();
+                await _fileStorage.DeleteFile(Path.GetFileName(filename));
+                return count;
             }
             catch
             {

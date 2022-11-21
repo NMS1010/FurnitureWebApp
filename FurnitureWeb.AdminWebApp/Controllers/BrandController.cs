@@ -31,14 +31,14 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(BrandCreateRequest request)
         {
             var res = await _brandAPIClient.CreateBrand(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [HttpGet("delete/{brandId}")]
         public async Task<IActionResult> Delete(int brandId)
         {
             var res = await _brandAPIClient.DeleteBrand(brandId);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
 
         [Route("get/{brandId}")]
@@ -54,7 +54,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(BrandUpdateRequest request)
         {
             var res = await _brandAPIClient.UpdateBrand(request);
-            return RedirectToAction(nameof(Index), res.IsSuccesss ? false : true);
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
         }
     }
 }

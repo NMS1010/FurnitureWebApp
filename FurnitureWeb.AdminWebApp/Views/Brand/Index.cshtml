@@ -152,7 +152,19 @@
 
 @section Scripts {
    <script>
-       
+       $(window).on('load', function() {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if(window.location.href.includes("error=True")){
+                $('#modal-error').modal('show');
+            }
+        });
         $(document).ready(function () {
             $('#modal-delete-brand').on('show.bs.modal', function (event) {
                 let id = $(event.relatedTarget).attr('data-id');
