@@ -35,5 +35,8 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 
         [Required]
         public int BrandId { get; set; }
+
+        [Required]
+        public List<IFormFile> SubImages { get; set; }
     }
 }

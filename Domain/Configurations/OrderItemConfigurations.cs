@@ -38,12 +38,14 @@ namespace Domain.Configurations
             builder
                 .HasOne(x => x.Order)
                 .WithMany(x => x.OrderItems)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasOne(x => x.Product)
                 .WithMany(x => x.OrderItems)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

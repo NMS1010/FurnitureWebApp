@@ -80,103 +80,174 @@ namespace FurnitureWeb.Services.System.Users
 
         public async Task<(bool, string)> Register(RegisterRequest request)
         {
-            var user = new AppUser()
+            try
             {
-                DateOfBirth = request.Dob,
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                UserName = request.UserName,
-                PhoneNumber = request.PhoneNumber,
-                Gender = request.Gender,
-                Status = request.Status,
-                DateCreated = DateTime.Now,
-                Address = request.Address,
-                DateUpdated = DateTime.Now,
-                Avatar = await _fileStorage.SaveFile(request.Avatar)
-            };
-            var res = await _userManager.CreateAsync(user, request.Password);
-
-            if (res.Succeeded)
-            {
-                List<string> roles = new List<string>();
-                foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                var user = new AppUser()
                 {
-                    var role = await _context.Roles.FindAsync(roleId);
-                    roles.Add(role.Name);
+                    DateOfBirth = request.Dob,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    UserName = request.UserName,
+                    PhoneNumber = request.PhoneNumber,
+                    Gender = request.Gender,
+                    Status = request.Status,
+                    DateCreated = DateTime.Now,
+                    Address = request.Address,
+                    DateUpdated = DateTime.Now,
+                    Avatar = await _fileStorage.SaveFile(request.Avatar)
+                };
+                var res = await _userManager.CreateAsync(user, request.Password);
+
+                if (res.Succeeded)
+                {
+                    List<string> roles = new List<string>();
+                    foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                    {
+                        var role = await _context.Roles.FindAsync(roleId);
+                        roles.Add(role.Name);
+                    }
+                    await _userManager.AddToRolesAsync(user, roles);
+                    return (true, "successfull");
                 }
-                await _userManager.AddToRolesAsync(user, roles);
-                return (true, "successfull");
+                string error = "";
+                res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
+                return (false, error);
             }
-            string error = "";
-            res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
-            return (false, error);
+            catch
+            {
+                return (false, "Has error");
+            }
         }
 
         public async Task<(bool, string)> Update(UserUpdateRequest request)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId);
-            if (user == null)
-                return (false, "not found");
-            string avatar = user.Avatar;
-
-            user.FirstName = request.FirstName;
-            user.DateOfBirth = request.Dob;
-            user.Email = request.Email;
-            user.LastName = request.LastName;
-            user.UserName = request.UserName;
-            user.PhoneNumber = request.PhoneNumber;
-            user.Gender = request.Gender;
-            user.Status = request.Status;
-            user.DateUpdated = DateTime.Now;
-            user.Address = request.Address;
-            if (request.ConfirmPassword != null)
-                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.ConfirmPassword);
-            user.Avatar = await _fileStorage.SaveFile(request.Avatar);
-            var res = await _userManager.UpdateAsync(user);
-            if (res.Succeeded)
+            try
             {
-                await _fileStorage.DeleteFile(avatar);
+                var user = await _userManager.FindByIdAsync(request.UserId);
+                if (user == null)
+                    return (false, "not found");
+                string avatar = user.Avatar;
 
-                await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
-                List<string> roles = new List<string>();
-                foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                user.FirstName = request.FirstName;
+                user.DateOfBirth = request.Dob;
+                user.Email = request.Email;
+                user.LastName = request.LastName;
+                user.UserName = request.UserName;
+                user.PhoneNumber = request.PhoneNumber;
+                user.Gender = request.Gender;
+                user.Status = request.Status;
+                user.DateUpdated = DateTime.Now;
+                user.Address = request.Address;
+                if (request.ConfirmPassword != null)
+                    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.ConfirmPassword);
+                user.Avatar = await _fileStorage.SaveFile(request.Avatar);
+                var res = await _userManager.UpdateAsync(user);
+                if (res.Succeeded)
                 {
-                    var role = await _context.Roles.FindAsync(roleId);
-                    roles.Add(role.Name);
-                }
-                await _userManager.AddToRolesAsync(user, roles);
+                    await _fileStorage.DeleteFile(avatar);
 
-                return (true, "successfull");
+                    await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+                    List<string> roles = new List<string>();
+                    foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
+                    {
+                        var role = await _context.Roles.FindAsync(roleId);
+                        roles.Add(role.Name);
+                    }
+                    await _userManager.AddToRolesAsync(user, roles);
+
+                    return (true, "successfull");
+                }
+                string error = "";
+                res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
+                return (false, error);
             }
-            string error = "";
-            res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
-            return (false, error);
+            catch
+            {
+                return (false, "Has error");
+            }
         }
 
         public async Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request)
         {
-            var users = await _userManager.Users
-                .Include(u => u.CartItems)
-                .Include(u => u.WishItems)
-                .Include(u => u.Orders)
-                .ThenInclude(u => u.OrderItems)
-                .ToListAsync();
-            string keyWord = request.Keyword;
-            if (!string.IsNullOrEmpty(keyWord))
+            try
             {
-                users = (List<AppUser>)users.Where(a =>
-                    a.UserName.Contains(keyWord) ||
-                    a.PhoneNumber.Contains(keyWord)
-                );
+                var users = await _userManager.Users
+                    .Include(u => u.CartItems)
+                    .Include(u => u.WishItems)
+                    .Include(u => u.Orders)
+                    .ThenInclude(u => u.OrderItems)
+                    .ToListAsync();
+                string keyWord = request.Keyword;
+                if (!string.IsNullOrEmpty(keyWord))
+                {
+                    users = (List<AppUser>)users.Where(a =>
+                        a.UserName.Contains(keyWord) ||
+                        a.PhoneNumber.Contains(keyWord)
+                    );
+                }
+
+                int totalRow = users.Count;
+
+                var dt = users
+                    .Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(x => new UserViewModel()
+                    {
+                        UserId = x.Id,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        PhoneNumber = x.PhoneNumber,
+                        Email = x.Email,
+                        UserName = x.UserName,
+                        Address = x.Address,
+                        Dob = x.DateOfBirth.ToString("yyyy-MM-dd"),
+                        Gender = x.Gender,
+                        Avatar = x.Avatar,
+                        DateCreated = x.DateCreated.ToString(),
+                        DateUpdated = x.DateUpdated.ToString(),
+                        Status = x.Status,
+                        Password = x.PasswordHash,
+                        TotalCartItem = x.CartItems.Count,
+                        TotalWishItem = x.WishItems.Count,
+                        TotalOrders = x.Orders.Count,
+                        TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
+                        TotalCost = x.Orders.Sum(o => o.TotalPrice),
+                        StatusCode = USER_STATUS.UserStatus[x.Status],
+                    }).ToList();
+
+                foreach (var x in dt)
+                {
+                    x.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.UserId).Select(k => k.RoleId).ToListAsync());
+                }
+
+                return new PagedResult<UserViewModel>()
+                {
+                    TotalItem = totalRow,
+                    Items = dt
+                };
             }
+            catch
+            {
+                return null;
+            }
+        }
 
-            int totalRow = users.Count;
-
-            var dt = users
-                .Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => new UserViewModel()
+        public async Task<UserViewModel> RetrieveById(string userId)
+        {
+            try
+            {
+                var x = await _userManager.Users
+                    .Where(x => x.Id == userId)
+                    .Include(u => u.WishItems)
+                    .Include(u => u.CartItems)
+                    .Include(u => u.WishItems)
+                    .Include(u => u.Orders)
+                    .ThenInclude(u => u.OrderItems)
+                    .FirstOrDefaultAsync();
+                if (x == null)
+                    return null;
+                var user = new UserViewModel()
                 {
                     UserId = x.Id,
                     FirstName = x.FirstName,
@@ -198,69 +269,30 @@ namespace FurnitureWeb.Services.System.Users
                     TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
                     TotalCost = x.Orders.Sum(o => o.TotalPrice),
                     StatusCode = USER_STATUS.UserStatus[x.Status],
-                }).ToList();
-
-            foreach (var x in dt)
-            {
-                x.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.UserId).Select(k => k.RoleId).ToListAsync());
+                };
+                var roles = await _userManager.GetRolesAsync(x);
+                user.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync());
+                return user;
             }
-
-            return new PagedResult<UserViewModel>()
+            catch
             {
-                TotalItem = totalRow,
-                Items = dt
-            };
-        }
-
-        public async Task<UserViewModel> RetrieveById(string userId)
-        {
-            var x = await _userManager.Users
-                .Where(x => x.Id == userId)
-                .Include(u => u.WishItems)
-                .Include(u => u.CartItems)
-                .Include(u => u.WishItems)
-                .Include(u => u.Orders)
-                .ThenInclude(u => u.OrderItems)
-                .FirstOrDefaultAsync();
-            if (x == null)
                 return null;
-            var user = new UserViewModel()
-            {
-                UserId = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                PhoneNumber = x.PhoneNumber,
-                Email = x.Email,
-                UserName = x.UserName,
-                Address = x.Address,
-                Dob = x.DateOfBirth.ToString("yyyy-MM-dd"),
-                Gender = x.Gender,
-                Avatar = x.Avatar,
-                DateCreated = x.DateCreated.ToString(),
-                DateUpdated = x.DateUpdated.ToString(),
-                Status = x.Status,
-                Password = x.PasswordHash,
-                TotalCartItem = x.CartItems.Count,
-                TotalWishItem = x.WishItems.Count,
-                TotalOrders = x.Orders.Count,
-                TotalBought = x.Orders.Sum(o => o.OrderItems.Sum(oi => oi.Quantity)),
-                TotalCost = x.Orders.Sum(o => o.TotalPrice),
-                StatusCode = USER_STATUS.UserStatus[x.Status],
-            };
-            var roles = await _userManager.GetRolesAsync(x);
-            user.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync());
-            return user;
+            }
         }
 
         public async Task<int> Delete(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return -1;
-            user.Status = USER_STATUS.IN_ACTIVE;
-            await _userManager.UpdateAsync(user);
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return -1;
+                user.Status = USER_STATUS.IN_ACTIVE;
+                await _userManager.UpdateAsync(user);
 
-            return 1;
+                return 1;
+            }
+            catch { return -1; }
         }
 
         public async Task<List<string>> CheckNewUser(UserCheckNewRequest request)

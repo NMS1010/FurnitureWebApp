@@ -45,6 +45,7 @@ namespace FurnitureWeb.Services.Catalog.Products
             };
 
             _context.Products.Add(product);
+            await _context.SaveChangesAsync();
 
             if (request.Image != null)
             {
@@ -56,6 +57,15 @@ namespace FurnitureWeb.Services.Catalog.Products
                 });
             }
             await _context.SaveChangesAsync();
+            if (request.SubImages != null)
+            {
+                ProductImageCreateRequest imageReq = new ProductImageCreateRequest()
+                {
+                    ProductId = product.ProductId,
+                    Images = request.SubImages
+                };
+                await _productImageService.Create(imageReq);
+            }
             return product.ProductId;
         }
 
@@ -74,21 +84,43 @@ namespace FurnitureWeb.Services.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
+        private static string GenerateProductStatusClass(int status)
+        {
+            string s = "";
+            switch (status)
+            {
+                case PRODUCT_STATUS.IN_STOCK:
+                    s = "badge badge-success";
+                    break;
+
+                case PRODUCT_STATUS.OUT_STOCK:
+                    s = "badge badge-warning";
+                    break;
+
+                case PRODUCT_STATUS.SUSPENDED:
+                    s = "badge badge-danger";
+                    break;
+
+                default:
+                    s = "";
+                    break;
+            }
+            return s;
+        }
+
         public async Task<PagedResult<ProductViewModel>> RetrieveAll(ProductGetPagingRequest request)
         {
             var query = await _context.Products
                 .Include(c => c.ProductImages)
                 .Include(c => c.Brand)
                 .Include(c => c.Category)
+                .Include(c => c.OrderItems)
                 .ToListAsync();
             if (!String.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.Name.Contains(request.Keyword)).ToList();
             }
-            if (request.CategoryIds.Count > 0)
-            {
-                query = query.Where(x => request.CategoryIds.Contains(x.CategoryId)).ToList();
-            }
+
             var data = query
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -111,8 +143,14 @@ namespace FurnitureWeb.Services.Catalog.Products
                     BrandId = x.BrandId,
                     CategoryId = x.CategoryId,
                     StatusCode = PRODUCT_STATUS.ProductStatus[x.Status],
-                    TotalPurchased = x.OrderItems.Sum(g => g.Quantity)
+                    TotalPurchased = x.OrderItems.Sum(g => g.Quantity),
+                    StatusClass = GenerateProductStatusClass(x.Status)
                 }).ToList();
+
+            foreach (var product in data)
+            {
+                product.SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId });
+            }
             return new PagedResult<ProductViewModel>
             {
                 TotalItem = query.Count,
@@ -127,6 +165,7 @@ namespace FurnitureWeb.Services.Catalog.Products
                 .Include(c => c.ProductImages)
                 .Include(c => c.Brand)
                 .Include(c => c.Category)
+                .Include(c => c.OrderItems)
                 .FirstOrDefaultAsync();
             if (product == null)
                 return null;
@@ -149,7 +188,9 @@ namespace FurnitureWeb.Services.Catalog.Products
                 BrandId = product.BrandId,
                 CategoryId = product.CategoryId,
                 StatusCode = PRODUCT_STATUS.ProductStatus[product.Status],
-                TotalPurchased = product.OrderItems.Sum(g => g.Quantity)
+                TotalPurchased = product.OrderItems.Sum(g => g.Quantity),
+                StatusClass = GenerateProductStatusClass(product.Status),
+                SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId })
             };
         }
 

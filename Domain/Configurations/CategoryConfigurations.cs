@@ -34,7 +34,8 @@ namespace Domain.Configurations
             builder
                 .HasMany(x => x.Products)
                 .WithOne(x => x.Category)
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

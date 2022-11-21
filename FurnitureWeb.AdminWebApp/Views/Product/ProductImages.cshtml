@@ -1,0 +1,198 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.ProductImages;
+@using FurnitureWeb.ViewModels.Common;
+@using Microsoft.Extensions.Configuration;
+
+@model PagedResult<ProductImageViewModel>
+@inject IConfiguration Configuration
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2 breadcrumb-contacts">
+    <p class="breadcrumbs"><span><a href="~/admin/home">Home</a></span>
+    <span><i class="mdi mdi-chevron-right"></i></span><a href="~/admin/products">Products</a>
+    <span><i class="mdi mdi-chevron-right"></i></span><a href="~/admin/products/edit/get/@Model.Items[0].ProductId">Product #@Model.Items[0].ProductId</a>
+    <span><i class="mdi mdi-chevron-right"></i></span>Main Category</p>
+</div>
+<div class="row">
+    <div class="col-xl-4 col-lg-12">
+    <div class="ec-cat-list card card-default mb-24px">
+        <div class="card-body">
+        <div class="ec-cat-form">
+            <h4>Add Product Image</h4>
+            <form id="form-add"
+                 action="~/admin/products/images/add"
+                 method="post" enctype="multipart/form-data"
+            >
+            <input type="hidden" id="productImageId" name="ProductImageId" value=""/>
+            <input type="hidden" id="productId" name="productId" value="@Model.Items[0].ProductId"/>
+            <div class="row ec-vendor-uploads">
+                <label class="col-12 col-form-label" for="images">Logo</label>
+                <div class="ec-vendor-img-upload">
+                <div class="ec-vendor-main-img">
+                    <div class="thumb-upload-set col-md-12">
+                    <div class="thumb-upload">
+                        <div class="thumb-edit">
+                        <input type='file' id="images" name="Image"
+                                class="ec-image-upload"
+                                accept=".png, .jpg, .jpeg" required/>
+                        <label for="images"><img
+                                src="~/img/icons/edit.svg"
+                                class="svg_img header_svg" alt="edit"/>
+                        </label>
+                        </div>
+                        <div class="thumb-preview ec-preview">
+                        <div class="image-thumb-preview">
+                            <img class="image-thumb-preview ec-image-preview clear-img"
+                                id="images-preview"
+                                src="~/img/products/vender-upload-thumb-preview.jpg"
+                                alt="edit" />
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col col-6">
+                    <input type="button" class="btn btn-danger clear-form" value="Huỷ">
+                </div>
+                <div class="col col-6">
+                    <input name="submit" type="submit" class="btn btn-primary" value="Xác nhận"/>
+                </div>
+            </div>
+            </form>
+
+        </div>
+        </div>
+    </div>
+    </div>
+    <div class="col-xl-8 col-lg-12">
+    <div class="ec-cat-list card card-default">
+        <div class="card-body">
+        <div class="table-responsive">
+            <table id="responsive-data-table" class="table">
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>Thumb</th>
+                    <th>ProductId</th>
+                    <th>Main Image</th>
+                    <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model.Items.Count > 0)
+                    {         
+                        @foreach(var productImage in Model.Items)
+                        {
+                            <tr>
+                                <td>@productImage.Id</td>
+                                <td><img class="cat-thumb" src=@Configuration["BaseAddress"]@productImage.Image alt="Product Image" /></td>
+                                <td>@productImage.ProductId</td>
+                                <td>@productImage.IsDefault</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button"
+                                                class="btn btn-outline-success">Info</button>
+                                        <button type="button"
+                                            class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false" data-display="static">
+                                            <span class="sr-only">Info</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item btn btn-info" onclick="editProductImage(this,'@productImage.Id')">Sửa</a>
+                                            @if (productImage.IsDefault == false)
+                                            {
+                                                <a type="button" class="dropdown-item btn btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#modal-delete-productImage" data-id="@productImage.Id" href="#modal-delete-productImage">
+                                                    Xoá   
+                                                </a>   
+                                            }
+                                        </div>
+                                     </div>
+                                </td>
+                            </tr>       
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-delete-productImage" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+        <h3 class="modal-header border-bottom-0">Bạn có muốn xoá ảnh sản phẩm này</h3>
+        <div class="modal-footer px-4">
+        <button type="button" class="btn btn-secondary btn-pill"
+                data-bs-dismiss="modal">Huỷ</button>
+        <a id="link-delete" class="btn btn-danger btn-pill" >Xoá</a>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            @{
+                var productId = Model.Items[0].ProductId;
+            }
+            $('#modal-delete-productImage').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                document.getElementById('link-delete').href = "/admin/products/images/" + @productId + "/delete/" + id;
+            });
+        });
+        $(window).on('load', function () {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if (window.location.href.includes("error")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $(".clear-form").on("click", function (e) {
+            e.preventDefault();
+            document.getElementById('form-add').reset();
+            $("input[type='text']").val('');
+            $("input[type='file']").val('');
+            document.querySelector('.clear-img').src = "/img/products/vender-upload-thumb-preview.jpg";
+        })
+        function editProductImage(e, productImageId){
+            $.ajax({
+                url: "/admin/products/images/get/" + productImageId,
+                method: "GET",
+                async: false,
+                success: function (data) {
+                    console.log(data)
+                    document.getElementById("productImageId").value = data.id
+                    document.getElementById("productId").value = data.productId
+                    document.getElementById("images-preview").src = '@Configuration["BaseAddress"]' + data.image
+                    document.getElementById("form-add").action = "/admin/products/images/edit"
+                    document.getElementById("images").required = false
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
+    </script>
+}

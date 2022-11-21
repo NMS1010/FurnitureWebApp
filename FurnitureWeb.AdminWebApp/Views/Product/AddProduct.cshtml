@@ -1,0 +1,273 @@
+﻿@using FurnitureWeb.Utilities.Constants.Products;
+@using FurnitureWeb.ViewModels.Catalog.Brands;
+@using FurnitureWeb.ViewModels.Catalog.Categories;
+@using FurnitureWeb.ViewModels.Catalog.Products;
+@using Microsoft.Extensions.Configuration;
+
+@model ProductViewModel
+
+
+@inject IConfiguration Configuration
+
+<div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+    <div>
+        <h1>Add Product</h1>
+        <p class="breadcrumbs"><span><a href="~/admin/home">Home</a></span>
+            <span><i class="mdi mdi-chevron-right"></i></span>Product</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-default">
+            <div class="card-header card-header-border-bottom">
+                <h2>Product</h2>
+            </div>
+            <div class="card-body">
+                <div class="row ec-vendor-uploads">
+                    <form class="row g-3"
+                        action="~/admin/products/add"
+                        method="post" enctype="multipart/form-data"
+                        id="form-add"
+                    >
+                        <div class="col-lg-4">
+                            <div class="ec-vendor-img-upload">
+                                <div class="row ec-vendor-main-img">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <input type='file' id="imageUpload" class="ec-image-upload" name="image"
+                                                    accept=".png, .jpg, .jpeg" @(Model != null ? "" : "required") />
+                                            <label for="imageUpload"><img
+                                                    src="~/img/icons/edit.svg"
+                                                    class="svg_img header_svg" alt="edit" /></label>
+                                        </div>
+                                        <div class="avatar-preview ec-preview">
+                                            <div class="imagePreview ec-div-preview">
+                                                @if(Model == null){
+                                                    <img class="ec-image-preview"
+                                                        src="~/img/products/vender-upload-preview.jpg"
+                                                        alt="edit" />
+                                                }
+                                                 else{
+                                                    <img class="ec-image-preview"
+                                                        src="@Configuration["BaseAddress"]@Model.ImagePath"
+                                                        alt="edit" />
+                                                }
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="thumb-upload-set col-md-12">
+                                        @if(Model == null)
+                                        {
+                                            <div class="thumb-upload">
+                                                <div class="thumb-edit">
+                                                    <input type='file' id="thumbUpload1"
+                                                            name="subImages"
+                                                            class="ec-image-upload"
+                                                            accept=".png, .jpg, .jpeg" required/>
+                                                    <label for="thumbUpload1"><img
+                                                        src="~/img/icons/edit.svg"
+                                                        class="svg_img header_svg" alt="edit" /></label>
+                                                </div>
+                                                <div class="thumb-preview ec-preview">
+                                                    <div class="image-thumb-preview">
+                                                        <img class="image-thumb-preview ec-image-preview"
+                                                            src="~/img/products/vender-upload-thumb-preview.jpg"
+                                                            alt="edit" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            foreach(var subImage in Model.SubImages.Items)
+                                            {
+                                                <div class="thumb-upload">
+                                                    <div class="thumb-preview ec-preview">
+                                                        <div class="image-thumb-preview">
+                                                            <img class="image-thumb-preview ec-image-preview"
+                                                                    src="@Configuration["BaseAddress"]@subImage.Image"
+                                                                    alt="edit" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="ec-vendor-upload-detail">
+                                <div class="row">
+                                    @if(Model != null)
+                                    {
+                                        <input type="hidden" name="productId" id="productId" value="@Model.ProductId">
+                                    }
+                                    <div class="col-md-6">
+                                        <label for="ProductName" class="form-label">Tên sản phẩm</label>
+                                        <input type="text" class="form-control slug-title" id="ProductName" name="name" required value="@Model?.Name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="Categories" class="form-label">Danh mục</label>
+                                        <select name="categoryId" id="Categories" class="form-select" required>
+                                            @foreach(var c in ViewData["Categories"] as List<CategoryViewModel>)
+                                            {
+                                                if(Model != null && c.CategoryId == Model.CategoryId)
+                                                {
+                                                    <option value="@c.CategoryId" selected>@c.Name</option>
+                                                }
+                                                else if (Model == null || c.CategoryId != Model.CategoryId)
+                                                {
+                                                    <option value="@c.CategoryId">@c.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <label for="description" class="form-label">Mô tả</label>
+                                        <input type="text" id="description" class="form-control" rows="2" required name="description" value="@Model?.Description"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="Brands" class="form-label">Thương hiệu</label>
+                                        <select name="brandId" id="Brands" class="form-select" required>
+                                            @foreach(var c in ViewData["Brands"] as List<BrandViewModel>)
+                                            {
+                                                if(Model != null && c.BrandId == Model.BrandId)
+                                                {
+                                                    <option value="@c.BrandId" selected>@c.BrandName</option>
+                                                }
+                                                else if (Model == null || c.BrandId != Model.BrandId)
+                                                {
+                                                    <option value="@c.BrandId">@c.BrandName</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <label for="price" class="form-label">Đơn giá</label>
+                                        <input type="number" class="form-control" min="0" id="price" name="price" value="@Model?.Price" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="quantity" class="form-label">Số lượng</label>
+                                        <input type="number" class="form-control" min="0" id="quantity" name="quantity" value="@Model?.Quantity" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <label for="origin" class="form-label">Nguồn gốc</label>
+                                        <input type="text" class="form-control" id="origin"
+                                                name="origin" value="@Model?.Origin" required/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="status" class="form-label">Trạng thái</label>
+                                        <select id="status" name="Status" class="form-select" required>
+                                            @foreach(var c in PRODUCT_STATUS.ProductStatus)
+                                            {
+                                                if(Model != null && c.Key == Model.Status)
+                                                {
+                                                    <option value="@c.Key" selected>@c.Value</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@c.Key">@c.Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    @if (Model == null)
+                                    {
+                                        <div class="col-md-4">
+                                            <label for="number-sub-image" class="form-label">Số lượng ảnh mô tả</label>
+                                            <input type="hidden" value="1" name="min-number-sub-image" class="min-number-sub-image">
+                                            <input value="1" onkeydown="return false" data-prev-value="0" type="number" class="form-control number-sub-image" min="1" max="@IMAGE_PER_PRODUCT.QUANTITY" id="number-sub-image" name="number-sub-image">
+                                        </div>
+                                    }
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col col-6">
+                                        <a class="btn btn-danger" href="~/admin/products">Huỷ</a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(window).on('load', function () {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                </text>
+            }
+            if (Model != null)
+            {
+                <text>
+                    document.getElementById('form-add').action = '/admin/products/edit'
+                </text>
+            }
+            }
+            if (window.location.href.includes("error")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $('.number-sub-image').on('input', (e) => {
+            changeNumberSubImage(e)
+        })
+        function changeNumberSubImage(e) {
+            let n = document.querySelector(`.number-sub-image`).value
+            let min = document.querySelector(`.min-number-sub-image`).value
+            let node = document.querySelector('.thumb-upload-set');
+            let direction = e.target.value > parseInt(e.target.dataset.prevValue) ? 'up' : 'down'
+            e.target.dataset.prevValue = e.target.value;
+            if (direction === 'up' && e.target.value <= @IMAGE_PER_PRODUCT.QUANTITY) {
+                let html = `
+                            <div class="thumb-upload">
+                                <div class="thumb-edit">
+                                    <input type='file' id="thumbUpload`+ e.target.value + `"
+                                            name="subImages"
+                                            class="ec-image-upload"
+                                            accept=".png, .jpg, .jpeg" required/>
+                                    <label for="thumbUpload`+ e.target.value + `"><img
+                                            src="/img/icons/edit.svg"
+                                            class="svg_img header_svg" alt="edit" /></label>
+                                </div>
+                                <div class="thumb-preview ec-preview">
+                                    <div class="image-thumb-preview">
+                                        <img class="image-thumb-preview ec-image-preview"
+                                                src="/img/products/vender-upload-thumb-preview.jpg"
+                                                alt="edit" />
+                                    </div>
+                                </div>
+                            </div>`
+                node.innerHTML += html
+            }else if (direction === 'down' && e.target.value >= min) {
+                node.removeChild(node.lastElementChild)
+            }
+        }
+    </script>
+}

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FurnitureWeb.ViewModels.Catalog.ProductImages;
+using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
 
         public int Status { get; set; }
         public string StatusCode { get; set; }
+        public string StatusClass { get; set; }
 
         public string Origin { get; set; }
 
@@ -34,5 +37,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
         public int BrandId { get; set; }
         public int TotalPurchased { get; set; }
         public int AverageRating { get; set; }
+        public PagedResult<ProductImageViewModel> SubImages { get; set; }
     }
 }

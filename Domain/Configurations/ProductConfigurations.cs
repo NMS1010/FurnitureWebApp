@@ -51,35 +51,42 @@ namespace Domain.Configurations
             builder
                 .HasOne(x => x.Brand)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.BrandId);
+                .HasForeignKey(x => x.BrandId)
+                .OnDelete(DeleteBehavior.Restrict);
             builder
                 .HasOne(x => x.Category)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
             builder
                 .HasMany(p => p.ReviewItems)
                 .WithOne(r => r.Product)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasMany(p => p.ProductImages)
                 .WithOne(pi => pi.Product)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasMany(p => p.CartItems)
                 .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasMany(p => p.OrderItems)
                 .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasMany(p => p.WishItems)
                 .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -81,7 +81,6 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
                 return -1;
 
             await _fileStorageService.DeleteFile(Path.GetFileName(productImg.Path));
-            productImg.IsDefault = false;
             productImg.Path = await _fileStorageService.SaveFile(request.Image);
 
             _context.ProductImages.Update(productImg);
@@ -112,6 +111,27 @@ namespace FurnitureWeb.Services.Catalog.ProductImages
                 TotalItem = query.Count,
                 Items = data
             };
+        }
+
+        public async Task<int> CreateSingleImage(ProductImageCreateSingleRequest request)
+        {
+            var product = await _context.Products
+                .Where(c => c.ProductId == request.ProductId)
+                .Include(c => c.ProductImages)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+                return -1;
+            var productImg = new ProductImage()
+            {
+                ProductId = product.ProductId,
+                IsDefault = false,
+                Path = await _fileStorageService.SaveFile(request.Image)
+            };
+            _context.ProductImages.Add(productImg);
+
+            await _context.SaveChangesAsync();
+            return productImg.Id;
         }
     }
 }

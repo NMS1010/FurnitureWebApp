@@ -33,7 +33,8 @@ namespace Domain.Configurations
             builder
                 .HasMany(x => x.Products)
                 .WithOne(x => x.Brand)
-                .HasForeignKey(x => x.BrandId);
+                .HasForeignKey(x => x.BrandId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

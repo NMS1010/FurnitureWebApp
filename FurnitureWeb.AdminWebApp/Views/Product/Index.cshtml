@@ -1,0 +1,132 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.Products;
+@using FurnitureWeb.ViewModels.Common;
+@using Microsoft.Extensions.Configuration;
+
+@inject IConfiguration Configuration
+@model PagedResult<ProductViewModel>
+
+<div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+    <div>
+        <h1>Product</h1>
+        <p class="breadcrumbs">
+            <span><a href="~/admin/products">Home</a></span>
+            <span><i class="mdi mdi-chevron-right"></i></span>Product
+        </p>
+    </div>
+    <div>
+        <a href="~/admin/products/add/get" class="btn btn-primary"> Add Product</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="responsive-data-table" class="table"
+                            style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Name</th>
+                                <th>Origin</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Purchased</th>
+                                <th>Status</th>
+                                <th>DateCreated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(var product in Model.Items)
+                            {
+                                <tr>
+                                    <td><img class="tbl-thumb" src="@Configuration["BaseAddress"]@product.ImagePath" alt="Product Image" /></td>
+                                    <td>@product.Name</td>
+                                    <td>@product.Origin</td>
+                                    <td>@product.CategoryName</td>
+                                    <td>@product.BrandName</td>
+                                    <td>@product.Price</td>
+                                    <td>@product.Quantity</td>
+                                    <td>@product.TotalPurchased</td>
+                                    <td><span class="@product.StatusClass">@product.StatusCode</span></td>
+                                    <td>@product.DateCreated</td>
+                                    <td>
+                                        <div class="btn-group mb-1">
+                                            <button type="button"
+                                                class="btn btn-outline-success">
+                                                Info
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false" data-display="static">
+                                                <span class="sr-only">Info</span>
+                                            </button>
+
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item btn btn-success" href="~/admin/products/images/@product.ProductId">Images</a>
+                                                <a class="dropdown-item btn btn-info" href="~/admin/products/edit/get/@product.ProductId">Edit</a>
+                                                  <a type="button" class="dropdown-item btn btn-danger" data-bs-toggle="modal"
+                                                     data-bs-target="#modal-delete-product" data-id="@product.ProductId" href="#modal-delete-product">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-delete-product" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+              <div class="modal-content">
+                <h3 class="modal-header border-bottom-0">Bạn có muốn xoá sản phẩm này</h3>
+                <div class="modal-footer px-4">
+                  <button type="button" class="btn btn-secondary btn-pill"
+                          data-bs-dismiss="modal">Huỷ</button>
+                  <a id="link-delete" class="btn btn-danger btn-pill" >Xoá</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+              <div class="modal-content">
+                <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+                <div class="modal-footer px-4">
+                  <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                          data-bs-dismiss="modal">Thoát</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#modal-delete-product').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                document.getElementById('link-delete').href = "products/delete/" + id;
+            });
+        });
+        $(window).on('load', function () {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if (window.location.href.includes("error")){
+                $('#modal-error').modal('show');
+            }
+        });
+    </script>
+}

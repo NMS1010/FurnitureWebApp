@@ -2,25 +2,18 @@ using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.Category;
+using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,6 +40,7 @@ namespace FurnitureWeb.AdminWebApp
 
             services.AddScoped<IBrandAPIClient, BrandAPIClient>();
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
+            services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>

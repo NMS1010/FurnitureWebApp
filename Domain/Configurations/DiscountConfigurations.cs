@@ -45,7 +45,8 @@ namespace Domain.Configurations
             builder
                 .HasMany(x => x.Orders)
                 .WithOne(x => x.Discount)
-                .HasForeignKey(x => x.DiscountId);
+                .HasForeignKey(x => x.DiscountId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

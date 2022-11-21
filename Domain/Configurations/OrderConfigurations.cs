@@ -60,15 +60,18 @@ namespace Domain.Configurations
             builder
                 .HasOne(x => x.Discount)
                 .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.DiscountId);
+                .HasForeignKey(x => x.DiscountId)
+                .OnDelete(DeleteBehavior.Restrict);
             builder
                 .HasOne(x => x.User)
                 .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.UserId);
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
             builder
                 .HasMany(x => x.OrderItems)
                 .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

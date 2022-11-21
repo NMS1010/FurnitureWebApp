@@ -1,8 +1,10 @@
 ﻿using Domain.Entities;
 using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Catalog.Products;
+using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
+using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -28,9 +30,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> RetrieveAllPaging([FromQuery] ProductGetPagingRequest request)
         {
             var products = await _productService.RetrieveAll(request);
-            if (products.TotalItem == 0)
-                return BadRequest();
-            return Ok(products);
+            if (products == null)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get product list"));
+            return Ok(CustomAPIResponse<PagedResult<ProductViewModel>>.Success(products, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
@@ -40,7 +42,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(ModelState);
             int productId = await _productService.Create(request);
             if (productId <= 0)
-                return BadRequest();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this product"));
 
             var product = await _productService.RetrieveById(productId);
             return CreatedAtAction(nameof(RetrieveById), new { Id = productId }, product);
@@ -51,8 +53,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             var product = await _productService.RetrieveById(productId);
             if (product == null)
-                return NotFound($"Can't find product with id: {productId}");
-            return Ok(product);
+                return NotFound(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found this product"));
+            return Ok(CustomAPIResponse<ProductViewModel>.Success(product, StatusCodes.Status200OK));
         }
 
         [HttpPut("update")]
@@ -62,8 +64,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(ModelState);
             int records = await _productService.Update(request);
             if (records <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{productId}")]
@@ -71,18 +73,18 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             int records = await _productService.Delete(producId);
             if (records <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         ////Product Images
-        [HttpGet("images/all")]
-        public async Task<IActionResult> RetrieveImageByProductId([FromQuery] ProductImageGetPagingRequest request)
+        [HttpGet("{productId}/images/all")]
+        public async Task<IActionResult> RetrieveImageByProductId(int productId)
         {
-            var productImages = await _productImageService.RetrieveAll(request);
+            var productImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = productId });
             if (productImages == null)
-                return BadRequest();
-            return Ok(productImages);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot get images of this product "));
+            return Ok(CustomAPIResponse<PagedResult<ProductImageViewModel>>.Success(productImages, StatusCodes.Status200OK));
         }
 
         [HttpGet("images/{productImageId}")]
@@ -90,8 +92,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             var productImage = await _productImageService.RetrieveById(productImageId);
             if (productImage == null)
-                return NotFound($"Can't find product with id: {productImageId}");
-            return Ok(productImage);
+                return NotFound(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found this product image"));
+            return Ok(CustomAPIResponse<ProductImageViewModel>.Success(productImage, StatusCodes.Status200OK));
         }
 
         [HttpPost("images/add")]
@@ -101,10 +103,22 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(ModelState);
             int count = await _productImageService.Create(request);
             if (count <= 0)
-                return BadRequest();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create images for this product"));
             var pagingRequest = new ProductImageGetPagingRequest() { ProductId = request.ProductId };
             var productImages = await _productImageService.RetrieveAll(pagingRequest);
             return CreatedAtAction(nameof(RetrieveImageByProductId), new { request = pagingRequest }, productImages);
+        }
+
+        [HttpPost("image/add")]
+        public async Task<IActionResult> CreateSingleImage([FromForm] ProductImageCreateSingleRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            int productImgId = await _productImageService.CreateSingleImage(request);
+            if (productImgId <= 0)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create sub image for this product"));
+            var productImage = await _productImageService.RetrieveById(productImgId);
+            return CreatedAtAction(nameof(RetrieveImageById), new { productImageId = productImgId }, productImage);
         }
 
         [HttpPut("images/update")]
@@ -114,8 +128,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(ModelState);
             int records = await _productImageService.Update(request);
             if (records <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this product image"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("images/delete/{imageId}")]
@@ -125,8 +139,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(ModelState);
             int records = await _productImageService.Delete(imageId);
             if (records == 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this product image"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }
 }
