@@ -4,6 +4,7 @@ using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.User;
+using FurnitureWeb.APICaller.Role;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,7 @@ namespace FurnitureWeb.AdminWebApp
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
+            services.AddScoped<IRoleAPIClient, RoleAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {

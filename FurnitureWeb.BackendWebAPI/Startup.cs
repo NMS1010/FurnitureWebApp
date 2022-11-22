@@ -13,6 +13,7 @@ using FurnitureWeb.Services.Catalog.Products;
 using FurnitureWeb.Services.Catalog.ReviewItems;
 using FurnitureWeb.Services.Catalog.WishItems;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Services.System.Roles;
 using FurnitureWeb.Services.System.Users;
 using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.System.Users;
@@ -86,7 +87,8 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IWishItemServices, WishItemServices>();
 
             services.AddScoped<IFileStorageService, FileStorageService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IRoleServices, RoleServices>();
 
             services.AddHttpContextAccessor();
             services.AddHttpClient();

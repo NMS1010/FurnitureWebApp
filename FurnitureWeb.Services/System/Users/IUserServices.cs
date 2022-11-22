@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.System.Users
 {
-    public interface IUserService
+    public interface IUserServices
     {
         Task<string> Authenticate(LoginRequest request);
 

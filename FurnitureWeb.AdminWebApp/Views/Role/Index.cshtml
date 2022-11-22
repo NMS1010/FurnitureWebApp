@@ -1,0 +1,157 @@
+﻿@using FurnitureWeb.ViewModels.Common;
+@using FurnitureWeb.ViewModels.System.Roles;
+
+@model PagedResult<RoleViewModel>
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2 breadcrumb-contacts">
+    <p class="breadcrumbs"><span><a href="<%=request.getContextPath()%>/admin/home">Home</a></span>
+    <span><i class="mdi mdi-chevron-right"></i></span>Role</p>
+</div>
+<div class="row">
+    <div class="col-xl-4 col-lg-12">
+    <div class="ec-cat-list card card-default mb-24px">
+        <div class="card-body">
+        <div class="ec-cat-form">
+            <h4>Add Role</h4>
+            <form id="form-add"
+                method="post"
+            >
+            <input type="hidden" id="roleId" name="roleId" value=""/>
+            <div class="row">
+                <label for="roleName" class="col-12 col-form-label">Tên vai trò</label>
+                <div class="col-12">
+                <input id="roleName" name="roleName" class="form-control here slug-title" type="text" value="" required/>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col col-6">
+                <input type="button" class="btn btn-danger clear-form" value="Huỷ">
+                </div>
+                <div class="col col-6">
+                <input name="submit" type="submit" class="btn btn-primary" value="Xác nhận"/>
+                </div>
+            </div>
+            </form>
+
+        </div>
+        </div>
+    </div>
+    </div>
+    <div class="col-xl-8 col-lg-12">
+    <div class="ec-cat-list card card-default">
+        <div class="card-body">
+        <div class="table-responsive">
+            <table id="responsive-data-table" class="table">
+            <thead>
+            <tr>
+                <th>Mã vai trò</th>
+                <th>Tên vai trò</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                @if(Model != null && Model.Items != null)
+                {
+                    foreach(var role in Model.Items)
+                    {
+                        <tr>
+                            <td>@role.RoleId</td>
+                            <td>@role.RoleName</td>
+                            <td>
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn btn-outline-success">Info</button>
+                                <button type="button"
+                                        class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false" data-display="static">
+                                <span class="sr-only">Info</span>
+                                </button>
+
+                                <div class="dropdown-menu">
+                                <a class="dropdown-item btn btn-info" onclick="editRole(this, '@role.RoleId')">Sửa</a>
+                                <a type="button" class="dropdown-item btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#modal-delete-role" data-id="@role.RoleId" href="#modal-delete-role">Xoá
+                                </a>
+                                </div>
+                            </div>
+                            </td>
+                        </tr>           
+                    }
+                }
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-delete-role" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+        <h3 class="modal-header border-bottom-0">Bạn có muốn xoá vai trò này</h3>
+        <div class="modal-footer px-4">
+        <button type="button" class="btn btn-secondary btn-pill"
+                data-bs-dismiss="modal">Huỷ</button>
+        <a id="link-delete" class="btn btn-danger btn-pill" >Xoá</a>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+        <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+        <div class="modal-footer px-4">
+        <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                data-bs-dismiss="modal">Thoát</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(window).on('load', function () {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if (window.location.href.includes("error=True")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $(document).ready(function () {
+          $('#modal-delete-role').on('show.bs.modal', function (event) {
+            let id = $(event.relatedTarget).attr('data-id');
+            let link = "/admin/roles/delete/" + id;
+            document.getElementById('link-delete').href = link
+          });
+        });
+        $(".clear-form").on("click", function (e) {
+            e.preventDefault();
+            document.getElementById('form-add').reset();
+        })
+        function editRole(e, roleId){
+            $.ajax({
+                url: "/admin/roles/get/" + roleId,
+                method: "GET",
+                async: false,
+                success: function (data) {
+                    console.log(data)
+                    document.getElementById("roleId").value = data.roleId
+                    document.getElementById("roleName").value = data.roleName
+                    document.getElementById("form-add").action = "roles/edit"
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
+    </script>
+}

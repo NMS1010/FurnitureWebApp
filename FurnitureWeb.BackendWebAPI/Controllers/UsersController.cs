@@ -14,9 +14,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserServices _userService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserServices userService)
         {
             _userService = userService;
         }

@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.System.Users
 {
-    public class UserService : IUserService
+    public class UserServices : IUserServices
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
@@ -31,7 +31,7 @@ namespace FurnitureWeb.Services.System.Users
         private readonly IFileStorageService _fileStorage;
         private readonly AppDbContext _context;
 
-        public UserService(SignInManager<AppUser> signInManager,
+        public UserServices(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
             IFileStorageService fileStorage,
