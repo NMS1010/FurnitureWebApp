@@ -15,22 +15,23 @@
             <h4>Add Role</h4>
             <form id="form-add"
                 method="post"
+                action="~/admin/roles/add"
             >
-            <input type="hidden" id="roleId" name="roleId" value=""/>
-            <div class="row">
-                <label for="roleName" class="col-12 col-form-label">Tên vai trò</label>
-                <div class="col-12">
-                <input id="roleName" name="roleName" class="form-control here slug-title" type="text" value="" required/>
+                <input type="hidden" id="roleId" name="roleId" value=""/>
+                <div class="row">
+                    <label for="roleName" class="col-12 col-form-label">Tên vai trò</label>
+                    <div class="col-12">
+                    <input id="roleName" name="roleName" class="form-control here slug-title" type="text" value="" required/>
+                    </div>
                 </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col col-6">
-                <input type="button" class="btn btn-danger clear-form" value="Huỷ">
+                <div class="row mt-4">
+                    <div class="col col-6">
+                    <input type="button" class="btn btn-danger clear-form" value="Huỷ">
+                    </div>
+                    <div class="col col-6">
+                    <input name="submit" type="submit" class="btn btn-primary" value="Xác nhận"/>
+                    </div>
                 </div>
-                <div class="col col-6">
-                <input name="submit" type="submit" class="btn btn-primary" value="Xác nhận"/>
-                </div>
-            </div>
             </form>
 
         </div>

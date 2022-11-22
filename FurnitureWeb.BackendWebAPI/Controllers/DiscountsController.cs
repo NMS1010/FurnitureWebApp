@@ -1,6 +1,8 @@
-﻿using FurnitureWeb.Services.Catalog.Discounts;
+﻿using Domain.Entities;
+using FurnitureWeb.Services.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
+using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -24,8 +26,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var discounts = await _discountServices.RetrieveAll(request);
 
             if (discounts == null)
-                return BadRequest();
-            return Ok(discounts);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get discount list"));
+            return Ok(CustomAPIResponse<PagedResult<DiscountViewModel>>.Success(discounts, StatusCodes.Status200OK));
         }
 
         [HttpGet("{discountId}")]
@@ -34,15 +36,15 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var discount = await _discountServices.RetrieveById(discountId);
 
             if (discount == null)
-                return BadRequest();
-            return Ok(discount);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found this discount"));
+            return Ok(CustomAPIResponse<DiscountViewModel>.Success(discount, StatusCodes.Status200OK));
         }
 
         [HttpGet("aplly/{discountCode}")]
         public async Task<IActionResult> ApplyDiscount(string discountCode)
         {
             var state = await _discountServices.ApllyDiscount(discountCode);
-            return Ok(state);
+            return Ok(CustomAPIResponse<string>.Success(state, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
@@ -51,10 +53,9 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var discountId = await _discountServices.Create(request);
 
             if (discountId <= 0)
-                return BadRequest();
-            var discount = await _discountServices.RetrieveById(discountId);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this discount"));
 
-            return CreatedAtAction(nameof(RetrieveById), new { discountId = discountId }, discount);
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
@@ -63,8 +64,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _discountServices.Update(request);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this discount"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{discountId}")]
@@ -73,8 +74,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _discountServices.Delete(discountId);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this discount"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }
 }

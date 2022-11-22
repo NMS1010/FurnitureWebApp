@@ -48,7 +48,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 
             if (brandId <= 0)
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create this brand"));
-            var brand = await _brandServices.RetrieveById(brandId);
 
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
         }

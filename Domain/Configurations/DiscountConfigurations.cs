@@ -28,7 +28,7 @@ namespace Domain.Configurations
                 .IsRequired();
             builder
                 .Property(x => x.DiscountValue)
-                .HasColumnType("DECIMAL")
+                .HasColumnType("DECIMAL(10,5)")
                 .IsRequired();
             builder
                 .Property(x => x.Quantity)

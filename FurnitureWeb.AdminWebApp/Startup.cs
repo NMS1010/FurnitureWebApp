@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using FurnitureWeb.APICaller.Discount;
 
 namespace FurnitureWeb.AdminWebApp
 {
@@ -44,6 +45,7 @@ namespace FurnitureWeb.AdminWebApp
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddScoped<IRoleAPIClient, RoleAPIClient>();
+            services.AddScoped<IDiscountAPIClient, DiscountAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {
