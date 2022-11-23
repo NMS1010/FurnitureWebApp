@@ -52,7 +52,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             var res = await _userAPIClient.GetUserById(userId);
             if (!res.IsSuccesss)
             {
-                ViewData["error"] = res.Errors;
+                ViewData["Error"] = res.Errors;
             }
             ViewData["roles"] = await _roleManager.Roles.ToListAsync();
             return View("UserDetails", res.Data);

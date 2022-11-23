@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FurnitureWeb.Services.Catalog.OrderItemItems
 {
@@ -51,7 +52,8 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
         public async Task<PagedResult<OrderItemViewModel>> RetrieveAll(OrderItemGetPagingRequest request)
         {
             var query = await _context.OrderItems
-                .Include(x => x.Product)
+                    .Include(x => x.Product)
+                    .ThenInclude(x => x.ProductImages)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -102,6 +104,42 @@ namespace FurnitureWeb.Services.Catalog.OrderItemItems
                 UnitPrice = orderItem.UnitPrice,
                 TotalPrice = orderItem.TotalPrice,
             };
+        }
+
+        public async Task<PagedResult<OrderItemViewModel>> RetrieveByOrderId(int orderId)
+        {
+            try
+            {
+                var query = await _context.OrderItems
+                    .Where(x => x.OrderId == orderId)
+                    .Include(x => x.Product)
+                    .ThenInclude(x => x.ProductImages)
+                    .ToListAsync();
+                var data = query
+                .Select(x => new OrderItemViewModel()
+                {
+                    OrderItemId = x.OrderItemId,
+                    OrderId = x.OrderId,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ProductImage = x.Product.ProductImages
+                        .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
+                        .FirstOrDefault()?.Path,
+                    Quantity = x.Quantity,
+                    UnitPrice = x.UnitPrice,
+                    TotalPrice = x.TotalPrice
+                }).ToList();
+
+                return new PagedResult<OrderItemViewModel>
+                {
+                    TotalItem = query.Count,
+                    Items = data
+                };
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<int> Update(OrderItemUpdateRequest request)

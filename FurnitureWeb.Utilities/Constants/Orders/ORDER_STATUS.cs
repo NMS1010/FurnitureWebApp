@@ -6,12 +6,12 @@ namespace FurnitureWeb.Utilities.Constants.Orders
 {
     public class ORDER_STATUS
     {
-        public static int PENDING = 0;
-        public static int READY_TO_SHIP = 1;
-        public static int ON_THE_WAY = 2;
-        public static int DELIVERED = 3;
-        public static int CANCELED = 4;
-        public static int RETURNED = 5;
+        public const int PENDING = 0;
+        public const int READY_TO_SHIP = 1;
+        public const int ON_THE_WAY = 2;
+        public const int DELIVERED = 3;
+        public const int CANCELED = 4;
+        public const int RETURNED = 5;
 
         public static Dictionary<int, string> OrderStatus = new Dictionary<int, string>()
         {
@@ -22,5 +22,12 @@ namespace FurnitureWeb.Utilities.Constants.Orders
             {CANCELED, "Đã huỷ" },
             {RETURNED, "Hoàn trả" },
         };
+
+        public static string IsCompleted(int orderStatus, int status)
+        {
+            if (orderStatus >= status)
+                return "completed";
+            return "";
+        }
     }
 }

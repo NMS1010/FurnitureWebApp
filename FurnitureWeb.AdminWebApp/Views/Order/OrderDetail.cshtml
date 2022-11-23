@@ -1,0 +1,184 @@
+﻿@using FurnitureWeb.Utilities.Constants.Orders;
+@using FurnitureWeb.ViewModels.Catalog.Orders;
+@using Microsoft.Extensions.Configuration;
+
+
+@model OrderViewModel
+
+@inject IConfiguration Configuration
+
+
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2">
+    <h1>Order Detail</h1>
+    <p class="breadcrumbs">
+        <span><a href="~/admin/home">Home</a></span>
+        <span><i class="mdi mdi-chevron-right"></i></span>
+        <a href="~/admin/orders">Orders</a>
+        <span><i class="mdi mdi-chevron-right"></i></span>Order details
+    </p>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="ec-odr-dtl card card-default">
+            <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                <h2 class="ec-odr">
+                    Order Detail<br>
+                    <span class="small">Order ID: @Model?.OrderId</span>
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-2 col-lg-6">
+                        <address class="info-grid">
+                            <div class="info-title"><strong>Khách hàng</strong></div><br>
+                            <div class="info-content">
+                                @Model?.UserFullName<br>
+                                @Model?.UserAddress<br>
+                                <abbr title="Phone">SĐT:</abbr> @Model?.UserPhone
+                            </div>
+                        </address>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <address class="info-grid">
+                            <div class="info-title"><strong>Gửi dến</strong></div><br>
+                            <div class="info-content">
+                                Tên: @Model?.Name<br>
+                                Địa chỉ: @Model?.Address<br>
+                                <abbr title="Phone">SĐT:</abbr> @Model?.Phone
+                            </div>
+                        </address>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <address class="info-grid">
+                            <div class="info-title"><strong>Trạng thái thanh toán</strong></div><br>
+                            <div class="info-content">
+                                Trạng thái: @Model?.PaymentMethod<br>
+                                Email: @Model?.Email<br>
+                            </div>
+                        </address>
+                    </div>
+                    <div class="col-xl-2 col-lg-6">
+                        <address class="info-grid">
+                            <div class="info-title"><strong>Ngày tạo hoá đơn</strong></div><br>
+                            <div class="info-content">
+                                @Model?.DateCreated<br>
+                            </div>
+                        </address>
+                    </div>
+                    <div class="col-xl-2 col-lg-6">
+                        <address class="info-grid">
+                            <div class="info-title"><strong>Ngày thanh toán</strong></div><br>
+                            <div class="info-content">
+                                @Model?.DateDone<br>
+                            </div>
+                        </address>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="tbl-title">PRODUCT SUMMARY</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped o-tbl">
+                                <thead>
+                                    <tr class="line">
+                                        <td><strong>#</strong></td>
+                                        <td class="text-center"><strong>Ảnh</strong></td>
+                                        <td class="text-center"><strong>Tên sản phẩm</strong></td>
+                                        <td class="text-center"><strong>Đơn giá</strong></td>
+                                        <td class="text-center"><strong>Số lượng</strong></td>
+                                        <td class="text-right"><strong>Tổng tiền</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(Model != null)
+                                    {
+                                        for(int i = 0; i< Model.OrderItems.Items.Count - 1; i++)
+                                        {
+                                            string line = "";
+                                            if (i == Model.OrderItems.Items.Count - 1)
+                                            {
+                                                line = "line";
+                                            }
+                                            <tr class="@line">
+                                                <td class="text-center">@Model.OrderItems.Items[i].OrderItemId}</td>
+                                                <td class="text-center">
+                                                    <img class="product-img"
+                                                 src="@Configuration["BaseAddress"]@Model.OrderItems.Items[i].ProductImage}" alt="" />
+                                                </td>
+                                                <td class="text-center"><strong>@Model.OrderItems.Items[i].ProductName}</strong></td>
+                                                <td class="text-center">@Model.OrderItems.Items[i].UnitPrice}</td>
+                                                <td class="text-center">@Model.OrderItems.Items[i].Quantity}</td>
+                                                <td class="text-right">@Model.OrderItems.Items[i].TotalPrice}</td>
+                                            </tr>
+                                        }
+                                    }
+                                    <tr>
+                                        <td colspan="4">
+                                        </td>
+                                        <td class="text-right"><strong>Tổng tiền sản phẩm</strong></td>
+                                        <td class="text-right"><strong>@Model.TotalItemPrice</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                        </td>
+                                        <td class="text-right"><strong>Phí vận chuyển</strong></td>
+                                        <td class="text-right"><strong>@Model.Shipping</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                        </td>
+                                        <td class="text-right"><strong>Thành tiền</strong></td>
+                                        <td class="text-right"><strong>@Model.TotalPrice</strong></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="4">
+                                        </td>
+                                        <td class="text-right"><strong>Trạng thái thanh toán</strong></td>
+                                        <td class="text-right"><strong>@Model.PaymentMethod</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tracking Detail -->
+        <div class="card mt-4 trk-order">
+            <div class="p-4 text-center text-white text-lg bg-dark rounded-top">
+                <span class="text-uppercase">Trạng thái đơn hàng - </span>
+                <span class="text-medium">#@Model.OrderId</span>
+            </div>
+            <div class="card-body">
+                <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+                    <div class="step @ORDER_STATUS.IsCompleted(Model.Status, ORDER_STATUS.PENDING)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon"><i class="mdi mdi-cart"></i></div>
+                        </div>
+                        <h4 class="step-title">Đang đợi</h4>
+                    </div>
+                    <div class="step @ORDER_STATUS.IsCompleted(Model.Status, ORDER_STATUS.READY_TO_SHIP)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon"><i class="mdi mdi-gift"></i></div>
+                        </div>
+                        <h4 class="step-title">Sẵn sàng chuyển đi</h4>
+                    </div>
+                    <div class="step @ORDER_STATUS.IsCompleted(Model.Status, ORDER_STATUS.ON_THE_WAY)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon"><i class="mdi mdi-truck-delivery"></i></div>
+                        </div>
+                        <h4 class="step-title">Đang giao</h4>
+                    </div>
+                    <div class="step @ORDER_STATUS.IsCompleted(Model.Status, ORDER_STATUS.DELIVERED)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon"><i class="mdi mdi-hail"></i></div>
+                        </div>
+                        <h4 class="step-title">Đã giao</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

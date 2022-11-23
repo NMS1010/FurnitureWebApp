@@ -1,0 +1,157 @@
+﻿@using FurnitureWeb.Utilities.Constants.Orders;
+@using FurnitureWeb.ViewModels.Catalog.Orders;
+@using FurnitureWeb.ViewModels.Common;
+
+
+
+@model PagedResult<OrderViewModel>
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2">
+    <h1>New Orders</h1>
+    <div class="d-flex justify-content-between">
+        <a href="~/admin/orders/get/new" class="btn btn-outline-info mr-4">View New Orders</a>
+        <a href="~/admin/orders/get" class="btn btn-outline-info">View All Orders</a>
+        <a href="~/admin/orders/get/delivered" class="btn btn-outline-info ml-4">View Delivered Orders</a>
+    </div>
+    <p class="breadcrumbs">
+        <span><a href="~/admin/home">Home</a></span>
+        <span><i class="mdi mdi-chevron-right"></i></span>Orders
+    </p>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="responsive-data-table" class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên khách hàng</th>
+                                <th>Email</th>
+                                <th>Tổng sản phẩm</th>
+                                <th>Tổng tiền</th>
+                                <th>Thanh toán</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày đặt</th>
+                                <th>Ngày thanh toán</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if(Model != null)
+                            {
+                                foreach(var order in Model.Items)
+                                {
+                                    <tr>
+                                        <td>@order.OrderId</td>
+                                        <td><strong>@order.UserFullName</strong></td>
+                                        <td>@order.Email</td>
+                                        <td>@order.TotalItem</td>
+                                        <td>@order.TotalPrice</td>
+                                        <td>@order.PaymentMethod</td>
+                                        <td>
+                                            <span class="mb-2 mr-2 @order.StatusClass">@order.StatusCode</span>
+                                        </td>
+                                        <td>@order.DateCreated</td>
+                                        <td>@order?.DateDone</td>
+                                        <td>
+                                            <div class="btn-group mb-1">
+                                                <button type="button"
+                                                    class="btn btn-outline-success">
+                                                        Info
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false" data-display="static">
+                                                        <span class="sr-only">Info</span>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="~/admin/orders/detail/@order.OrderId">Chi tiết đơn hàng</a>
+                                                    <a class="dropdown-item"
+                                                        data-orderId="@order.OrderId"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modal-change-order-status"
+                                                        href="#modal-change-order-status">Cập nhật trạng thái</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-change-order-status" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Trạng thái đơn hàng</h3>
+            <div class="modal-body p-4 d-flex justify-content-center">
+                <form action="~/admin/order/edit" method="post">
+                    <input type="hidden" name="editOrderId" id="editOrderId">
+                    <label for="orderStatus">Trạng thái đơn hàng</label>
+                    <select name="orderStatus" id="orderStatus" class="form-select" required>
+                        @foreach(var s in ORDER_STATUS.OrderStatus)
+                        {
+                            <option value="@s.Key">@s.Value</option>
+                        }
+                    </select>
+
+                    <div class="row mt-4">
+                        <div class="col col-6">
+                            <input type="button" class="btn btn-secondary btn-pill clear-form"
+                                    data-bs-dismiss="modal" value="Huỷ">
+                        </div>
+                        <div class="col col-6">
+                            <input type="submit" class="btn btn-primary btn-pill" value="Xác nhận" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, đơn hàng đã giao thành công chỉ có thể hoàn trả</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">
+                    Thoát
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(window).on('load', function() {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if(window.location.href.includes("error=True")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $(document).ready(function () {
+          $('#modal-change-order-status').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-orderId');
+                document.getElementById('editOrderId').value = id
+          });
+        });
+    </script>
+}
