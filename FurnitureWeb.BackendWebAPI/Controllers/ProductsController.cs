@@ -5,9 +5,11 @@ using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
 using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Data;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
@@ -15,6 +17,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductServices _productService;

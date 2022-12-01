@@ -1,14 +1,17 @@
 ﻿using FurnitureWeb.Services.System.Roles;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
         private readonly IRoleServices _roleServices;

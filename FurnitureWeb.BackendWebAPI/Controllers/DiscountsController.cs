@@ -3,14 +3,17 @@ using FurnitureWeb.Services.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class DiscountsController : ControllerBase
     {
         private readonly IDiscountServices _discountServices;

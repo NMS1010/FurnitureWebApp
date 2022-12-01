@@ -3,14 +3,17 @@ using FurnitureWeb.Services.Catalog.Orders;
 using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderServices _orderServices;
@@ -21,6 +24,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RetrieveAll([FromQuery] OrderGetPagingRequest request)
         {
             var orders = await _orderServices.RetrieveAll(request);
@@ -52,6 +56,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] OrderUpdateRequest request)
         {
             var count = await _orderServices.Update(request);
@@ -62,6 +67,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{orderId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int orderId)
         {
             var count = await _orderServices.Delete(orderId);

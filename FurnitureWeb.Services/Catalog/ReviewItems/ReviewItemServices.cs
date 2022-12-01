@@ -132,5 +132,22 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> ChangeReviewStatus(int reviewItemId)
+        {
+            try
+            {
+                var reviewItem = await _context.ReviewItems.FindAsync(reviewItemId);
+                if (reviewItem == null)
+                    return -1;
+                reviewItem.Status = reviewItem.Status == 1 ? 0 : 1;
+
+                return await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return -1;
+            }
+        }
     }
 }

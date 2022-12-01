@@ -1,0 +1,138 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.ReviewItems;
+@using FurnitureWeb.ViewModels.Common;
+@using Microsoft.Extensions.Configuration;
+
+@model PagedResult<ReviewItemViewModel>
+@inject IConfiguration Configuration
+
+
+<div class="breadcrumb-wrapper breadcrumb-wrapper-2 d-flex align-items-center justify-content-between">
+    <h1>Review</h1>
+    <p class="breadcrumbs">
+        <span><a href="<%=request.getContextPath()%>/admin/home">Home</a></span>
+        <span><i class="mdi mdi-chevron-right"></i></span>Review
+    </p>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="responsive-data-table" class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Thumb</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Tên người dùng</th>
+                                <th>Ratings</th>
+                                <th>Nội dung đánh giá</th>
+                                <th>Ngày đánh giá</th>
+                                <th>Ngày cập nhật</th>
+                                <th>Trạng thái</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(var review in Model.Items)
+                            {
+                                <tr>
+                                    <td><img class="tbl-thumb" src="@Configuration["BaseAddress"]@review.ProductImage" alt="product image" /></td>
+                                    <td>@review.ProductName</td>
+                                    <td>@review.UserName</td>
+                                    <td>
+                                        <div class="ec-t-rate">
+                                            <c:forEach begin="1" end="@review.Rating" var="r">
+                                                <i class="mdi mdi-star is-rated"></i>
+                                            </c:forEach>
+                                            <c:forEach begin="@review.Rating + 1" end="5" var="r">
+                                                <i class="mdi mdi-star"></i>
+                                            </c:forEach>
+                                        </div>
+                                    </td>
+                                    <td>@review.Content</td>
+                                    <td>@review.DateCreated</td>
+                                    <td>@review.DateUpdated</td>
+                                    <td>@review.Status == 1 ? "ACTIVE" : "INACTIVE"</td>
+                                    <td>
+                                        <div class="btn-group mb-1">
+                                            <button type="button"
+                                                class="btn btn-outline-success">
+                                                Info
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false" data-display="static">
+                                                <span class="sr-only">Info</span>
+                                            </button>
+
+                                            <div class="dropdown-menu">
+                                                <a type="button" class="dropdown-item btn btn-danger" data-bs-toggle="modal"
+                                               data-bs-target="#modal-change-review" data-id="@review.ReviewItemId" href="#modal-change-review">
+                                                    Đổi trạng thái
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-change-review" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0">Bạn có muốn thay đổi trạng thái đánh giá này</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill"
+                        data-bs-dismiss="modal">
+                    Huỷ
+                </button>
+                <a id="link-change" class="btn btn-danger btn-pill">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+            <div class="modal-footer px-4">
+                <button type="button" class="btn btn-secondary btn-pill d-flex justify-content-center"
+                        data-bs-dismiss="modal">
+                    Thoát
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(window).on('load', function() {
+            @{
+                if (ViewData["Error"] != null)
+                {
+                    <text>
+                    $('#modal-error').modal('show')
+                    </text>
+                }
+            }
+            if(window.location.href.includes("error=True")){
+                $('#modal-error').modal('show');
+            }
+        });
+        $(document).ready(function () {
+            $('#modal-change-review').on('show.bs.modal', function (event) {
+                let id = $(event.relatedTarget).attr('data-id');
+                let link = "review-items/delete/" + id;
+                document.getElementById('link-change').href = link
+            });
+        });
+    </script>
+}

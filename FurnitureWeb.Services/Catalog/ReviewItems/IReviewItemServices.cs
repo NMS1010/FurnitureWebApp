@@ -12,5 +12,6 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
     public interface IReviewItemServices : IModifyEntity<ReviewItemCreateRequest, ReviewItemUpdateRequest, int>,
         IRetrieveEntity<ReviewItemViewModel, ReviewItemGetPagingRequest, int>
     {
+        Task<int> ChangeReviewStatus(int reviewItemId);
     }
 }

@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FurnitureWeb.APICaller.Discount;
 using FurnitureWeb.APICaller.Order;
+using FurnitureWeb.APICaller.ReviewItem;
 
 namespace FurnitureWeb.AdminWebApp
 {
@@ -48,6 +49,7 @@ namespace FurnitureWeb.AdminWebApp
             services.AddScoped<IRoleAPIClient, RoleAPIClient>();
             services.AddScoped<IDiscountAPIClient, DiscountAPIClient>();
             services.AddScoped<IOrderAPIClient, OrderAPIClient>();
+            services.AddScoped<IReviewItemAPIClient, ReviewItemAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {
