@@ -246,5 +246,22 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 return -1;
             }
         }
+
+        public async Task<OrderOverviewViewModel> GetOverviewStatictis()
+        {
+            var orders = await _context.Orders.Select(x => x.Status).ToListAsync();
+
+            OrderOverviewViewModel orderOverview = new OrderOverviewViewModel()
+            {
+                TotalPending = orders.Where(x => x == ORDER_STATUS.PENDING).Count(),
+                TotalReturned = orders.Where(x => x == ORDER_STATUS.RETURNED).Count(),
+                TotalCanceled = orders.Where(x => x == ORDER_STATUS.CANCELED).Count(),
+                TotalReady = orders.Where(x => x == ORDER_STATUS.READY_TO_SHIP).Count(),
+                TotalCompleted = orders.Where(x => x == ORDER_STATUS.DELIVERED).Count(),
+                TotalDelivering = orders.Where(x => x == ORDER_STATUS.ON_THE_WAY).Count()
+            };
+
+            return orderOverview;
+        }
     }
 }

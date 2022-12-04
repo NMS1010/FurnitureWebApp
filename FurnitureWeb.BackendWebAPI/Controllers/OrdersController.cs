@@ -34,6 +34,17 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<PagedResult<OrderViewModel>>.Success(orders, StatusCodes.Status200OK));
         }
 
+        [HttpGet("statictis")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RetrieveOrderOverviewStatictis()
+        {
+            var statictis = await _orderServices.GetOverviewStatictis();
+
+            if (statictis == null)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get orders statictis overview"));
+            return Ok(CustomAPIResponse<OrderOverviewViewModel>.Success(statictis, StatusCodes.Status200OK));
+        }
+
         [HttpGet("{orderId}")]
         public async Task<IActionResult> RetrieveById(int orderId)
         {

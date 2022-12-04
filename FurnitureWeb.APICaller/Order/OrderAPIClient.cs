@@ -43,6 +43,11 @@ namespace FurnitureWeb.APICaller.Order
             return await GetAsync<CustomAPIResponse<OrderViewModel>>($"/api/orders/{orderId}");
         }
 
+        public async Task<CustomAPIResponse<OrderOverviewViewModel>> GetOverviewStatictis()
+        {
+            return await GetAsync<CustomAPIResponse<OrderOverviewViewModel>>("/api/orders/statictis");
+        }
+
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateOrder(OrderUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);

@@ -14,5 +14,7 @@ namespace FurnitureWeb.APICaller.Order
         Task<CustomAPIResponse<PagedResult<OrderViewModel>>> GetAllOrderAsync(OrderGetPagingRequest request);
 
         Task<CustomAPIResponse<OrderViewModel>> GetOrderById(int brandId);
+
+        Task<CustomAPIResponse<OrderOverviewViewModel>> GetOverviewStatictis();
     }
 }
