@@ -5,6 +5,7 @@ using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Products;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
+using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -128,6 +129,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                     .Include(c => c.Brand)
                     .Include(c => c.Category)
                     .Include(c => c.OrderItems)
+                    .Include(c => c.ReviewItems)
+                    .ThenInclude(c => c.User)
                     .ToListAsync();
                 if (!String.IsNullOrEmpty(request.Keyword))
                 {
@@ -157,7 +160,29 @@ namespace FurnitureWeb.Services.Catalog.Products
                         CategoryId = x.CategoryId,
                         StatusCode = PRODUCT_STATUS.ProductStatus[x.Status],
                         TotalPurchased = x.OrderItems.Sum(g => g.Quantity),
-                        StatusClass = GenerateProductStatusClass(x.Status)
+                        StatusClass = GenerateProductStatusClass(x.Status),
+                        ProductReview = new PagedResult<ReviewItemViewModel>()
+                        {
+                            TotalItem = x.ReviewItems.Count,
+                            Items = x.ReviewItems.Select(g => new ReviewItemViewModel()
+                            {
+                                Content = g.Content,
+                                DateCreated = g.DateCreated,
+                                DateUpdated = g.DateUpdated,
+                                ProductId = g.ProductId,
+                                ProductImage = x.ProductImages
+                                        .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
+                                        .FirstOrDefault()
+                                        ?.Path,
+                                ProductName = x.Name,
+                                Rating = g.Rating,
+                                ReviewItemId = g.ReviewItemId,
+                                Status = g.Status,
+                                UserId = g.UserId,
+                                UserAvatar = g.User.Avatar,
+                                UserName = g.User.UserName
+                            }).ToList()
+                        }
                     }).ToList();
 
                 foreach (var product in data)
@@ -186,6 +211,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                     .Include(c => c.Brand)
                     .Include(c => c.Category)
                     .Include(c => c.OrderItems)
+                    .Include(c => c.ReviewItems)
+                    .ThenInclude(c => c.User)
                     .FirstOrDefaultAsync();
                 if (product == null)
                     return null;
@@ -210,7 +237,29 @@ namespace FurnitureWeb.Services.Catalog.Products
                     StatusCode = PRODUCT_STATUS.ProductStatus[product.Status],
                     TotalPurchased = product.OrderItems.Sum(g => g.Quantity),
                     StatusClass = GenerateProductStatusClass(product.Status),
-                    SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId })
+                    SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId }),
+                    ProductReview = new PagedResult<ReviewItemViewModel>()
+                    {
+                        TotalItem = product.ReviewItems.Count,
+                        Items = product.ReviewItems.Select(g => new ReviewItemViewModel()
+                        {
+                            Content = g.Content,
+                            DateCreated = g.DateCreated,
+                            DateUpdated = g.DateUpdated,
+                            ProductId = g.ProductId,
+                            ProductImage = product.ProductImages
+                                    .Where(c => c.IsDefault == true && c.ProductId == product.ProductId)
+                                    .FirstOrDefault()
+                                    ?.Path,
+                            ProductName = product.Name,
+                            Rating = g.Rating,
+                            ReviewItemId = g.ReviewItemId,
+                            Status = g.Status,
+                            UserId = g.UserId,
+                            UserAvatar = g.User.Avatar,
+                            UserName = g.User.UserName
+                        }).ToList()
+                    }
                 };
             }
             catch

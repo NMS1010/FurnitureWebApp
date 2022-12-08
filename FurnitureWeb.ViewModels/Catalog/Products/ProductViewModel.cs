@@ -1,4 +1,5 @@
 ﻿using FurnitureWeb.ViewModels.Catalog.ProductImages;
+using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -38,5 +39,6 @@ namespace FurnitureWeb.ViewModels.Catalog.Products
         public int TotalPurchased { get; set; }
         public int AverageRating { get; set; }
         public PagedResult<ProductImageViewModel> SubImages { get; set; }
+        public PagedResult<ReviewItemViewModel> ProductReview { get; set; }
     }
 }

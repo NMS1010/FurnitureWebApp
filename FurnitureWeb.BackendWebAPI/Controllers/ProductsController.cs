@@ -17,7 +17,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductServices _productService;
@@ -39,6 +38,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -61,6 +61,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -72,6 +73,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{productId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int producId)
         {
             int records = await _productService.Delete(producId);
@@ -100,6 +102,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("images/add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateImages([FromForm] ProductImageCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -113,6 +116,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("image/add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateSingleImage([FromForm] ProductImageCreateSingleRequest request)
         {
             if (!ModelState.IsValid)
@@ -125,6 +129,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("images/update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -136,6 +141,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("images/delete/{imageId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteImage(int imageId)
         {
             if (!ModelState.IsValid)

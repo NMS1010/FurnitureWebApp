@@ -1,4 +1,8 @@
-﻿using FurnitureWeb.WebApp.Models;
+﻿using FurnitureWeb.APICaller.Category;
+using FurnitureWeb.APICaller.Product;
+using FurnitureWeb.ViewModels.Catalog.Categories;
+using FurnitureWeb.ViewModels.Catalog.Products;
+using FurnitureWeb.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,27 +15,21 @@ namespace FurnitureWeb.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IProductAPIClient _productAPIClient;
+        private readonly ICategoryAPIClient _categoryAPIClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IProductAPIClient productAPIClient, ICategoryAPIClient categoryAPIClient)
         {
-            _logger = logger;
+            _productAPIClient = productAPIClient;
+            _categoryAPIClient = categoryAPIClient;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var products = await _productAPIClient.GetAllProductAsync(new ProductGetPagingRequest() { PageSize = 10 });
+            var categories = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
+            ViewData["categories"] = categories.Data;
+            return View(products.Data);
         }
     }
 }
