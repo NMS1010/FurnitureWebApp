@@ -46,7 +46,7 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<string>> Login(LoginRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -65,7 +65,7 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> Register(RegisterRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -109,7 +109,7 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

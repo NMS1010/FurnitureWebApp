@@ -53,7 +53,8 @@ namespace FurnitureWeb.Services.System.Users
             var res = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
             if (!res.Succeeded)
                 return null;
-
+            if (user.Status == USER_STATUS.IN_ACTIVE)
+                return "banned";
             var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>()

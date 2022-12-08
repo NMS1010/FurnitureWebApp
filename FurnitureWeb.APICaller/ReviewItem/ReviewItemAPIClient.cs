@@ -30,7 +30,7 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> ChangeStatusReviewItem(int reviewItemId)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -48,7 +48,7 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateReviewItem(ReviewItemCreateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -86,7 +86,7 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateReviewItem(ReviewItemUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

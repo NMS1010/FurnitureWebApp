@@ -34,7 +34,7 @@ namespace FurnitureWeb.APICaller.Brand
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateBrand(BrandCreateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -76,7 +76,7 @@ namespace FurnitureWeb.APICaller.Brand
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateBrand(BrandUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

@@ -3,22 +3,21 @@ using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FurnitureWeb.AdminWebApp.Controllers
+namespace FurnitureWeb.WebApp.Controllers
 {
-    [Route("~/admin/")]
+    [Route("~/")]
     public class LoginController : Controller
     {
         private readonly IUserAPIClient _userAPIClient;
@@ -30,46 +29,45 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             _configuration = configuration;
         }
 
-        [Route("login")]
-        public IActionResult Index(string error = null)
+        [HttpGet("signin")]
+        public IActionResult Index()
         {
-            ViewData["error"] = error;
-            return View("Index");
+            return View();
         }
 
-        [HttpGet]
-        [Route("logout")]
-        public async Task<IActionResult> SignOut()
+        [HttpGet("signout")]
+        public IActionResult Logout()
         {
             HttpContext.Session.Remove(SystemConstants.AppSettings.BearerTokenSession);
-            await HttpContext.SignOutAsync("AdminAuth");
-            HttpContext.Response.Cookies.Delete("X-Access-Token-Admin");
-            return RedirectToAction(nameof(Index));
+            HttpContext.SignOutAsync("UserAuth");
+            HttpContext.Response.Cookies.Delete("X-Access-Token-User");
+            return Redirect("/home");
         }
 
-        [HttpPost]
+        [HttpPost("signin")]
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             var res = await _userAPIClient.Login(request);
             if (!res.IsSuccesss)
             {
-                return Index("Username/Password không chính xác");
+                return Ok("error");
             }
-
-            string token = res.Data;
+            var token = res.Data;
+            if (token == "banned")
+                return Ok("banned");
             var userPrincipal = ValidateJWT(token);
             var authProperties = new AuthenticationProperties()
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = request.RememberMe
+                IsPersistent = request.RememberMe,
             };
             await HttpContext.SignInAsync(
-                         "AdminAuth",
+                         "UserAuth",
                          userPrincipal,
                          authProperties
                          );
-            Response.Cookies.Append("X-Access-Token-Admin", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
-            return Redirect("/admin/home");
+            HttpContext.Response.Cookies.Append("X-Access-Token-User", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            return Redirect("/home");
         }
 
         private ClaimsPrincipal ValidateJWT(string jwt)

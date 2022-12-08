@@ -1,9 +1,15 @@
+using Domain.EF;
+using Domain.Entities;
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
+using FurnitureWeb.APICaller.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,8 +34,15 @@ namespace FurnitureWeb.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContext<AppDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
+
+            //services.AddIdentity<AppUser, IdentityRole>()
+            //    .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<AppDbContext>();
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
+            services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {
@@ -41,7 +54,7 @@ namespace FurnitureWeb.WebApp
             string signingKey = Configuration.GetValue<string>("Tokens:Key");
             byte[] signingKeyBytes = Encoding.UTF8.GetBytes(signingKey);
             services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddAuthentication("UserAuth")
                 .AddJwtBearer(opts =>
                 {
                     opts.RequireHttpsMetadata = false;
@@ -58,15 +71,33 @@ namespace FurnitureWeb.WebApp
                         IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                     };
                 })
-                .AddCookie(options =>
+                .AddCookie("UserAuth", options =>
                 {
                     options.LoginPath = "/signin";
                     options.ExpireTimeSpan = TimeSpan.FromDays(1);
                     options.AccessDeniedPath = "/signin";
                     options.LogoutPath = "/signout";
+                    options.Cookie.Name = "User";
                 });
             services.AddAuthorization();
-            services.AddSession();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //require https
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false; //true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
@@ -87,11 +118,12 @@ namespace FurnitureWeb.WebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseSession();
-            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
+            app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

@@ -34,7 +34,7 @@ namespace FurnitureWeb.APICaller.Category
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateCategory(CategoryCreateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
 
             var httpClient = _httpClientFactory.CreateClient();
 
@@ -78,7 +78,7 @@ namespace FurnitureWeb.APICaller.Category
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateCategory(CategoryUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

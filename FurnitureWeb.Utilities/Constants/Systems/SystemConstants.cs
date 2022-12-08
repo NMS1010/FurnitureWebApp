@@ -11,12 +11,6 @@ namespace FurnitureWeb.Utilities.Constants.Systems
             public static string BearerTokenSession = "BearerToken";
         }
 
-        public class SignedUser
-        {
-            public static string AdminUserSession = "Admin";
-            public static string CustomerUserSession = "Customer";
-        }
-
         public class UserRoles
         {
             public static Dictionary<int, string> Roles = new Dictionary<int, string>()

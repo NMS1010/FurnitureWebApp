@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using FurnitureWeb.APICaller.Discount;
 using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.ReviewItem;
+using Microsoft.AspNetCore.Http;
 
 namespace FurnitureWeb.AdminWebApp
 {
@@ -57,12 +58,11 @@ namespace FurnitureWeb.AdminWebApp
                 configurationBuilder.AddJsonFile("appsettings.json");
                 return configurationBuilder.Build();
             });
-
             string issuer = Configuration.GetValue<string>("Tokens:Issuer");
             string signingKey = Configuration.GetValue<string>("Tokens:Key");
             byte[] signingKeyBytes = Encoding.UTF8.GetBytes(signingKey);
             services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddAuthentication("AdminAuth")
                 .AddJwtBearer(opts =>
                 {
                     opts.RequireHttpsMetadata = false;
@@ -79,15 +79,33 @@ namespace FurnitureWeb.AdminWebApp
                         IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                     };
                 })
-                .AddCookie(options =>
+                .AddCookie("AdminAuth", options =>
                 {
                     options.LoginPath = "/admin/login";
                     options.ExpireTimeSpan = TimeSpan.FromDays(1);
                     options.AccessDeniedPath = "/admin/login";
                     options.LogoutPath = "/admin/logout";
+                    options.Cookie.Name = "Admin";
                 });
             services.AddAuthorization();
-            services.AddSession();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //require https
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false; //true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
@@ -107,11 +125,12 @@ namespace FurnitureWeb.AdminWebApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSession();
             app.UseRouting();
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

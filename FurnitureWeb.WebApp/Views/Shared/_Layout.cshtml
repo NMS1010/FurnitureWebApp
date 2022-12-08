@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using FurnitureWeb.APICaller.User;
+@using FurnitureWeb.ViewModels.System.Users;
+
+@inject IUserAPIClient _userAPIClient
+@{
+    UserViewModel user = null;
+    var totalCartItem = 0;
+    var totalWishItem = 0;
+    if (User.Identity.IsAuthenticated)
+    {
+        user = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data;
+        totalCartItem = user.TotalCartItem;
+        totalWishItem = user.TotalWishItem;
+    }
+}
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -70,8 +85,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24.526" height="21.82" viewBox="0 0 24.526 21.82">
                       <path  d="M12.263,21.82a1.438,1.438,0,0,1-.948-.356c-.991-.866-1.946-1.681-2.789-2.4l0,0a51.865,51.865,0,0,1-6.089-5.715A9.129,9.129,0,0,1,0,7.371,7.666,7.666,0,0,1,1.946,2.135,6.6,6.6,0,0,1,6.852,0a6.169,6.169,0,0,1,3.854,1.33,7.884,7.884,0,0,1,1.558,1.627A7.885,7.885,0,0,1,13.821,1.33,6.169,6.169,0,0,1,17.675,0,6.6,6.6,0,0,1,22.58,2.135a7.665,7.665,0,0,1,1.945,5.235,9.128,9.128,0,0,1-2.432,5.975,51.86,51.86,0,0,1-6.089,5.715c-.844.719-1.8,1.535-2.794,2.4a1.439,1.439,0,0,1-.948.356ZM6.852,1.437A5.174,5.174,0,0,0,3,3.109,6.236,6.236,0,0,0,1.437,7.371a7.681,7.681,0,0,0,2.1,5.059,51.039,51.039,0,0,0,5.915,5.539l0,0c.846.721,1.8,1.538,2.8,2.411,1-.874,1.965-1.693,2.812-2.415a51.052,51.052,0,0,0,5.914-5.538,7.682,7.682,0,0,0,2.1-5.059,6.236,6.236,0,0,0-1.565-4.262,5.174,5.174,0,0,0-3.85-1.672A4.765,4.765,0,0,0,14.7,2.467a6.971,6.971,0,0,0-1.658,1.918.907.907,0,0,1-1.558,0A6.965,6.965,0,0,0,9.826,2.467a4.765,4.765,0,0,0-2.975-1.03Zm0,0" transform="translate(0 0)" fill="currentColor"></path>
                     </svg>
-
-                    <span class="items__count wishlist wish_count">${sessionScope.user != null ? sessionScope.user.totalWishListItem : 0}</span>
+                    <span class="items__count wishlist wish_count">@totalWishItem</span>
                   </a>
                 </li>
                 <li class="header__account--items">
@@ -79,23 +93,25 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18.897" height="21.565" viewBox="0 0 18.897 21.565">
                       <path  d="M16.84,8.082V6.091a4.725,4.725,0,1,0-9.449,0v4.725a.675.675,0,0,0,1.35,0V9.432h5.4V8.082h-5.4V6.091a3.375,3.375,0,0,1,6.75,0v4.691a.675.675,0,1,0,1.35,0V9.433h3.374V21.581H4.017V9.432H6.041V8.082H2.667V21.641a1.289,1.289,0,0,0,1.289,1.29h16.32a1.289,1.289,0,0,0,1.289-1.29V8.082Z" transform="translate(-2.667 -1.366)" fill="currentColor"></path>
                     </svg>
-                    <span class="items__count cart_item_count">${sessionScope.user != null ? sessionScope.user.totalCartItem : 0}</span>
+                    <span class="items__count cart_item_count">@totalCartItem</span>
                   </a>
                 </li>
               </ul>
             </div>
-            <c:if  test="${sessionScope.user == null}">
-              <div>
-                <a href="~/signin">Đăng nhập </a>
-                <span>|</span>
-                <a href="~/register"> Đăng ký</a>
-              </div>
-            </c:if>
-            <c:if  test="${sessionScope.user != null}">
-              <div>
-                <a href="~/signout">Đăng xuất</a>
-              </div>
-            </c:if>
+            @if(user == null)
+            {
+                <div>
+                    <a href="~/signin">Đăng nhập </a>
+                    <span>|</span>
+                    <a href="~/register"> Đăng ký</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="~/signout">Đăng xuất</a>
+                </div>
+            }
           </div>
         </div>
       </div>
@@ -123,18 +139,19 @@
                             <span class="offcanvas__account--items__icon">
                               <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path></svg>
                                 </span>
-
-                <c:if  test="${sessionScope.user != null}">
-                  <div>
-                    <a class="offcanvas__account--items__label" href="~/signout">Đăng xuất</a>
-                  </div>
-                </c:if>
-                <c:if  test="${sessionScope.user == null}">
-                  <div>
-                    <a class="offcanvas__account--items__label" href="~/signin">Đăng nhập </a>
-                    <a class="offcanvas__account--items__label" href="~/register"> Đăng ký</a>
-                  </div>
-                </c:if>
+                @if (user == null)
+                {
+                    <div>
+                        <a class="offcanvas__account--items__label" href="~/signin">Đăng nhập </a>
+                        <a class="offcanvas__account--items__label" href="~/register"> Đăng ký</a>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <a class="offcanvas__account--items__label" href="~/signout">Đăng xuất</a>
+                    </div>
+                }
               </a>
             </div>
           </nav>
@@ -177,7 +194,8 @@
                                 </svg>
                             </span>
               <span class="offcanvas__stikcy--toolbar__label">Giỏ hàng</span>
-              <span class="items__count cart_item_count">${sessionScope.user != null ? sessionScope.user.totalCartItem : 0}</span>
+                
+                <span class="items__count cart_item_count">@totalCartItem</span>
             </a>
           </li>
           <li class="offcanvas__stikcy--toolbar__list">
@@ -188,7 +206,7 @@
                                 </svg>
                             </span>
               <span class="offcanvas__stikcy--toolbar__label">Danh sách <br> yêu thích</span>
-              <span class="items__count wishlist__count wish_count">${sessionScope.user != null ? sessionScope.user.totalWishListItem : 0}</span>
+                <span class="items__count wishlist__count wish_count">@totalWishItem</span>
             </a>
           </li>
         </ul>

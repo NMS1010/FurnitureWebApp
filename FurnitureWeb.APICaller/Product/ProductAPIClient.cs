@@ -32,7 +32,7 @@ namespace FurnitureWeb.APICaller.Product
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateProduct(ProductCreateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -78,7 +78,7 @@ namespace FurnitureWeb.APICaller.Product
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateProductImage(ProductImageCreateSingleRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -136,7 +136,7 @@ namespace FurnitureWeb.APICaller.Product
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateProduct(ProductUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -184,7 +184,7 @@ namespace FurnitureWeb.APICaller.Product
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateProductImage(ProductImageUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

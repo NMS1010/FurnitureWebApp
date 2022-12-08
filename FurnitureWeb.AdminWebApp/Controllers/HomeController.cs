@@ -5,6 +5,7 @@ using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +33,12 @@ namespace FurnitureWeb.AdminWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var session = HttpContext.Session.GetString(SystemConstants.AppSettings.BearerTokenSession);
+            var session = HttpContext.Request.Cookies["X-Access-Token-Admin"];
             if (session == null)
+            {
+                await HttpContext.SignOutAsync("AdminAuth");
                 return Redirect("~/admin/login");
+            }
             var userRes = await _userAPIClient.GetAllUserAsync(new UserGetPagingRequest());
             var orderRes = await _orderAPIClient.GetAllOrderAsync(new OrderGetPagingRequest());
             var orderStatictis = await _orderAPIClient.GetOverviewStatictis();

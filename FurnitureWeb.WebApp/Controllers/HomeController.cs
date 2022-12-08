@@ -1,14 +1,12 @@
 ﻿using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
+using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Products;
-using FurnitureWeb.WebApp.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.WebApp.Controllers
@@ -26,6 +24,12 @@ namespace FurnitureWeb.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //var session = HttpContext.Request.Cookies["X-Access-Token-User"];
+            //if (session == null)
+            //{
+            //    await HttpContext.SignOutAsync("UserAuth");
+            //    return Redirect("/signin");
+            //}
             var products = await _productAPIClient.GetAllProductAsync(new ProductGetPagingRequest() { PageSize = 10 });
             var categories = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
             ViewData["categories"] = categories.Data;

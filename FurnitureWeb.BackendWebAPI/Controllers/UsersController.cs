@@ -11,7 +11,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _userService;
@@ -31,7 +30,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var resToken = await _userService.Authenticate(request);
             if (string.IsNullOrEmpty(resToken))
             {
-                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Username/password is incorrect"));
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "error"));
             }
             return Ok(CustomAPIResponse<string>.Success(resToken, StatusCodes.Status200OK));
         }
@@ -52,6 +51,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RetrieveAll([FromQuery] UserGetPagingRequest request)
         {
             var res = await _userService.RetrieveAll(request);
@@ -70,6 +70,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
         {
             (var res, var status) = await _userService.Update(request);
@@ -81,6 +82,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{userId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string userId)
         {
             var count = await _userService.Delete(userId);
