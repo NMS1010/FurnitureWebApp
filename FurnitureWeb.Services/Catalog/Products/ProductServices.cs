@@ -3,6 +3,7 @@ using Domain.Entities;
 using FurnitureWeb.Services.Catalog.ProductImages;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Products;
+using FurnitureWeb.Utilities.Constants.Sort;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
 using FurnitureWeb.ViewModels.Catalog.ReviewItems;
@@ -189,6 +190,24 @@ namespace FurnitureWeb.Services.Catalog.Products
                 {
                     product.SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId });
                 }
+
+                if (request.SortBy == SORT_BY.BY_NAME_ZA)
+                {
+                    data = data.OrderByDescending(x => x.Name).ToList();
+                }
+                else if (request.SortBy == SORT_BY.BY_PRICE_AZ)
+                {
+                    data = data.OrderBy(x => x.Price).ToList();
+                }
+                else if (request.SortBy == SORT_BY.BY_PRICE_ZA)
+                {
+                    data = data.OrderByDescending(x => x.Price).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.Name).ToList();
+                }
+
                 return new PagedResult<ProductViewModel>
                 {
                     TotalItem = query.Count,

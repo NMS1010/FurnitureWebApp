@@ -11,7 +11,7 @@ namespace FurnitureWeb.ViewModels.Common
         public int PageSize { get; set; } = 1000;
 
         public string ColumnName { get; set; }
-        public string TypeSort { get; set; }
-        public string SortBy { get; set; }
+        public string TypeSort { get; set; } = "ASC";
+        public int SortBy { get; set; }
     }
 }

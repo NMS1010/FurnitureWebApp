@@ -34,12 +34,6 @@ namespace FurnitureWeb.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<AppDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
-
-            //services.AddIdentity<AppUser, IdentityRole>()
-            //    .AddRoles<IdentityRole>()
-            //    .AddEntityFrameworkStores<AppDbContext>();
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
@@ -84,17 +78,13 @@ namespace FurnitureWeb.WebApp
 
             services.AddSession(options =>
             {
-                // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
-                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //require https
-                // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => false; //true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -102,7 +92,6 @@ namespace FurnitureWeb.WebApp
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

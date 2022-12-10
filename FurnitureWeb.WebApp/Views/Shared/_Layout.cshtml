@@ -30,11 +30,11 @@
 
     <!-- Custom Style CSS -->
     <link rel="stylesheet" href="~/css/style.css">
-    <style>
+    @*<style>
         .swiper-wrapper {
             height: unset !important;
         }
-    </style>
+    </style>*@
 </head>
 <body>
     <!--Header-->
@@ -326,76 +326,19 @@
         </div>
       </div>
     </footer>
-    <!-- Quickview Wrapper -->
-    <div class="modal color-scheme-3" id="modal1" data-animation="slideInUp">
-        <div class="modal-dialog quickview__main--wrapper">
-            <header class="modal-header quickview__header">
-                <button class="close-modal quickview__close--btn" aria-label="close modal" data-close>✕ </button>
-            </header>
-            <div class="quickview__inner">
-                <div class="row row-cols-lg-2 row-cols-md-2">
-                    <div class="col">
-                        <div class="product__details--media">
-                            <div class="product__media--preview swiper">
-                                <div class="swiper-wrapper">
-                                </div>
-                            </div>
-                            <div class="product__media--nav swiper">
-                                <div class="swiper-wrapper" id="swiper-wrapper-clearHeight">
-                                </div>
-                                <div class="swiper__nav--btn swiper-button-next"></div>
-                                <div class="swiper__nav--btn swiper-button-prev"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="quickview__info">
-                            <form action="#">
-                                <h2 class="product__details--info__title mb-15"></h2>
-                                <div class="product__details--info__price mb-12">
-                                    <span class="current__price"></span>
-                                </div>
-                                <div class="quickview__info--ratting d-flex align-items-center mb-15">
-                                    <ul class="rating d-flex justify-content-center">
-                                    </ul>
-                                    <span class="quickview__info--review__text"></span>
-                                </div>
-                                <p class="product__details--info__desc mb-15"></p>
-                                <div class="product__variant">
-                                    <div class="quickview__variant--list quantity d-flex align-items-center mb-15">
-                                        <a class="primary__btn quickview__cart--btn" id="add-cartitem" onclick="addCartItem(this,'~')">Thêm vào giỏ hàng</a>
-                                    </div>
-                                    <div class="quickview__variant--list variant__wishlist mb-15">
-                                        <a class="variant__wishlist--icon" id="add-wishlist" onclick="addWish(this,'~')" title="Add to wishlist">
-                                            <svg class="quickview__variant--wishlist__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
-                                            Thêm vào danh sách yêu thích
-                                        </a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Quickview Wrapper End -->
+    @RenderSection("Quickview", required: false)
 
-    <script src="~/js/plugins/jquery-3.5.1.min.js"></script>
-    <script src="~/js/app/product/product_handler.js"> </script>
     <!-- Scroll top bar -->
     <button class="color-scheme-3" aria-label="scroll top btn" id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"></path></svg></button>
 
     <!-- All Script JS Plugins here  -->
-
+    <script src="~/js/plugins/jquery-3.5.1.min.js"></script>
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/plugins/swiper-bundle.min.js" defer="defer"></script>
     <script src="~/js/plugins/glightbox.min.js" defer="defer"></script>
     <!-- Customscript js -->
     <script src="~/js/scriptjs.js" defer="defer"></script>
-    <script src="~/js/app/wishlist/wishlist_handler.js"></script>
-    <script src="~/js/app/cart/cart-handler.js"></script>
-    <script src="~/js/app/order/order_handler.js"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

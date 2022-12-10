@@ -24,12 +24,6 @@ namespace FurnitureWeb.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var session = HttpContext.Request.Cookies["X-Access-Token-User"];
-            //if (session == null)
-            //{
-            //    await HttpContext.SignOutAsync("UserAuth");
-            //    return Redirect("/signin");
-            //}
             var products = await _productAPIClient.GetAllProductAsync(new ProductGetPagingRequest() { PageSize = 10 });
             var categories = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
             ViewData["categories"] = categories.Data;
