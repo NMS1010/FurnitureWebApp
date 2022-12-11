@@ -23,6 +23,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [AllowAnonymous]
         public async Task<IActionResult> RetrieveAll([FromQuery] BrandGetPagingRequest request)
         {
             var brands = await _brandServices.RetrieveAll(request);

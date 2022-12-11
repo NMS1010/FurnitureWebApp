@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FurnitureWeb.Utilities.Constants.Paging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace FurnitureWeb.ViewModels.Common
     {
         public string Keyword { get; set; }
         public int PageIndex { get; set; } = 1;
-        public int PageSize { get; set; } = 1000;
+        public int PageSize { get; set; } = PAGE_SIZE.MaxPageSize;
 
         public string ColumnName { get; set; }
         public string TypeSort { get; set; } = "ASC";

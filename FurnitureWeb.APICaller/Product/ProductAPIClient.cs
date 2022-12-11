@@ -116,7 +116,8 @@ namespace FurnitureWeb.APICaller.Product
 
         public async Task<CustomAPIResponse<PagedResult<ProductViewModel>>> GetAllProductAsync(ProductGetPagingRequest request)
         {
-            return await GetAsync<CustomAPIResponse<PagedResult<ProductViewModel>>>($"/api/products/all");
+            return await GetAsync<CustomAPIResponse<PagedResult<ProductViewModel>>>($"/api/products/all?pageIndex={request.PageIndex}&pageSize={request.PageSize}&sortBy={request.SortBy}" +
+                $"&keyword={request.Keyword}&categoryId={request.CategoryId}&brandId={request.BrandId}&minPrice={request.MinPrice}&maxPrice={request.MaxPrice}");
         }
 
         public async Task<CustomAPIResponse<PagedResult<ProductImageViewModel>>> GetAllProductImageByProductIdAsync(ProductImageGetPagingRequest request)

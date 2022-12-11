@@ -135,7 +135,36 @@ namespace FurnitureWeb.Services.Catalog.Products
                     .ToListAsync();
                 if (!String.IsNullOrEmpty(request.Keyword))
                 {
-                    query = query.Where(x => x.Name.Contains(request.Keyword)).ToList();
+                    query = query.Where(x => x.Name.ToLower().Contains(request.Keyword.ToLower())).ToList();
+                }
+                if (request.CategoryId != 0)
+                {
+                    query = query.Where(x => x.CategoryId == request.CategoryId).ToList();
+                }
+                if (request.BrandId != 0)
+                {
+                    query = query.Where(x => x.BrandId == request.BrandId).ToList();
+                }
+                if (request.MaxPrice != decimal.MaxValue)
+                {
+                    query = query.Where(x => x.Price >= request.MinPrice && x.Price <= request.MaxPrice).ToList();
+                }
+
+                if (request.SortBy == SORT_BY.BY_NAME_ZA)
+                {
+                    query = query.OrderByDescending(x => x.Name).ToList();
+                }
+                else if (request.SortBy == SORT_BY.BY_PRICE_AZ)
+                {
+                    query = query.OrderBy(x => x.Price).ToList();
+                }
+                else if (request.SortBy == SORT_BY.BY_PRICE_ZA)
+                {
+                    query = query.OrderByDescending(x => x.Price).ToList();
+                }
+                else
+                {
+                    query = query.OrderBy(x => x.Name).ToList();
                 }
 
                 var data = query
@@ -189,23 +218,6 @@ namespace FurnitureWeb.Services.Catalog.Products
                 foreach (var product in data)
                 {
                     product.SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId });
-                }
-
-                if (request.SortBy == SORT_BY.BY_NAME_ZA)
-                {
-                    data = data.OrderByDescending(x => x.Name).ToList();
-                }
-                else if (request.SortBy == SORT_BY.BY_PRICE_AZ)
-                {
-                    data = data.OrderBy(x => x.Price).ToList();
-                }
-                else if (request.SortBy == SORT_BY.BY_PRICE_ZA)
-                {
-                    data = data.OrderByDescending(x => x.Price).ToList();
-                }
-                else
-                {
-                    data = data.OrderBy(x => x.Name).ToList();
                 }
 
                 return new PagedResult<ProductViewModel>

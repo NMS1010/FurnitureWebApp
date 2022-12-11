@@ -1,5 +1,6 @@
 using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.User;
@@ -35,6 +36,7 @@ namespace FurnitureWeb.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
+            services.AddScoped<IBrandAPIClient, BrandAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddHttpClient();

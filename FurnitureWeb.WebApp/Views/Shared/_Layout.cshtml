@@ -37,6 +37,7 @@
     </style>*@
 </head>
 <body>
+    @RenderSection("Offcanvas", required: false)
     <!--Header-->
     <header class="header__section header__others border-bottom header__transparent mb-30">
       <div class="main__header header__sticky">
@@ -58,7 +59,7 @@
                     <a class="header__menu--link" href="~/home">Home</a>
                   </li>
                   <li class="header__menu--items mega__menu--items">
-                    <a class="header__menu--link" href="~/products">Shop</a>
+                    <a class="header__menu--link" href="~/products/list">Shop</a>
                   </li>
                   <li class="header__menu--items">
                     <a class="header__menu--link" href="~/about">About</a>
