@@ -28,7 +28,6 @@ namespace FurnitureWeb.Services.Catalog.CartItems
             var cartItem = await _context.CartItems
                 .Where(x => x.ProductId == request.ProductId && x.UserId == request.UserId)
                 .FirstOrDefaultAsync();
-
             if (product.Quantity > 0)
             {
                 if (cartItem != null)
@@ -44,7 +43,7 @@ namespace FurnitureWeb.Services.Catalog.CartItems
                 }
                 else
                 {
-                    responseStatus = await Create(request) > 0 ? "success" : "error";
+                    responseStatus = await Create(request) > 0 ? ((await _context.Users.FindAsync(request.UserId)).CartItems.Count) + "-success" : "error";
                 }
             }
             else

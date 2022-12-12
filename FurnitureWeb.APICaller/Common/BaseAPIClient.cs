@@ -48,7 +48,7 @@ namespace FurnitureWeb.APICaller.Common
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> Delete(string url)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
 
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

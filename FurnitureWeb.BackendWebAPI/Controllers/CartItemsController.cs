@@ -2,6 +2,8 @@
 using FurnitureWeb.Services.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.CartItems;
 using FurnitureWeb.ViewModels.Catalog.Categories;
+using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,6 +12,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Customer")]
     public class CartItemsController : ControllerBase
     {
         private readonly ICartItemServices _cartItemService;
@@ -19,13 +22,13 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             _cartItemService = cartItemService;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> RetrieveAll([FromQuery] CartItemGetPagingRequest request)
+        [HttpPost("all")]
+        public async Task<IActionResult> RetrieveAll([FromForm] CartItemGetPagingRequest request)
         {
-            var categories = await _cartItemService.RetrieveAll(request);
-            if (categories == null)
-                return BadRequest();
-            return Ok(categories);
+            var cartItems = await _cartItemService.RetrieveCartByUserId(request.UserId);
+            if (cartItems == null)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get cart item list"));
+            return Ok(CustomAPIResponse<PagedResult<CartItemViewModel>>.Success(cartItems, StatusCodes.Status200OK));
         }
 
         [HttpGet("{cartItemId}")]
@@ -33,32 +36,29 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             var cartItem = await _cartItemService.RetrieveById(cartItemId);
             if (cartItem == null)
-                return BadRequest();
-            return Ok(cartItem);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot get cart item"));
+            return Ok(CustomAPIResponse<CartItemViewModel>.Success(cartItem, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Create([FromForm] CartItemCreateRequest request)
+        public async Task<IActionResult> AddProduct([FromForm] CartItemCreateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var cartItemId = await _cartItemService.Create(request);
-            if (cartItemId <= 0)
-                return BadRequest();
-            var cartItem = await _cartItemService.RetrieveById(cartItemId);
+            var responseStatus = await _cartItemService.AddProductToCart(request);
 
-            return CreatedAtAction(nameof(RetrieveById), new { cartItemId = cartItemId }, cartItem);
+            return Ok(CustomAPIResponse<string>.Success(responseStatus, StatusCodes.Status201Created));
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromForm] CartItemUpdateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var count = await _cartItemService.Update(request);
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update quantity"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{cartItemId}")]
@@ -66,8 +66,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         {
             int records = await _cartItemService.Delete(cartItemId);
             if (records <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this product from cart"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
     }
 }

@@ -14,6 +14,6 @@ namespace FurnitureWeb.ViewModels.Catalog.CartItems
         public int Quantity { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public int Status { get; set; } = 1;
     }
 }
