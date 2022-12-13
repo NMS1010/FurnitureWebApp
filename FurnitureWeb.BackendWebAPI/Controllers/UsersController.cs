@@ -97,7 +97,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> CheckNewUser(UserCheckNewRequest request)
         {
             var res = await _userService.CheckNewUser(request);
-            if (res.Count >= 0)
+            if (res.Count > 0)
                 return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status200OK, res));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
@@ -107,7 +107,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         public async Task<IActionResult> CheckEditUser(UserCheckEditRequest request)
         {
             var res = await _userService.CheckEditUser(request);
-            if (res.Count >= 0)
+            if (res.Count > 0)
                 return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status200OK, res));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }

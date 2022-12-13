@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,18 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             }
 
             string token = res.Data;
+            if (token == "banned")
+            {
+                return Index("Tài khoản đang bị cấm hoạt động");
+            }
             var userPrincipal = ValidateJWT(token);
+            var roles = userPrincipal.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+            if (!roles.Any(x => x.ToLower() == "admin"))
+            {
+                return Index("Tài khoản không có quyền truy cập");
+            }
             var authProperties = new AuthenticationProperties()
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),

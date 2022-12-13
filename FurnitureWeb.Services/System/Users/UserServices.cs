@@ -103,11 +103,16 @@ namespace FurnitureWeb.Services.System.Users
                     foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
                     {
                         var role = await _context.Roles.FindAsync(roleId);
+                        if (role == null)
+                        {
+                            role = await _context.Roles.Where(x => x.Name.ToLower() == roleId.ToLower()).FirstOrDefaultAsync();
+                        }
                         roles.Add(role.Name);
                     }
                     await _userManager.AddToRolesAsync(user, roles);
                     return (true, "successfull");
                 }
+
                 string error = "";
                 res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
                 return (false, error);
@@ -150,6 +155,10 @@ namespace FurnitureWeb.Services.System.Users
                     foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))
                     {
                         var role = await _context.Roles.FindAsync(roleId);
+                        if (role == null)
+                        {
+                            role = await _context.Roles.Where(x => x.Name.ToLower() == roleId.ToLower()).FirstOrDefaultAsync();
+                        }
                         roles.Add(role.Name);
                     }
                     await _userManager.AddToRolesAsync(user, roles);

@@ -1,0 +1,98 @@
+﻿@using FurnitureWeb.ViewModels.System.Users;
+
+@{
+    GoogleUserViewModel googleUser = null;
+}
+<!-- Start breadcrumb section -->
+<section class="breadcrumb__section breadcrumb__bg">
+    <div class="container">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content">
+                    <h1 class="breadcrumb__content--title text-white mb-10">Login</h1>
+                    <ul class="breadcrumb__content--menu d-flex">
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/home">Home</a></li>
+                        <li class="breadcrumb__content--menu__items"><span class="text-white">Đăng ký</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End breadcrumb section -->
+<!-- Start register section  -->
+<div class="login__section section--padding">
+    <div class="container">
+        <form id="form-add" action="~/register" enctype="multipart/form-data" method="post">
+            <div class="login__section--inner">
+                <div class="row justify-content-center">
+                    <div class="col col-8">
+                        <div class="account__login register">
+                            <div class="account__login--header mb-25">
+                                <h3 class="account__login--header__title mb-10">Tạo tài khoản</h3>
+                                <p class="account__login--header__desc">Đăng kí tài khoản nếu bạn là khách hàng mới</p>
+                            </div>
+                            <div class="account__login--inner">
+                                <label>
+                                    Avatar: <input class="mb-15" placeholder="Avatar" accept=".png, .jpg, .jpeg" name="avatar" id="avatar" required type="file">
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Họ" name="firstName" id="firstName" value="@googleUser?.Family_name" required type="text">
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Tên" name="lastName" id="lastName" value="@googleUser?.Given_name" required type="text">
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Email" name="email" id="email" type="email"  required value="@googleUser?.Email" @if(googleUser != null) {<text>readonly</text>}  />
+                                    <p id="emailValidateMessage"></p>
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Số điện thoại" id="phoneNumber" name="phoneNumber" required pattern="[0-9]{10}" type="text">
+                                    <p id="phoneValidateMessage"></p>
+                                </label>
+                                <label>
+                                    Ngày sinh: <input class="account__login--input" name="dob" id="dob" required type="date">
+                                </label>
+                                <label>
+                                    Giới tính:
+                                    <select class="account__login--input" id="gender" name="gender" required title="Vui lòng chọn giới tính">
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Địa chỉ" name="address" id="address" required type="text">
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Username" id="username" name="username" required type="text">
+                                    <p id="userValidateMessage"></p>
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Password" id="password" name="password" required type="password">
+                                </label>
+                                <label>
+                                    <input class="account__login--input" placeholder="Confirm Password" id="confirmPassword" name="confirmPassword" required type="password">
+                                    <p id="confirmPasswordNotMatch"></p>
+                                </label>
+                                <label>
+                                    <button class="account__login--btn primary__btn mb-10" type="submit">Đăng ký</button>
+                                </label>
+                                <p class="account__login--signup__text">Bạn đã có tài khoản? <a class="text__secondary" href="~/signin">Đăng nhập ngay</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End register section  -->
+
+@section Scripts {
+    <script>
+        $('#form-add').submit(function (e){
+            validateForm(e, `~`)
+        })
+    </script>
+    <script src="~/js/app/validate/register-validation.js"></script>
+}

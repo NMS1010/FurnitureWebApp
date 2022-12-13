@@ -1,7 +1,10 @@
 ﻿using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Utilities.Constants.Systems;
+using FurnitureWeb.Utilities.Constants.Users;
+using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +45,20 @@ namespace FurnitureWeb.WebApp.Controllers
             return Redirect("/home");
         }
 
+        [HttpPost("users/check-add")]
+        public async Task<IActionResult> UserCheckAdd(UserCheckNewRequest request)
+        {
+            var res = await _userAPIClient.CheckNewUser(request);
+            return Ok(res);
+        }
+
+        [HttpPost("users/check-edit")]
+        public async Task<IActionResult> UserCheckEdit(UserCheckEditRequest request)
+        {
+            var res = await _userAPIClient.CheckEditUser(request);
+            return Ok(res);
+        }
+
         [HttpPost("signin")]
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
@@ -66,6 +83,26 @@ namespace FurnitureWeb.WebApp.Controllers
                          );
             HttpContext.Response.Cookies.Append("X-Access-Token-User", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
             return Redirect("/home");
+        }
+
+        [HttpGet("register")]
+        public IActionResult RegisterForm()
+        {
+            return View("Register");
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
+        {
+            request.Status = USER_STATUS.ACTIVE;
+            request.Roles = new string[] { "Customer" };
+            var res = await _userAPIClient.Register(request);
+
+            if (!res.IsSuccesss)
+            {
+                return Redirect("signin?error=true");
+            }
+            return Redirect("signin?register=true");
         }
 
         private ClaimsPrincipal ValidateJWT(string jwt)
