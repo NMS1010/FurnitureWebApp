@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-using FurnitureWeb.APICaller.Common;
-using FurnitureWeb.Utilities.Constants.Systems;
+﻿using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.Products;
 using FurnitureWeb.ViewModels.Common;

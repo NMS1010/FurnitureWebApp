@@ -1,6 +1,5 @@
 ﻿using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.ViewModels.Catalog.Categories;
-using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;

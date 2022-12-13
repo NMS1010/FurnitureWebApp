@@ -1,26 +1,18 @@
-using Domain.EF;
-using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.CartItem;
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.User;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using FurnitureWeb.APICaller.WishItem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FurnitureWeb.WebApp
 {
@@ -41,6 +33,7 @@ namespace FurnitureWeb.WebApp
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddScoped<ICartItemAPIClient, CartItemAPIClient>();
+            services.AddScoped<IWishItemAPIClient, WishItemAPIClient>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {

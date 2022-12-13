@@ -1,10 +1,6 @@
-﻿using FurnitureWeb.ViewModels.Catalog.Brands;
-using FurnitureWeb.ViewModels.Common;
+﻿using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.User

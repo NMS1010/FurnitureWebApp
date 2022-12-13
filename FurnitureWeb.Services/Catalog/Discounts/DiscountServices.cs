@@ -1,14 +1,11 @@
 ﻿using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.Utilities.Constants.Discounts;
-using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.Discounts

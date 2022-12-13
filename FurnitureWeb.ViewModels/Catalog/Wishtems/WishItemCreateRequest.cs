@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FurnitureWeb.ViewModels.Catalog.Wishtems
+﻿namespace FurnitureWeb.ViewModels.Catalog.Wishtems
 {
     public class WishItemCreateRequest
     {

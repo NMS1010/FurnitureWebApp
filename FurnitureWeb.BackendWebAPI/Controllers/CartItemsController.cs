@@ -1,7 +1,5 @@
 ﻿using FurnitureWeb.Services.Catalog.CartItems;
-using FurnitureWeb.Services.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.CartItems;
-using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

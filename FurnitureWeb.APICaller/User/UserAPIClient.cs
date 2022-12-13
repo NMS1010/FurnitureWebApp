@@ -1,16 +1,11 @@
-﻿using Domain.Entities;
-using FurnitureWeb.APICaller.Common;
-using FurnitureWeb.Utilities.Constants.Systems;
+﻿using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;

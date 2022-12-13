@@ -4,7 +4,6 @@ using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

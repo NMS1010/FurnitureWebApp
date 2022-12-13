@@ -1,19 +1,14 @@
-﻿using Domain.Entities;
-using FurnitureWeb.APICaller.Common;
-using FurnitureWeb.Utilities.Constants.Systems;
-using FurnitureWeb.ViewModels.Catalog.Brands;
+﻿using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.Category

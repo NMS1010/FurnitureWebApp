@@ -1,13 +1,10 @@
 ﻿using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.Services.Common.FileStorage;
-using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

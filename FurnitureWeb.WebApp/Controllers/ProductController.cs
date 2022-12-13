@@ -2,11 +2,9 @@
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.Utilities.Constants.Paging;
-using FurnitureWeb.Utilities.Constants.Sort;
 using FurnitureWeb.ViewModels.Catalog.Brands;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Products;
-using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

@@ -1,10 +1,6 @@
 ﻿using FurnitureWeb.Services.Common.Interfaces;
 using FurnitureWeb.ViewModels.Catalog.CartItems;
-using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.CartItems
@@ -14,7 +10,7 @@ namespace FurnitureWeb.Services.Catalog.CartItems
     {
         Task<PagedResult<CartItemViewModel>> RetrieveCartByUserId(string userId);
 
-        Task UpdateQuantityByProductId(int productId, int quantity);
+        Task<int> UpdateQuantityByProductId(int productId, int quantity);
 
         Task<string> AddProductToCart(CartItemCreateRequest request);
 

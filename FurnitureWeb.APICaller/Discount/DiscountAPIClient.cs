@@ -1,13 +1,10 @@
 ﻿using FurnitureWeb.APICaller.Common;
-using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Discounts;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;

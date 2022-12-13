@@ -1,7 +1,6 @@
 ﻿using FurnitureWeb.Services.Common.Interfaces;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

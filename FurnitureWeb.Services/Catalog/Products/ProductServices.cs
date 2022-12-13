@@ -10,10 +10,8 @@ using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.Products

@@ -1,9 +1,5 @@
-﻿using FurnitureWeb.ViewModels.Catalog.Brands;
-using FurnitureWeb.ViewModels.Catalog.CartItems;
+﻿using FurnitureWeb.ViewModels.Catalog.CartItems;
 using FurnitureWeb.ViewModels.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.CartItem

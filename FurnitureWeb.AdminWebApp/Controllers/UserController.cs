@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.AdminWebApp.Controllers

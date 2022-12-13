@@ -1,20 +1,12 @@
 ﻿using FurnitureWeb.APICaller.Common;
-using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Orders;
-
-using FurnitureWeb.ViewModels.Catalog.Orders;
-
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Net;
-using System.Text;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.Order

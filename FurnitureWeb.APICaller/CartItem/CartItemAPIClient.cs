@@ -1,16 +1,12 @@
-﻿using Domain.Entities;
-using FurnitureWeb.APICaller.Common;
+﻿using FurnitureWeb.APICaller.Common;
 using FurnitureWeb.ViewModels.Catalog.CartItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.APICaller.CartItem

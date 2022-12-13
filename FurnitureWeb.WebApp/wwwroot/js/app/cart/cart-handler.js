@@ -16,21 +16,24 @@ function addCartItem(e, context) {
         success: function (data) {
             console.log(data)
             let str = data.toString()
-            if (str.includes('error')) {
-                document.getElementById("modal-error").classList.add('is-visible')
+            if (str.length <= 15) {
+                if (str.includes('error')) {
+                    document.getElementById("modal-error").classList.add('is-visible')
+                }
+                else if (str.includes('expired')) {
+                    document.getElementById("modal-expired").classList.add('is-visible')
+                }
+                else if (str.includes('repeat')) {
+                    document.getElementById("modal-repeat").classList.add('is-visible')
+                }
+                else if (str.includes('success')) {
+                    document.querySelectorAll('.cart_item_count').forEach(c => c.innerText = (parseInt(str)).toString())
+                    document.getElementById("modal-success").classList.add('is-visible')
+                }
             }
-            else if (str.includes('expired')) {
-                document.getElementById("modal-expired").classList.add('is-visible')
-            }
-            else if (str.includes('success')) {
-                document.querySelectorAll('.cart_item_count').forEach(c => c.innerText = (parseInt(str)).toString())
-                document.getElementById("modal-success").classList.add('is-visible')
-            }
-            //else if (str.includes('must-login')) {
-            //    window.location.replace(context + '/cart/items')
-            //}
         },
         error: function (error) {
+            window.location.replace('/cart/items')
         }
     })
 }

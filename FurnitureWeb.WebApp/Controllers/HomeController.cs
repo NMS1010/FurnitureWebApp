@@ -1,12 +1,8 @@
 ﻿using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Product;
-using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Products;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.WebApp.Controllers

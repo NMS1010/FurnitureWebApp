@@ -1,7 +1,4 @@
 ﻿using FurnitureWeb.Utilities.Constants.Paging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FurnitureWeb.ViewModels.Common
 {

@@ -1,11 +1,9 @@
-﻿using Domain.Entities;
-using FurnitureWeb.Services.Catalog.Categories;
+﻿using FurnitureWeb.Services.Catalog.Categories;
 using FurnitureWeb.ViewModels.Catalog.Categories;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers

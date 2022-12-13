@@ -1,12 +1,9 @@
-﻿using Domain.Entities;
-using FurnitureWeb.Services.Catalog.ReviewItems;
-using FurnitureWeb.ViewModels.Catalog.Brands;
+﻿using FurnitureWeb.Services.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.BackendWebAPI.Controllers

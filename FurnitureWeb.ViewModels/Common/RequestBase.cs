@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FurnitureWeb.ViewModels.Common
+﻿namespace FurnitureWeb.ViewModels.Common
 {
     public class RequestBase
     {

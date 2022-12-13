@@ -1,12 +1,7 @@
 ﻿using FurnitureWeb.ViewModels.Catalog.ProductImages;
 using FurnitureWeb.ViewModels.Catalog.ReviewItems;
 using FurnitureWeb.ViewModels.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace FurnitureWeb.ViewModels.Catalog.Products
 {

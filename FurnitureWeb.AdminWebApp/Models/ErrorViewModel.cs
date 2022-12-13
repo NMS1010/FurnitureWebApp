@@ -1,5 +1,3 @@
-using System;
-
 namespace FurnitureWeb.AdminWebApp.Models
 {
     public class ErrorViewModel

@@ -2,12 +2,15 @@ using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.Category;
+using FurnitureWeb.APICaller.Discount;
+using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.Product;
-using FurnitureWeb.APICaller.User;
+using FurnitureWeb.APICaller.ReviewItem;
 using FurnitureWeb.APICaller.Role;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using FurnitureWeb.APICaller.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,10 +20,6 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using FurnitureWeb.APICaller.Discount;
-using FurnitureWeb.APICaller.Order;
-using FurnitureWeb.APICaller.ReviewItem;
-using Microsoft.AspNetCore.Http;
 
 namespace FurnitureWeb.AdminWebApp
 {

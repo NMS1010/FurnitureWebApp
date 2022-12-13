@@ -1,5 +1,7 @@
 ﻿using FurnitureWeb.Services.Catalog.WishItems;
 using FurnitureWeb.ViewModels.Catalog.Wishtems;
+using FurnitureWeb.ViewModels.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Customer")]
     public class WishItemsController : ControllerBase
     {
         private readonly IWishItemServices _wishItemServices;
@@ -17,14 +20,14 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             _wishItemServices = wishItemServices;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> RetrieveAll([FromQuery] WishItemGetPagingRequest request)
+        [HttpPost("all")]
+        public async Task<IActionResult> RetrieveAll([FromForm] string userId)
         {
-            var wishItems = await _wishItemServices.RetrieveAll(request);
+            var wishItems = await _wishItemServices.RetrieveWishByUserId(userId);
 
             if (wishItems == null)
-                return BadRequest();
-            return Ok(wishItems);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "cannot get user's wish list"));
+            return Ok(CustomAPIResponse<PagedResult<WishItemViewModel>>.Success(wishItems, StatusCodes.Status200OK));
         }
 
         [HttpGet("{wishItemId}")]
@@ -33,20 +36,16 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var wishItem = await _wishItemServices.RetrieveById(wishItemId);
 
             if (wishItem == null)
-                return BadRequest();
-            return Ok(wishItem);
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "cannot get this wish item"));
+            return Ok(CustomAPIResponse<WishItemViewModel>.Success(wishItem, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> Create([FromForm] WishItemCreateRequest request)
         {
-            var wishItemId = await _wishItemServices.Create(request);
+            var statusRes = await _wishItemServices.AddProductToWish(request);
 
-            if (wishItemId <= 0)
-                return BadRequest();
-            var wishItem = await _wishItemServices.RetrieveById(wishItemId);
-
-            return CreatedAtAction(nameof(RetrieveById), new { wishItemId = wishItemId }, wishItem);
+            return Ok(CustomAPIResponse<string>.Success(statusRes, StatusCodes.Status200OK));
         }
 
         [HttpPut("update")]
@@ -55,8 +54,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _wishItemServices.Update(request);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "cannot update this wish item"));
+            return Ok(CustomAPIResponse<WishItemViewModel>.Success(StatusCodes.Status200OK));
         }
 
         [HttpDelete("delete/{wishItemId}")]
@@ -65,8 +64,8 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             var count = await _wishItemServices.Delete(wishItemId);
 
             if (count <= 0)
-                return BadRequest();
-            return Ok();
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "cannot delete this wish item"));
+            return Ok(CustomAPIResponse<WishItemViewModel>.Success(StatusCodes.Status200OK));
         }
     }
 }
