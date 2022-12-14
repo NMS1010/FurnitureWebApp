@@ -41,7 +41,7 @@ namespace FurnitureWeb.Services.Catalog.Orders
                     Phone = request.Phone,
                     Payment = request.Payment
                 };
-                if (request.Payment == ORDER_PAYMENT.PAID)
+                if (request.Payment == ORDER_PAYMENT.PAYPAL)
                 {
                     order.DateDone = DateTime.Now;
                 }
@@ -231,7 +231,7 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 order.Status = request.Status;
                 if (request.Status == ORDER_STATUS.DELIVERED && order.Payment == ORDER_PAYMENT.COD)
                 {
-                    order.Payment = ORDER_PAYMENT.PAID;
+                    order.Payment = ORDER_PAYMENT.PAYPAL;
                     order.DateDone = DateTime.Now;
                 }
 
