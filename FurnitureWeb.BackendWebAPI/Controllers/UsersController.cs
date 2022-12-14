@@ -34,6 +34,21 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<string>.Success(resToken, StatusCodes.Status200OK));
         }
 
+        [Route("google-login")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWithGoogle([FromForm] string email, [FromForm] string loginProvider, [FromForm] string providerKey)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var resToken = await _userService.AuthenticateWithGoogle(email, loginProvider, providerKey);
+            if (string.IsNullOrEmpty(resToken))
+            {
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "error"));
+            }
+            return Ok(CustomAPIResponse<string>.Success(resToken, StatusCodes.Status200OK));
+        }
+
         [Route("register")]
         [HttpPost]
         [AllowAnonymous]

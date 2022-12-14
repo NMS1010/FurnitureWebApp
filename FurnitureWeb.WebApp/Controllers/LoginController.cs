@@ -1,4 +1,5 @@
-﻿using FurnitureWeb.APICaller.User;
+﻿using Domain.Entities;
+using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Utilities.Constants.Systems;
 using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Common;
@@ -6,12 +7,15 @@ using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,17 +27,54 @@ namespace FurnitureWeb.WebApp.Controllers
     {
         private readonly IUserAPIClient _userAPIClient;
         private readonly IConfiguration _configuration;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public LoginController(IUserAPIClient userAPIClient, IConfiguration configuration)
+        public LoginController(IUserAPIClient userAPIClient, IConfiguration configuration,
+            SignInManager<AppUser> signInManager)
         {
             _userAPIClient = userAPIClient;
             _configuration = configuration;
+            _signInManager = signInManager;
         }
 
         [HttpGet("signin")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet("login-google")]
+        public async Task<IActionResult> GoogleLoginResponse()
+        {
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction(nameof(Login));
+
+            var result = await _userAPIClient.LoginWithGoogle(info.Principal.FindFirst(ClaimTypes.Email).Value, info.LoginProvider, info.ProviderKey);
+            if (result.IsSuccesss)
+            {
+                await AssignCookies(result.Data);
+                return Redirect("/home");
+            }
+            GoogleUserViewModel g = new GoogleUserViewModel()
+            {
+                Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                Family_name = info.Principal.FindFirst(ClaimTypes.Surname).Value,
+                Given_name = info.Principal.FindFirst(ClaimTypes.GivenName).Value,
+                LoginProvider = info.LoginProvider,
+                ProviderKey = info.ProviderKey,
+                Name = info.Principal.FindFirst(ClaimTypes.Name).Value,
+            };
+            ViewData["googleUser"] = g;
+            return View("Register");
+        }
+
+        [HttpGet("login-with-google")]
+        public IActionResult GoogleLogin()
+        {
+            string redirectUrl = Url.Action("GoogleLoginResponse", "Login");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
         }
 
         [HttpGet("signout")]
@@ -59,6 +100,21 @@ namespace FurnitureWeb.WebApp.Controllers
             return Ok(res);
         }
 
+        private async Task AssignCookies(string jwt)
+        {
+            var userPrincipal = ValidateJWT(jwt);
+            var authProperties = new AuthenticationProperties()
+            {
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+            };
+            await HttpContext.SignInAsync(
+                         "UserAuth",
+                         userPrincipal,
+                         authProperties
+                         );
+            HttpContext.Response.Cookies.Append("X-Access-Token-User", jwt, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+        }
+
         [HttpPost("signin")]
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
@@ -70,18 +126,7 @@ namespace FurnitureWeb.WebApp.Controllers
             var token = res.Data;
             if (token == "banned")
                 return Ok("banned");
-            var userPrincipal = ValidateJWT(token);
-            var authProperties = new AuthenticationProperties()
-            {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = request.RememberMe,
-            };
-            await HttpContext.SignInAsync(
-                         "UserAuth",
-                         userPrincipal,
-                         authProperties
-                         );
-            HttpContext.Response.Cookies.Append("X-Access-Token-User", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            await AssignCookies(token);
             return Redirect("/home");
         }
 

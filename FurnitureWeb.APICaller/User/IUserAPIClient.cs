@@ -11,6 +11,8 @@ namespace FurnitureWeb.APICaller.User
 
         Task<CustomAPIResponse<string>> Login(LoginRequest request);
 
+        Task<CustomAPIResponse<string>> LoginWithGoogle(string email, string loginProvider, string providerKey);
+
         Task<CustomAPIResponse<PagedResult<UserViewModel>>> GetAllUserAsync(UserGetPagingRequest request);
 
         Task<CustomAPIResponse<UserViewModel>> GetUserById(string userId);

@@ -1,7 +1,7 @@
 ﻿@using FurnitureWeb.ViewModels.System.Users;
 
 @{
-    GoogleUserViewModel googleUser = null;
+    GoogleUserViewModel googleUser = ViewData["googleUser"] as GoogleUserViewModel;
 }
 <!-- Start breadcrumb section -->
 <section class="breadcrumb__section breadcrumb__bg">
@@ -33,6 +33,9 @@
                                 <p class="account__login--header__desc">Đăng kí tài khoản nếu bạn là khách hàng mới</p>
                             </div>
                             <div class="account__login--inner">
+                                <input type="hidden" name="providerKey" value="@googleUser?.ProviderKey" />
+                                <input type="hidden" name="loginProvider" value="@googleUser?.LoginProvider" />
+                                <input type="hidden" name="displayName" value="@googleUser?.Name" />
                                 <label>
                                     Avatar: <input class="mb-15" placeholder="Avatar" accept=".png, .jpg, .jpeg" name="avatar" id="avatar" required type="file">
                                 </label>

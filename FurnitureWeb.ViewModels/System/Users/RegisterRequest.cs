@@ -44,5 +44,9 @@ namespace FurnitureWeb.ViewModels.System.Users
 
         [Required]
         public string[] Roles { get; set; }
+
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public string DisplayName { get; set; }
     }
 }

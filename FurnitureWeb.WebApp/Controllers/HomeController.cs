@@ -25,5 +25,11 @@ namespace FurnitureWeb.WebApp.Controllers
             ViewData["categories"] = categories.Data;
             return View(products.Data);
         }
+
+        [Route("~/about")]
+        public IActionResult About()
+        {
+            return View("About");
+        }
     }
 }

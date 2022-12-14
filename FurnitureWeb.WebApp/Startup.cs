@@ -1,3 +1,5 @@
+using Domain.EF;
+using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.CartItem;
 using FurnitureWeb.APICaller.Category;
@@ -7,8 +9,11 @@ using FurnitureWeb.APICaller.WishItem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -28,12 +33,21 @@ namespace FurnitureWeb.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
+
+            services.AddIdentityCore<AppUser>()
+                .AddRoles<IdentityRole>()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<AppUser, IdentityRole>>()
+                .AddEntityFrameworkStores<AppDbContext>();
+
             services.AddScoped<ICategoryAPIClient, CategoryAPIClient>();
             services.AddScoped<IBrandAPIClient, BrandAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
             services.AddScoped<ICartItemAPIClient, CartItemAPIClient>();
             services.AddScoped<IWishItemAPIClient, WishItemAPIClient>();
+            services.TryAddScoped<SignInManager<AppUser>>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
             {
@@ -69,6 +83,21 @@ namespace FurnitureWeb.WebApp
                     options.AccessDeniedPath = "/signin";
                     options.LogoutPath = "/signout";
                     options.Cookie.Name = "User";
+                })
+                .AddCookie(IdentityConstants.ExternalScheme, options =>
+                {
+                    options.LoginPath = "/signin";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    options.AccessDeniedPath = "/signin";
+                    options.LogoutPath = "/signout";
+                    options.Cookie.Name = "GoogleUser";
+                })
+                .AddGoogle(opts =>
+                {
+                    IConfigurationSection googleAuthNSection = Configuration.GetSection("Authentication:Google");
+                    opts.ClientId = googleAuthNSection["ClientId"];
+                    opts.ClientSecret = googleAuthNSection["ClientSecret"];
+                    opts.SignInScheme = IdentityConstants.ExternalScheme;
                 });
             services.AddAuthorization();
             services.AddDistributedMemoryCache();

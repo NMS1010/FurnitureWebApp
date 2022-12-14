@@ -42,16 +42,8 @@ namespace FurnitureWeb.Services.System.Users
             _context = context;
         }
 
-        public async Task<string> Authenticate(LoginRequest request)
+        private async Task<string> WriteJWT(AppUser user)
         {
-            var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null)
-                return null;
-            var res = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
-            if (!res.Succeeded)
-                return null;
-            if (user.Status == USER_STATUS.IN_ACTIVE)
-                return "banned";
             var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>()
@@ -59,7 +51,7 @@ namespace FurnitureWeb.Services.System.Users
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.FirstName + user.LastName),
-                new Claim(ClaimTypes.Name, request.UserName)
+                new Claim(ClaimTypes.Name, user.UserName)
             };
             foreach (var role in roles)
             {
@@ -74,6 +66,20 @@ namespace FurnitureWeb.Services.System.Users
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<string> Authenticate(LoginRequest request)
+        {
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user == null)
+                return null;
+            var res = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
+            if (!res.Succeeded)
+                return null;
+            if (user.Status == USER_STATUS.IN_ACTIVE)
+                return "banned";
+
+            return await WriteJWT(user);
         }
 
         public async Task<(bool, string)> Register(RegisterRequest request)
@@ -110,6 +116,10 @@ namespace FurnitureWeb.Services.System.Users
                         roles.Add(role.Name);
                     }
                     await _userManager.AddToRolesAsync(user, roles);
+                    if (!string.IsNullOrEmpty(request.LoginProvider))
+                    {
+                        await _userManager.AddLoginAsync(user, new UserLoginInfo(request.LoginProvider, request.ProviderKey, request.LoginProvider));
+                    }
                     return (true, "successfull");
                 }
 
@@ -352,6 +362,20 @@ namespace FurnitureWeb.Services.System.Users
                     exist.Add("password");
             }
             return exist;
+        }
+
+        public async Task<string> AuthenticateWithGoogle(string email, string loginProvider, string providerKey)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return null;
+            var res = await _signInManager.ExternalLoginSignInAsync(loginProvider, providerKey, false);
+            if (!res.Succeeded)
+                return null;
+            if (user.Status == USER_STATUS.IN_ACTIVE)
+                return "banned";
+
+            return await WriteJWT(user);
         }
     }
 }

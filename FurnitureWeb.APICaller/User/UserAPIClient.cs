@@ -79,6 +79,9 @@ namespace FurnitureWeb.APICaller.User
                 { new StringContent(request.ConfirmPassword), "ConfirmPassword" },
                 { new StringContent(request.PhoneNumber), "PhoneNumber" },
                 { new StringContent(request.UserName), "UserName" },
+                { new StringContent(request.DisplayName), "DisplayName" },
+                { new StringContent(request.LoginProvider), "LoginProvider" },
+                { new StringContent(request.ProviderKey), "ProviderKey" },
                 { new StringContent(JsonConvert.SerializeObject(request.Roles)), "Roles" }
             };
             if (request.Avatar != null)
@@ -185,6 +188,23 @@ namespace FurnitureWeb.APICaller.User
             var response = await httpClient.PostAsync($"/api/users/check-edit", requestContent);
             var body = await response.Content.ReadAsStringAsync();
             return (CustomAPIResponse<NoContentAPIResponse>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<NoContentAPIResponse>));
+        }
+
+        public async Task<CustomAPIResponse<string>> LoginWithGoogle(string email, string loginProvider, string providerKey)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var requestContent = new MultipartFormDataContent
+            {
+                { new StringContent(email), "email" },
+                { new StringContent(loginProvider), "loginProvider" },
+                { new StringContent(providerKey), "providerKey" }
+            };
+
+            var response = await httpClient.PostAsync($"/api/users/google-login", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<string>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<string>));
         }
     }
 }
