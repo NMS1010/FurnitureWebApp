@@ -8,9 +8,11 @@ namespace FurnitureWeb.APICaller.Order
     {
         Task<CustomAPIResponse<NoContentAPIResponse>> UpdateOrder(OrderUpdateRequest request);
 
+        Task<CustomAPIResponse<NoContentAPIResponse>> CreateOrder(OrderCreateRequest request);
+
         Task<CustomAPIResponse<PagedResult<OrderViewModel>>> GetAllOrderAsync(OrderGetPagingRequest request);
 
-        Task<CustomAPIResponse<OrderViewModel>> GetOrderById(int brandId);
+        Task<CustomAPIResponse<OrderViewModel>> GetOrderById(int orderId);
 
         Task<CustomAPIResponse<OrderOverviewViewModel>> GetOverviewStatictis();
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FurnitureWeb.WebApp.Controllers
 {
-    [Authorize(Roles = "Customer")]
+    [Authorize]
     [Route("~/cart/")]
     public class CartController : Controller
     {
@@ -24,9 +24,9 @@ namespace FurnitureWeb.WebApp.Controllers
         [HttpGet("items")]
         public async Task<IActionResult> GetCartItem()
         {
-            var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data;
-            var cartItems = (await _cartItemAPIClient.GetAllCartItemByUser(user.UserId)).Data;
-            ViewData["total"] = cartItems.Items.Sum(x => x.Quantity * x.UnitPrice);
+            var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
+            var cartItems = (await _cartItemAPIClient.GetAllCartItemByUser(user.UserId))?.Data;
+            ViewData["total"] = cartItems?.Items.Sum(x => x.Quantity * x.UnitPrice);
             return View("Index", cartItems);
         }
 

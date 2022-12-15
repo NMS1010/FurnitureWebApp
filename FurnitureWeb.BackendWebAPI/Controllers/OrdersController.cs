@@ -73,16 +73,5 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this order"));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
-
-        [HttpDelete("delete/{orderId}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int orderId)
-        {
-            var count = await _orderServices.Delete(orderId);
-
-            if (count <= 0)
-                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this order"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
-        }
     }
 }

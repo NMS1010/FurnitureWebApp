@@ -24,12 +24,14 @@ namespace FurnitureWeb.Services.Catalog.Orders
 
         public async Task<int> Create(OrderCreateRequest request)
         {
+            var transaction = _context.Database.BeginTransaction();
+
             try
             {
                 var order = new Order()
                 {
                     UserId = request.UserId,
-                    DiscountId = request.DiscountId,
+                    DiscountId = request.DiscountId ?? null,
                     Shipping = request.Shipping,
                     TotalItemPrice = request.TotalItemPrice,
                     TotalPrice = request.Shipping + request.TotalItemPrice,
@@ -49,9 +51,31 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 {
                     order.DateDone = null;
                 }
+
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-
+                var user = await _context.Users
+                    .Where(x => x.Id == request.UserId)
+                    .Include(x => x.CartItems)
+                    .ThenInclude(x => x.Product)
+                    .FirstOrDefaultAsync();
+                foreach (var cartItem in user.CartItems)
+                {
+                    var orderItem = new OrderItem()
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = cartItem.ProductId,
+                        Order = order,
+                        Product = cartItem.Product,
+                        Quantity = cartItem.Quantity,
+                        UnitPrice = cartItem.Product.Price,
+                        TotalPrice = cartItem.Quantity * cartItem.Product.Price,
+                    };
+                    _context.OrderItems.Add(orderItem);
+                    _context.CartItems.Remove(cartItem);
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return order.OrderId;
             }
             catch

@@ -1,13 +1,14 @@
 ﻿using FurnitureWeb.APICaller.User;
 using FurnitureWeb.APICaller.WishItem;
 using FurnitureWeb.ViewModels.Catalog.Wishtems;
+using FurnitureWeb.ViewModels.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.WebApp.Controllers
 {
-    [Authorize(Roles = "Customer")]
+    [Authorize]
     [Route("~/")]
     public class WishController : Controller
     {
@@ -23,9 +24,9 @@ namespace FurnitureWeb.WebApp.Controllers
         [HttpGet("wish-list")]
         public async Task<IActionResult> GetAllWishItem()
         {
-            var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data;
-            var wishItems = (await _wishItemAPIClient.GetAllWishItemByUser(user.UserId)).Data;
-            return View("Index", wishItems);
+            var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
+            var wishItems = (await _wishItemAPIClient.GetAllWishItemByUser(user.UserId))?.Data;
+            return View("Index", wishItems ?? new PagedResult<WishItemViewModel>());
         }
 
         [HttpGet("add-wish")]
@@ -34,7 +35,7 @@ namespace FurnitureWeb.WebApp.Controllers
             var res = await _wishItemAPIClient.AddProductToWish(new WishItemCreateRequest()
             {
                 ProductId = productId,
-                UserId = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data.UserId,
+                UserId = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data?.UserId,
                 Status = 1
             });
             return Ok(res.Data);

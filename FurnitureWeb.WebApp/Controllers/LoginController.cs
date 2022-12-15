@@ -145,9 +145,9 @@ namespace FurnitureWeb.WebApp.Controllers
 
             if (!res.IsSuccesss)
             {
-                return Redirect("signin?error=true");
+                return Redirect("signin?error");
             }
-            return Redirect("signin?register=true");
+            return Redirect("signin?register");
         }
 
         private ClaimsPrincipal ValidateJWT(string jwt)

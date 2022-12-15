@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FurnitureWeb.ViewModels.Catalog.OrderItems;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureWeb.ViewModels.Catalog.Orders
 {
@@ -7,8 +9,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
         [Required]
         public string UserId { get; set; }
 
-        [Required]
-        public int DiscountId { get; set; }
+        public int? DiscountId { get; set; }
 
         [Required]
         public decimal TotalItemPrice { get; set; }

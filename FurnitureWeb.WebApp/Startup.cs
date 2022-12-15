@@ -3,6 +3,7 @@ using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.CartItem;
 using FurnitureWeb.APICaller.Category;
+using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.APICaller.WishItem;
@@ -45,6 +46,7 @@ namespace FurnitureWeb.WebApp
             services.AddScoped<IBrandAPIClient, BrandAPIClient>();
             services.AddScoped<IProductAPIClient, ProductAPIClient>();
             services.AddScoped<IUserAPIClient, UserAPIClient>();
+            services.AddScoped<IOrderAPIClient, OrderAPIClient>();
             services.AddScoped<ICartItemAPIClient, CartItemAPIClient>();
             services.AddScoped<IWishItemAPIClient, WishItemAPIClient>();
             services.TryAddScoped<SignInManager<AppUser>>();
