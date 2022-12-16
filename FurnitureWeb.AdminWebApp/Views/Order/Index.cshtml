@@ -94,10 +94,10 @@
         <div class="modal-content">
             <h3 class="modal-header border-bottom-0 d-flex justify-content-center">Trạng thái đơn hàng</h3>
             <div class="modal-body p-4 d-flex justify-content-center">
-                <form action="~/admin/order/edit" method="post">
-                    <input type="hidden" name="editOrderId" id="editOrderId">
+                <form action="~/admin/orders/edit" method="post">
+                    <input type="hidden" name="orderId" id="editOrderId">
                     <label for="orderStatus">Trạng thái đơn hàng</label>
-                    <select name="orderStatus" id="orderStatus" class="form-select" required>
+                    <select name="status" id="orderStatus" class="form-select" required>
                         @foreach(var s in ORDER_STATUS.OrderStatus)
                         {
                             <option value="@s.Key">@s.Value</option>

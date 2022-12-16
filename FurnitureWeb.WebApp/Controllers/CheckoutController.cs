@@ -79,7 +79,6 @@ namespace FurnitureWeb.WebApp.Controllers
                 if (approvedUrl != null)
                 {
                     HttpContext.Response.Cookies.Append("X-Token-OrderCreateReq", JsonConvert.SerializeObject(request), new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Lax });
-                    HttpContext.Response.Cookies.Append("X-Access-Token-User", HttpContext.Request.Cookies["X-Access-Token-User"], new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Lax });
 
                     return Redirect(approvedUrl);
                 }

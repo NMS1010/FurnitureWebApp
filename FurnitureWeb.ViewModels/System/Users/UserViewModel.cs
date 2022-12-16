@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FurnitureWeb.ViewModels.Catalog.Orders;
+using FurnitureWeb.ViewModels.Common;
+using System.Collections.Generic;
 
 namespace FurnitureWeb.ViewModels.System.Users
 {

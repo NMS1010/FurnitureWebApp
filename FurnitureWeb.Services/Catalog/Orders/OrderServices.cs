@@ -143,10 +143,14 @@ namespace FurnitureWeb.Services.Catalog.Orders
             {
                 var query = await _context.Orders
                     .Include(x => x.Discount)
-                       .Include(x => x.OrderItems)
-                       .Include(x => x.User)
-                       .Include(x => x.Discount)
-                       .ToListAsync();
+                    .Include(x => x.OrderItems)
+                    .Include(x => x.User)
+                    .Include(x => x.Discount)
+                    .ToListAsync();
+                if (!string.IsNullOrEmpty(request.UserId))
+                {
+                    query = query.Where(x => x.UserId == request.UserId).ToList();
+                }
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
                     query = query
