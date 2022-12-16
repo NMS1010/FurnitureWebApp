@@ -112,7 +112,7 @@ namespace FurnitureWeb.WebApp.Controllers
                          userPrincipal,
                          authProperties
                          );
-            HttpContext.Response.Cookies.Append("X-Access-Token-User", jwt, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            HttpContext.Response.Cookies.Append("X-Access-Token-User", jwt, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Lax });
         }
 
         [HttpPost("signin")]

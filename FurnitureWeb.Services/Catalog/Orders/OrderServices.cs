@@ -142,6 +142,7 @@ namespace FurnitureWeb.Services.Catalog.Orders
             try
             {
                 var query = await _context.Orders
+                    .Include(x => x.Discount)
                        .Include(x => x.OrderItems)
                        .Include(x => x.User)
                        .Include(x => x.Discount)
@@ -162,9 +163,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                         UserFullName = x.User.FirstName + x.User.LastName,
                         UserAddress = x.User.Address,
                         UserPhone = x.User.PhoneNumber,
-                        DiscountId = x.DiscountId,
-                        DiscountCode = x.Discount.DiscountCode,
-                        DiscountValue = x.Discount.DiscountValue,
+                        DiscountId = x?.DiscountId,
+                        DiscountCode = x.Discount?.DiscountCode,
+                        DiscountValue = x.Discount?.DiscountValue,
                         Shipping = x.Shipping,
                         TotalItemPrice = x.TotalItemPrice,
                         TotalPrice = x.TotalPrice,
@@ -203,6 +204,7 @@ namespace FurnitureWeb.Services.Catalog.Orders
             {
                 var order = await _context.Orders
                     .Where(x => x.OrderId == orderId)
+                    .Include(x => x.Discount)
                     .Include(x => x.OrderItems)
                     .Include(x => x.User)
                     .Include(x => x.Discount)
@@ -216,9 +218,9 @@ namespace FurnitureWeb.Services.Catalog.Orders
                     UserFullName = order.User.UserName,
                     UserAddress = order.User.Address,
                     UserPhone = order.User.PhoneNumber,
-                    DiscountId = order.DiscountId,
-                    DiscountCode = order.Discount.DiscountCode,
-                    DiscountValue = order.Discount.DiscountValue,
+                    DiscountId = order?.DiscountId,
+                    DiscountCode = order.Discount?.DiscountCode,
+                    DiscountValue = order.Discount?.DiscountValue,
                     Shipping = order.Shipping,
                     TotalItemPrice = order.TotalItemPrice,
                     TotalPrice = order.TotalPrice,

@@ -75,6 +75,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> RetrieveById(string userId)
         {
             var res = await _userService.RetrieveById(userId);

@@ -8,9 +8,12 @@
     var totalWishItem = 0;
     if (User.Identity.IsAuthenticated)
     {
-        user = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data;
-        totalCartItem = user.TotalCartItem;
-        totalWishItem = user.TotalWishItem;
+        user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
+        if(user != null)
+        {
+            totalCartItem = user.TotalCartItem;
+            totalWishItem = user.TotalWishItem;
+        }
     }
 }
 <!DOCTYPE html>

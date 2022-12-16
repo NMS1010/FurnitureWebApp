@@ -13,7 +13,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
         public string UserPhone { get; set; }
         public int? DiscountId { get; set; }
         public string DiscountCode { get; set; }
-        public decimal DiscountValue { get; set; }
+        public decimal? DiscountValue { get; set; }
         public decimal TotalItemPrice { get; set; }
         public decimal Shipping { get; set; }
         public decimal TotalPrice { get; set; }

@@ -25,7 +25,12 @@ namespace FurnitureWeb.WebApp.Controllers
         public async Task<IActionResult> GetCartItem()
         {
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
+            if (user == null)
+                return Redirect("~/signout");
             var cartItems = (await _cartItemAPIClient.GetAllCartItemByUser(user.UserId))?.Data;
+            if (cartItems == null)
+            {
+            }
             ViewData["total"] = cartItems?.Items.Sum(x => x.Quantity * x.UnitPrice);
             return View("Index", cartItems);
         }

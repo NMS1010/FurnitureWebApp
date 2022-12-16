@@ -77,7 +77,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
                          userPrincipal,
                          authProperties
                          );
-            Response.Cookies.Append("X-Access-Token-Admin", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            Response.Cookies.Append("X-Access-Token-Admin", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Lax });
             return Redirect("/admin/home");
         }
 
