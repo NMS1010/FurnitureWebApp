@@ -27,7 +27,7 @@ namespace FurnitureWeb.WebApp.Controllers
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
             if (user == null)
                 return Redirect("~/signout");
-            var cartItems = (await _cartItemAPIClient.GetAllCartItemByUser(user.UserId))?.Data;
+            var cartItems = (await _cartItemAPIClient.GetAllCartItemByUser(user?.UserId))?.Data;
             if (cartItems == null)
             {
             }
@@ -55,7 +55,7 @@ namespace FurnitureWeb.WebApp.Controllers
             var res = await _cartItemAPIClient.AddProductToCart(new CartItemCreateRequest()
             {
                 ProductId = productId,
-                UserId = (await _userAPIClient.RetrieveByClaimsPrincipal(User)).Data.UserId,
+                UserId = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data?.UserId,
                 Quantity = quantity,
                 Status = 1
             });

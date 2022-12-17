@@ -210,7 +210,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                                 UserAvatar = g.User.Avatar,
                                 UserName = g.User.UserName
                             }).ToList()
-                        }
+                        },
+                        AverageRating = x?.ReviewItems.Count > 0 ? (int)x?.ReviewItems.Average(x => x.Rating) : 0
                     }).ToList();
 
                 foreach (var product in data)
@@ -288,7 +289,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                             UserAvatar = g.User.Avatar,
                             UserName = g.User.UserName
                         }).ToList()
-                    }
+                    },
+                    AverageRating = product?.ReviewItems.Count > 0 ? (int)product?.ReviewItems.Average(x => x.Rating) : 0
                 };
             }
             catch

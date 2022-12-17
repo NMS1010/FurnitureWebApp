@@ -10,6 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _userService;
@@ -75,7 +76,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Roles = "Admin, Customer")]
+        [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> RetrieveById(string userId)
         {
             var res = await _userService.RetrieveById(userId);

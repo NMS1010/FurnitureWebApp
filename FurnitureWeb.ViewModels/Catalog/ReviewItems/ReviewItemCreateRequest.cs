@@ -8,6 +8,9 @@ namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
         public int ProductId { get; set; }
 
         [Required]
+        public int OrderId { get; set; }
+
+        [Required]
         public string UserId { get; set; }
 
         [MaxLength(255)]

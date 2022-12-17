@@ -25,7 +25,7 @@ namespace FurnitureWeb.WebApp.Controllers
         public async Task<IActionResult> GetAllWishItem()
         {
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
-            var wishItems = (await _wishItemAPIClient.GetAllWishItemByUser(user.UserId))?.Data;
+            var wishItems = (await _wishItemAPIClient.GetAllWishItemByUser(user?.UserId))?.Data;
             return View("Index", wishItems ?? new PagedResult<WishItemViewModel>());
         }
 

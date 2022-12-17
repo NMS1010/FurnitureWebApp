@@ -42,14 +42,24 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
-        [HttpGet("{reviewId}")]
-        public async Task<IActionResult> RetrieveById(int reviewId)
+        [HttpGet("{reviewItemId}")]
+        public async Task<IActionResult> RetrieveById(int reviewItemId)
         {
-            var review = await _reviewServices.RetrieveById(reviewId);
+            var review = await _reviewServices.RetrieveById(reviewItemId);
 
             if (review == null)
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found this review"));
             return Ok(CustomAPIResponse<ReviewItemViewModel>.Success(review, StatusCodes.Status200OK));
+        }
+
+        [HttpPost("get-by-user")]
+        public async Task<IActionResult> RetrieveReviewsByUser([FromForm] string userId, [FromForm] int productId)
+        {
+            var reviews = await _reviewServices.RetrieveReviewsByUser(userId, productId);
+
+            if (reviews == null)
+                return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status404NotFound, "Cannot found reviews for this productId"));
+            return Ok(CustomAPIResponse<PagedResult<ReviewItemViewModel>>.Success(reviews, StatusCodes.Status200OK));
         }
 
         [HttpPost("add")]
@@ -74,6 +84,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{reviewId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int reviewId)
         {
             var count = await _reviewServices.Delete(reviewId);

@@ -14,7 +14,7 @@ namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public string Content { get; set; }
-        public int? Rating { get; set; }
+        public int Rating { get; set; }
         public int Status { get; set; }
     }
 }

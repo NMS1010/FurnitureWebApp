@@ -1,0 +1,182 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.ReviewItems;
+@using FurnitureWeb.ViewModels.Common;
+@using Microsoft.Extensions.Configuration;
+
+
+@model PagedResult<ReviewItemViewModel>
+@inject IConfiguration Configuration
+
+@{
+    var productReview = ViewData["productReview"] as ReviewItemViewModel;
+    var orderId = (int)ViewData["orderId"];
+    var productId = (int)ViewData["productId"];
+}
+
+
+<!-- Start breadcrumb section -->
+<section class="breadcrumb__section breadcrumb__bg">
+    <div class="container">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content">
+                    <h1 class="breadcrumb__content--title text-white mb-10">Đánh giá sản phẩm</h1>
+                    <ul class="breadcrumb__content--menu d-flex">
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/home">Home</a></li>
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/my-account/orders">Đơn hàng của tôi</a></li>
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/my-account/orders/detail/@orderId">Chi tiết đơn hàng - #@orderId</a></li>
+                        <li class="breadcrumb__content--menu__items"><span class="text-white">Đánh giá sản pẩm</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End breadcrumb section -->
+
+<!-- Start about section -->
+<section class="about__section section--padding mb-95">
+    <div class="container">
+        <div class="row">
+            <div class="product__reviews">
+                <div class="product__reviews--header">
+                    <a class="actions__newreviews--btn primary__btn" href="#writereview" onclick="document.getElementById('writereview').style.display = 'block'">Thêm đánh giá</a>
+                </div>
+                <div class="reviews__comment--area">
+                    @foreach(var review in Model?.Items)
+                    {
+                        <div class="reviews__comment--list d-flex">
+                            <div class="reviews__comment--thumbnail">
+                                <img src="@Configuration["BaseAddress"]@review?.UserAvatar" alt="comment-thumbnail">
+                            </div>
+                            <div class="reviews__comment--content">
+                                <h4 class="reviews__comment--content__title">@review?.UserName</h4>
+                                <ul class="rating reviews__comment--rating d-flex mb-5">
+                                    @for(int i = 1; i<=5; i++)
+                                    {
+                                        string color = i <= review.Rating ? "currentColor" : "";
+                                        <li class="rating__list">
+                                            <span class="rating__list--icon">
+                                                <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                                    <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="@color"></path>
+                                                </svg>
+                                            </span>
+                                        </li>                                    
+                                    }
+                                </ul>
+                                <p class="reviews__comment--content__desc">@review?.Content</p>
+                                <span class="reviews__comment--content__date">@review?.DateUpdated</span>
+                            </div>
+                            <a class="text-white primary__btn" href="~/reviews/@orderId/@review.ProductId?reviewItemId=@review.ReviewItemId" >Chỉnh sửa</a>
+                        </div>
+                    }
+                </div>
+                <div id="writereview" style="display: none" class="reviews__comment--reply__area">
+                    <form
+                            action="~/reviews/add"
+                            method="post"
+                            id="form-add"
+                    >
+                        <h3 class="reviews__comment--reply__title mb-15">Viết đánh giá</h3>
+                        <div class="reviews__ratting d-flex align-items-center mb-20">
+                            <ul class="rating d-flex">
+                                <li class="rating__list">
+                                    <span class="rating__list--icon">
+                                        <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                        <path data-index="1" id="star-1" onclick="onChangeRating(this)" data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </li>
+                                <li class="rating__list">
+                                    <span class="rating__list--icon">
+                                        <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                        <path data-index="2" id="star-2" onclick="onChangeRating(this)" data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </li>
+                                <li class="rating__list">
+                                    <span class="rating__list--icon">
+                                        <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                        <path data-index="3" id="star-3" onclick="onChangeRating(this)" data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </li>
+                                <li class="rating__list">
+                                    <span class="rating__list--icon">
+                                        <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                        <path data-index="4" id="star-4" onclick="onChangeRating(this)" data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </li>
+                                <li class="rating__list">
+                                    <span class="rating__list--icon">
+                                        <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="13.105" height="13.732" viewBox="0 0 10.105 9.732">
+                                        <path data-index="5" id="star-5" onclick="onChangeRating(this)" data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        @{
+                            int pId = productReview == null ? productId : productReview.ProductId;
+                        }
+                        <input type="hidden" name="productId" id="productId" value="@pId">
+                        <input type="hidden" name="orderId" id="orderId" value="@orderId">
+                        <div class="row">
+                            <div class="col-12 mb-10">
+                                <textarea name="content" id="content" class="reviews__comment--reply__textarea"  placeholder="Đánh giá của bạn...." required>@productReview?.Content</textarea>
+                            </div>
+                        </div>
+                        @{
+                            int rate = productReview == null ? 5 : productReview.Rating;
+                        }
+                        <input type="hidden" id="rating" name="rating" value="@rate">
+                        <input type="hidden" id="reviewItemId" name="reviewItemId" value="@productReview?.ReviewItemId">
+                        <button class="text-white primary__btn" data-hover="Submit" type="submit">Đánh giá</button>
+                        <button class="text-white primary__btn" data-hover="Submit" onclick="document.getElementById('writereview').style.display = 'none'">Huỷ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End about section -->
+
+<div class="modal" id="modal-error"  data-animation="slideInUp" style="z-index: 999;">
+    <div class="modal-dialog quickview__main--wrapper">
+        <h3 class="modal- border-bottom-0">Thao tác bị lỗi. Vui lòng thử lại</h3>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        if (window.location.href.includes("error")) {
+            document.getElementById("modal-error").classList.add('is-visible')
+        }
+        @{
+            if (productReview != null)
+            {
+                 <text>
+                    document.getElementById('writereview').style.display = 'block'
+                    document.getElementById('form-add').action = '/reviews/edit'
+                    onChangeRating(document.getElementById("star-" + `@productReview.Rating`))
+                    window.location.href = window.location.href + '#writereview'
+                </text>
+            }
+        }
+        function onChangeRating(e) {
+            let index = parseInt(e.getAttribute("data-index"));
+            for (let i = 1; i <= 5; i++) {
+                let str = ''
+                if (i <= index) {
+                    str = "currentColor"
+                } else {
+                    str = ""
+                }
+                document.getElementById("star-" + i).setAttribute("fill", str)
+            }
+            document.getElementById('rating').value = index
+        }
+    </script>
+}
+

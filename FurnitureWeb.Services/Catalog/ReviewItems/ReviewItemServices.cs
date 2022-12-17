@@ -109,15 +109,15 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
             }
         }
 
-        public async Task<ReviewItemViewModel> RetrieveById(int reviewId)
+        public async Task<ReviewItemViewModel> RetrieveById(int reviewItemId)
         {
             try
             {
                 var review = await _context.ReviewItems
+                    .Where(x => x.ReviewItemId == reviewItemId)
                     .Include(x => x.User)
                     .Include(x => x.Product)
                     .ThenInclude(x => x.ProductImages)
-                    .Where(x => x.ReviewItemId == reviewId)
                     .FirstOrDefaultAsync();
                 if (review == null)
                     return null;
@@ -180,6 +180,47 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
             catch
             {
                 return -1;
+            }
+        }
+
+        public async Task<PagedResult<ReviewItemViewModel>> RetrieveReviewsByUser(string userId, int productId)
+        {
+            try
+            {
+                var query = await _context.ReviewItems
+                    .Where(x => x.ProductId == productId && x.UserId == userId)
+                    .Include(x => x.User)
+                    .Include(x => x.Product)
+                    .ThenInclude(x => x.ProductImages)
+                    .ToListAsync();
+                var data = query
+                    .Select(x => new ReviewItemViewModel()
+                    {
+                        ReviewItemId = x.ReviewItemId,
+                        UserId = x.UserId,
+                        ProductId = x.ProductId,
+                        ProductName = x.Product.Name,
+                        ProductImage = x.Product.ProductImages
+                            .Where(c => c.IsDefault == true && c.ProductId == x.ProductId)
+                            .FirstOrDefault()?.Path,
+                        Rating = x.Rating,
+                        Content = x.Content,
+                        DateCreated = x.DateCreated,
+                        DateUpdated = x.DateUpdated,
+                        Status = x.Status,
+                        UserName = x.User.UserName,
+                        UserAvatar = x.User.Avatar
+                    }).ToList();
+
+                return new PagedResult<ReviewItemViewModel>
+                {
+                    TotalItem = query.Count,
+                    Items = data
+                };
+            }
+            catch
+            {
+                return null;
             }
         }
     }

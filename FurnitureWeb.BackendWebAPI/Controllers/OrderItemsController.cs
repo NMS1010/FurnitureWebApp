@@ -1,5 +1,6 @@
 ﻿using FurnitureWeb.Services.Catalog.OrderItems;
 using FurnitureWeb.ViewModels.Catalog.OrderItems;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderItemsController : ControllerBase
     {
         private readonly IOrderItemServices _orderItemService;
@@ -17,6 +19,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RetrieveAll([FromQuery] OrderItemGetPagingRequest request)
         {
             var categories = await _orderItemService.RetrieveAll(request);
@@ -35,6 +38,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm] OrderItemCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -48,6 +52,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] OrderItemUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -59,6 +64,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{orderItemId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int orderItemId)
         {
             int records = await _orderItemService.Delete(orderItemId);

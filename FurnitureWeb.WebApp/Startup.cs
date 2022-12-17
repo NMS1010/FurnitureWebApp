@@ -5,6 +5,7 @@ using FurnitureWeb.APICaller.CartItem;
 using FurnitureWeb.APICaller.Category;
 using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.Product;
+using FurnitureWeb.APICaller.ReviewItem;
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.APICaller.WishItem;
 using FurnitureWeb.Services.External.Paypal;
@@ -51,6 +52,7 @@ namespace FurnitureWeb.WebApp
             services.AddScoped<ICartItemAPIClient, CartItemAPIClient>();
             services.AddScoped<IWishItemAPIClient, WishItemAPIClient>();
             services.AddScoped<IPaypalService, PaypalService>();
+            services.AddScoped<IReviewItemAPIClient, ReviewItemAPIClient>();
             services.TryAddScoped<SignInManager<AppUser>>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>

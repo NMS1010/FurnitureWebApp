@@ -70,7 +70,7 @@
                                         <td class="account__table--body__child--items text-left">@o?.TotalPrice</td>
                                         @if(Model?.Status == ORDER_STATUS.DELIVERED)
                                         {
-                                            <td class="account__table--body__child--items"><a class="primary__btn" href="~/my-account/orders/reviews/@o?.ProductId">Đánh giá</a></td>
+                                            <td class="account__table--body__child--items"><a class="primary__btn" href="~/reviews/@o?.OrderId/@o?.ProductId">Đánh giá</a></td>
                                         }
                                     </tr>
                                 }
@@ -103,7 +103,7 @@
                                         {
                                             <td class="account__table--body__child--items">
                                                 <strong>Đánh giá</strong>
-                                                <a class="primary__btn" href="~/my-account/orders/reviews/@o?.ProductId">Đánh giá</a>
+                                                <a class="primary__btn" href="~/reviews/@o?.OrderId/@o?.ProductId">Đánh giá</a>
                                             </td>
                                         }
                                     </tr>

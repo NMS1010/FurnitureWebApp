@@ -46,6 +46,10 @@ namespace FurnitureWeb.APICaller.ReviewItem
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateReviewItem(ReviewItemCreateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            if (session == null)
+            {
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+            }
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -81,9 +85,29 @@ namespace FurnitureWeb.APICaller.ReviewItem
             return await GetAsync<CustomAPIResponse<ReviewItemViewModel>>($"/api/reviewItems/{reviewItemId}");
         }
 
+        public async Task<CustomAPIResponse<PagedResult<ReviewItemViewModel>>> GetReviewItemByUser(string userId, int productId)
+        {
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+
+            var requestContent = new MultipartFormDataContent
+            {
+                { new StringContent(userId), "userId" },
+                { new StringContent(productId.ToString()), "productId" },
+            };
+
+            var response = await httpClient.PostAsync($"/api/reviewItems/get-by-user", requestContent);
+
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<PagedResult<ReviewItemViewModel>>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<PagedResult<ReviewItemViewModel>>));
+        }
+
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateReviewItem(ReviewItemUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

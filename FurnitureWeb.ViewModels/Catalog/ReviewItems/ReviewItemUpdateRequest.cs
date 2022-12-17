@@ -5,6 +5,12 @@ namespace FurnitureWeb.ViewModels.Catalog.ReviewItems
     public class ReviewItemUpdateRequest
     {
         [Required]
+        public int ProductId { get; set; }
+
+        [Required]
+        public int OrderId { get; set; }
+
+        [Required]
         public int ReviewItemId { get; set; }
 
         [MaxLength(255)]

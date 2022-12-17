@@ -16,6 +16,8 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         Task<CustomAPIResponse<ReviewItemViewModel>> GetReviewItemById(int reviewItemId);
 
+        Task<CustomAPIResponse<PagedResult<ReviewItemViewModel>>> GetReviewItemByUser(string userId, int productId);
+
         Task<CustomAPIResponse<NoContentAPIResponse>> DeleteReviewItem(int reviewItemId);
     }
 }
