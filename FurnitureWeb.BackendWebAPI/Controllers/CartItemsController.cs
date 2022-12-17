@@ -10,7 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer, Admin")]
     public class CartItemsController : ControllerBase
     {
         private readonly ICartItemServices _cartItemService;

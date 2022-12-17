@@ -20,14 +20,18 @@ namespace FurnitureWeb.WebApp.Controllers
             _userAPIClient = userAPIClient;
         }
 
+        [HttpGet("orders/detail/{orderId}")]
+        public async Task<IActionResult> GetOrderDetail(int orderId)
+        {
+            var order = (await _orderAPIClient.GetOrderById(orderId))?.Data;
+            return View("UserOrderDetail", order);
+        }
+
         [HttpGet("orders")]
         public async Task<IActionResult> GetOrder()
         {
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
-            var orders = (await _orderAPIClient.GetAllOrderAsync(new OrderGetPagingRequest()
-            {
-                UserId = user.UserId
-            }))?.Data;
+            var orders = user.Orders;
             return View("UserOrder", orders);
         }
 

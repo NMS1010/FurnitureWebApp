@@ -1,7 +1,9 @@
 ﻿using Domain.EF;
 using Domain.Entities;
+using FurnitureWeb.Services.Catalog.Orders;
 using FurnitureWeb.Services.Common.FileStorage;
 using FurnitureWeb.Utilities.Constants.Users;
+using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
@@ -27,12 +29,13 @@ namespace FurnitureWeb.Services.System.Users
         private readonly IConfiguration _configuration;
         private readonly IFileStorageService _fileStorage;
         private readonly AppDbContext _context;
+        private readonly IOrderServices _orderServices;
 
         public UserServices(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
             IFileStorageService fileStorage,
-            RoleManager<IdentityRole> roleManager, AppDbContext context)
+            RoleManager<IdentityRole> roleManager, AppDbContext context, IOrderServices orderServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -40,6 +43,7 @@ namespace FurnitureWeb.Services.System.Users
             _fileStorage = fileStorage;
             _roleManager = roleManager;
             _context = context;
+            _orderServices = orderServices;
         }
 
         private async Task<string> WriteJWT(AppUser user)
@@ -289,6 +293,14 @@ namespace FurnitureWeb.Services.System.Users
                 };
                 var roles = await _userManager.GetRolesAsync(x);
                 user.RoleIds = (await _context.UserRoles.Where(u => u.UserId == x.Id).Select(k => k.RoleId).ToListAsync());
+                user.Orders = new PagedResult<OrderViewModel>();
+                List<OrderViewModel> orders = new List<OrderViewModel>();
+                foreach (var order in x.Orders)
+                {
+                    orders.Add(await _orderServices.RetrieveById(order.OrderId));
+                }
+                user.Orders.Items = orders;
+                user.Orders.TotalItem = orders.Count;
                 return user;
             }
             catch

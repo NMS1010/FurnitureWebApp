@@ -1,0 +1,119 @@
+﻿@using FurnitureWeb.Utilities.Constants.Orders;
+@using FurnitureWeb.ViewModels.Catalog.Orders;
+@using Microsoft.Extensions.Configuration;
+
+@inject IConfiguration Configuration
+@model OrderViewModel
+
+
+
+<!-- Start breadcrumb section -->
+<section class="breadcrumb__section breadcrumb__bg">
+    <div class="container">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content">
+                    <h1 class="breadcrumb__content--title text-white mb-10">Tài khoản của tôi</h1>
+                    <ul class="breadcrumb__content--menu d-flex">
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/home">Home</a></li>
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/my-account">Tài khoản của tôi</a></li>
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/my-account/orders">Đơn hàng của tôi</a></li>
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/my-account/orders/detail/@Model?.OrderId">Chi tiết đơn hàng - #@Model?.OrderId</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End breadcrumb section -->
+<!-- my account section start -->
+<section class="my__account--section section--padding">
+    <div class="container-fluid">
+        <div class="my__account--section__inner border-radius-10 d-flex">
+            <div class="account__left--sidebar">
+                <h3 class="account__content--title mb-20">Tài khoản của tôi</h3>
+                <ul class="account__menu">
+                    <li class="account__menu--list"><a href="~/my-account">Cập nhật thông tin</a></li>
+                    <li class="account__menu--list active"><a href="~/my-account/orders">Đơn hàng của tôi</a></li>
+                    <li class="account__menu--list"><a href="~/signout">Đăng xuất</a></li>
+                </ul>
+            </div>
+            <div class="account__wrapper">
+                <div class="account__content">
+                    <h3 class="account__content--title mb-20">Chi tiết đơn hàng - #@Model?.OrderId</h3>
+                    <div class="account__table--area">
+                        <table class="account__table">
+                            <thead class="account__table--header">
+                                <tr class="account__table--header__child">
+                                    <th class="account__table--header__child--items">Đơn thành phần</th>
+                                    <th class="account__table--header__child--items">Sản phẩm</th>
+                                    <th class="account__table--header__child--items">Tên Sản phẩm</th>
+                                    <th class="account__table--header__child--items">Số lượng</th>
+                                    <th class="account__table--header__child--items">Đơn giá</th>
+                                    <th class="account__table--header__child--items">Tổng tiền</th>
+                                    <th class="account__table--header__child--items">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="account__table--body mobile__none">
+                                @foreach(var o in Model?.OrderItems.Items)
+                                {
+                                    <tr class="account__table--body__child">
+                                        <td class="account__table--body__child--items">#@o?.OrderItemId</td>
+                                        <td class="account__table--body__child--items">
+                                            <div class="cart__thumbnail">
+                                                <a href="~/products/detail/@o?.ProductId"><img class="border-radius-5" src="@Configuration["BaseAddress"]@o?.ProductImage" alt="cart-product"></a>
+                                            </div>
+                                        </td>
+                                        <td class="account__table--body__child--items"><a href="~/products/detail/@o?.ProductId">@o?.ProductName</a></td>
+                                        <td class="account__table--body__child--items">@o?.Quantity</td>
+                                        <td class="account__table--body__child--items">@o?.UnitPrice</td>
+                                        <td class="account__table--body__child--items text-left">@o?.TotalPrice</td>
+                                        @if(Model?.Status == ORDER_STATUS.DELIVERED)
+                                        {
+                                            <td class="account__table--body__child--items"><a class="primary__btn" href="~/my-account/orders/reviews/@o?.ProductId">Đánh giá</a></td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody class="account__table--body mobile__block">
+                                @foreach (var o in Model?.OrderItems.Items)
+                                {
+                                    <tr class="account__table--body__child">
+                                        <td class="account__table--body__child--items">
+                                            <strong>Đơn thành phần</strong>
+                                            <span>#@o?.OrderItemId</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Sản phẩm</strong>
+                                            <span><a href="~/products/detail/@o?.ProductId">@o?.ProductName</a></span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Số lượng</strong>
+                                            <span>@o?.Quantity</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Đơn giá</strong>
+                                            <span>@o?.UnitPrice</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Tổng tiền</strong>
+                                            <span>@o?.TotalPrice</span>
+                                        </td>
+                                        @if (Model?.Status == ORDER_STATUS.DELIVERED)
+                                        {
+                                            <td class="account__table--body__child--items">
+                                                <strong>Đánh giá</strong>
+                                                <a class="primary__btn" href="~/my-account/orders/reviews/@o?.ProductId">Đánh giá</a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- my account section end -->

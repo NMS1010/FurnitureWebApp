@@ -10,6 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryServices _categoryService;
@@ -20,6 +21,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [AllowAnonymous]
         public async Task<IActionResult> RetrieveAll([FromQuery] CategoryGetPagingRequest request)
         {
             var categories = await _categoryService.RetrieveAll(request);
@@ -29,6 +31,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all/parent-categories")]
+        [AllowAnonymous]
         public async Task<IActionResult> RetrieveParentCategories()
         {
             var categories = await _categoryService.GetParentCategory();
@@ -47,7 +50,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm] CategoryCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -61,7 +63,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] CategoryUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -73,7 +74,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpDelete("delete/{categoryId}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int categoryId)
         {
             int records = await _categoryService.Delete(categoryId);

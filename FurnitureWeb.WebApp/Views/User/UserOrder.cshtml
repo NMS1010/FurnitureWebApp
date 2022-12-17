@@ -1,0 +1,114 @@
+﻿@using FurnitureWeb.ViewModels.Catalog.Orders;
+@using FurnitureWeb.ViewModels.Common;
+
+@model PagedResult<OrderViewModel>
+
+
+<!-- Start breadcrumb section -->
+<section class="breadcrumb__section breadcrumb__bg">
+    <div class="container">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content">
+                    <h1 class="breadcrumb__content--title text-white mb-10">Tài khoản của tôi</h1>
+                    <ul class="breadcrumb__content--menu d-flex">
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="~/home">Home</a></li>
+                        <li class="breadcrumb__content--menu__items"><span class="text-white">Tài khoản của tôi</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End breadcrumb section -->
+<!-- my account section start -->
+<section class="my__account--section section--padding">
+    <div class="container-fluid">
+        <div class="my__account--section__inner border-radius-10 d-flex">
+            <div class="account__left--sidebar">
+                <h3 class="account__content--title mb-20">Tài khoản của tôi</h3>
+                <ul class="account__menu">
+                    <li class="account__menu--list"><a href="~/my-account">Cập nhật thông tin</a></li>
+                    <li class="account__menu--list active"><a href="~/my-account/orders">Đơn hàng của tôi</a></li>
+                    <li class="account__menu--list"><a href="~/signout">Đăng xuất</a></li>
+                </ul>
+            </div>
+            <div class="account__wrapper">
+                <div class="account__content">
+                    <h3 class="account__content--title mb-20">Đơn hàng của tôi</h3>
+                    <div class="account__table--area">
+                        <table class="account__table">
+                            <thead class="account__table--header">
+                                <tr class="account__table--header__child">
+                                    <th class="account__table--header__child--items">Đơn hàng</th>
+                                    <th class="account__table--header__child--items">Ngày đặt</th>
+                                    <th class="account__table--header__child--items">Ngày thanh toán</th>
+                                    <th class="account__table--header__child--items">Trạng thái thanh toán</th>
+                                    <th class="account__table--header__child--items">Trạng thái đơn hàng</th>
+                                    <th class="account__table--header__child--items">Tổng sản phẩm</th>
+                                    <th class="account__table--header__child--items">Tổng tiền</th>
+                                    <th class="account__table--header__child--items">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="account__table--body mobile__none">
+                                @foreach(var o in Model?.Items)
+                                {
+                                    <tr class="account__table--body__child">
+                                        <td class="account__table--body__child--items">#@o?.OrderId</td>
+                                        <td class="account__table--body__child--items">@o?.DateCreated</td>
+                                        <td class="account__table--body__child--items">@o?.DateDone</td>
+                                        <td class="account__table--body__child--items">@o?.PaymentMethod</td>
+                                        <td class="account__table--body__child--items @o?.StatusClass">@o?.StatusCode</td>
+                                        <td class="account__table--body__child--items">@o?.TotalItem</td>
+                                        <td class="account__table--body__child--items">@o?.TotalPrice</td>
+                                        <td class="account__table--body__child--items"><a href="~/my-account/orders/detail/@o.OrderId">Xem chi tiết</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody class="account__table--body mobile__block">
+                                @foreach(var o in Model?.Items)
+                                {
+                                    <tr class="account__table--body__child">
+                                        <td class="account__table--body__child--items">
+                                            <strong>Đơn hàng</strong>
+                                            <span>#@o?.OrderId</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Ngày đặt</strong>
+                                            <span>@o?.DateCreated</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Ngày thanh toán</strong>
+                                            <span>@o?.DateDone</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Trạng thái thanh toán</strong>
+                                            <span>@o?.PaymentMethod</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Trạng thái đơn hàng</strong>
+                                            <span class="@o?.StatusClass">@o?.StatusCode</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Tổng sản phẩm</strong>
+                                            <span>@o?.TotalItem</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Tổng tiền</strong>
+                                            <span>@o?.TotalPrice</span>
+                                        </td>
+                                        <td class="account__table--body__child--items">
+                                            <strong>Chi tiết</strong>
+                                            <a href="<%=request.getContextPath()%>/my-account/orders/detail/@o?.OrderId">Xem chi tiết</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- my account section end -->

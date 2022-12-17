@@ -41,6 +41,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("aplly/{discountCode}")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ApplyDiscount(string discountCode)
         {
             var state = await _discountServices.ApllyDiscount(discountCode);
