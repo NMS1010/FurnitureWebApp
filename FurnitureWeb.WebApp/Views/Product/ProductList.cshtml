@@ -249,10 +249,10 @@
                     <div class="product__view--mode d-flex align-items-center">
                         <div class="product__view--mode__list product__short--by align-items-center d-none d-lg-flex">
                             <label class="product__view--label">Page Size</label>
-                            <form action="~/products/list" class="d-flex">
+                            <form action="~/products/list" class="d-flex" id="form-page-size">
                                 <div class="select shop__header--select">
                                     <input type="hidden" name="sortBy" value="@sortBy"/>
-                                    <select class="product__view--select" name="pageSize">
+                                    <select class="product__view--select" name="pageSize" onchange="onChangePageSize()">
                                         @foreach(var s in PAGE_SIZE.PageSize)
                                         {
                                             if(s == pageSize){
@@ -265,15 +265,14 @@
                                         }
                                     </select>
                                 </div>
-                                <button type="submit" class="price__filter--btn primary__btn">Chọn</button>
                             </form>
                         </div>
                         <div class="product__view--mode__list product__short--by align-items-center d-none d-lg-flex">
                             <label class="product__view--label">Sắp xếp :</label>
-                            <form action="~/products/list" class="d-flex">
+                            <form action="~/products/list" class="d-flex" id="form-sort-by">
                                 <div class="select shop__header--select">
                                     <input type="hidden" name="pageSize" value="@pageSize"/>
-                                    <select class="product__view--select" name="sortBy">
+                                    <select class="product__view--select" name="sortBy" onchange="onChangeSortBy()">
                                         @foreach (var s in SORT_BY.SortBy)
                                         {
                                             if(s.Key == sortBy){
@@ -286,7 +285,6 @@
                                         }
                                     </select>
                                 </div>
-                                <button type="submit" class="price__filter--btn primary__btn">Sắp xếp</button>
                             </form>
                         </div>
                         <div class="product__view--mode__list">
@@ -617,6 +615,12 @@
                 if (params_arr.length) rtn = rtn + "?" + params_arr.join("&");
             }
             return rtn;
+        }
+        function onChangePageSize(){
+            document.getElementById('form-page-size').submit()
+        }
+        function onChangeSortBy(){
+            document.getElementById('form-sort-by').submit()
         }
     </script>
     <script src="~/js/app/product/product_handler.js"></script>

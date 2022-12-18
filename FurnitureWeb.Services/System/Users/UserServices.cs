@@ -158,12 +158,15 @@ namespace FurnitureWeb.Services.System.Users
                 user.Address = request.Address;
                 if (request.ConfirmPassword != null)
                     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.ConfirmPassword);
-                user.Avatar = await _fileStorage.SaveFile(request.Avatar);
+                if (request.Avatar != null)
+                    user.Avatar = await _fileStorage.SaveFile(request.Avatar);
                 var res = await _userManager.UpdateAsync(user);
                 if (res.Succeeded)
                 {
-                    await _fileStorage.DeleteFile(avatar);
-
+                    if (request.Avatar != null)
+                        await _fileStorage.DeleteFile(avatar);
+                    if (request.Roles == null || request.Roles[0] == "null")
+                        return (true, "successfull");
                     await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
                     List<string> roles = new List<string>();
                     foreach (var roleId in JsonConvert.DeserializeObject<string[]>(request.Roles[0]))

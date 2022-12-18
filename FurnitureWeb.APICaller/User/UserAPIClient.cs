@@ -108,6 +108,10 @@ namespace FurnitureWeb.APICaller.User
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            if (session == null)
+            {
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+            }
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

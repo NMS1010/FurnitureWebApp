@@ -2,6 +2,7 @@
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Utilities.Constants.Orders;
 using FurnitureWeb.ViewModels.Catalog.Orders;
+using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -41,6 +42,17 @@ namespace FurnitureWeb.WebApp.Controllers
         {
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
             return View(user);
+        }
+
+        [HttpPost("edit")]
+        public async Task<IActionResult> UpdateInfo([FromForm] UserUpdateRequest request)
+        {
+            var res = (await _userAPIClient.UpdateUser(request));
+            if (!res.IsSuccesss)
+            {
+                return Redirect("~/my-account?error");
+            }
+            return Redirect("~/my-account");
         }
     }
 }

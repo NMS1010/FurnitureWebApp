@@ -86,7 +86,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
         {
             (var res, var status) = await _userService.Update(request);

@@ -95,7 +95,8 @@
                                             aria-labelledby="profile-tab">
                                         <div class="tab-widget mt-5">
                                             <form id="form-add" action="~/my-account/edit" enctype="multipart/form-data" method="post">
-                                                <input type="hidden" name="userId" id="userId" value="@Model?.UserId"/>
+                                                <input type="hidden" name="userId" id="userId" value="@Model?.UserId" />
+                                                <input type="hidden" name="status" id="status" value="@Model?.Status" />
                                                 <div class="row ec-vendor-uploads mb-4">
                                                     <label class="col-12 col-form-label" for="avatar">Avatar</label>
                                                     <div class="ec-vendor-img-upload">
@@ -245,7 +246,7 @@
     <script>
         $(window).on('load', function () {
             if (window.location.href.includes("error")) {
-                $('#modal-error').modal('show');
+                document.getElementById("modal-error").classList.add('is-visible')
             }
         });
         $('#form-add').submit(function (e) {
