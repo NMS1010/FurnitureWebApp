@@ -65,11 +65,21 @@ namespace FurnitureWeb.Services.External.Paypal
                 });
                 total += price;
             }
+            //if (orderCreateRequest.DiscountId.HasValue)
+            //{
+            //itemList.items.Add(new Item()
+            //{
+            //    name = $"Discount",
+            //    currency = "USD",
+            //    price = (-1 * orderCreateRequest.DiscountValue * total).ToString(),
+            //    quantity = "1",
+            //    sku = "sku",
+            //    tax = "0",
+            //});
+            //    total -= orderCreateRequest.DiscountValue * total;
+            //}
             var paypalOrderId = DateTime.Now.Ticks;
-            var payment = new Payment()
-            {
-                intent = "authorize",
-                transactions = new List<Transaction>()
+            var trans = new List<Transaction>()
                 {
                     new Transaction()
                     {
@@ -88,7 +98,11 @@ namespace FurnitureWeb.Services.External.Paypal
                         description = $"Invoice #{paypalOrderId}",
                         invoice_number = paypalOrderId.ToString()
                     }
-                },
+                };
+            var payment = new Payment()
+            {
+                intent = "authorize",
+                transactions = trans,
                 redirect_urls = new RedirectUrls()
                 {
                     cancel_url = $"{hostname}/checkout",
@@ -99,9 +113,9 @@ namespace FurnitureWeb.Services.External.Paypal
                     payment_method = "paypal"
                 }
             };
-            var createdPayment = payment.Create(apiContext);
             try
             {
+                var createdPayment = payment.Create(apiContext);
                 var links = createdPayment.links.GetEnumerator();
                 string paypalRedirectUrl = null;
                 while (links.MoveNext())

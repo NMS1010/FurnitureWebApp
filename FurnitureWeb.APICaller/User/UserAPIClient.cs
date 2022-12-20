@@ -41,11 +41,11 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<string>> Login(LoginRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            //var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
             var requestContent = new MultipartFormDataContent
             {
                 { new StringContent(request.UserName), "UserName" },
@@ -60,11 +60,11 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> Register(RegisterRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            //var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
             var requestContent = new MultipartFormDataContent
             {
@@ -107,11 +107,13 @@ namespace FurnitureWeb.APICaller.User
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateUser(UserUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
-            if (session == null)
+            string session = "";
+            if (_httpContextAccessor.HttpContext.Request.Path.Value.Contains("admin"))
             {
-                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             }
+            else
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

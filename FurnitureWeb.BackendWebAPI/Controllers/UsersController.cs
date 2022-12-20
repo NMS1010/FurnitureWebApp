@@ -10,7 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Customer")]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _userService;
@@ -76,7 +76,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> RetrieveById(string userId)
         {
             var res = await _userService.RetrieveById(userId);
@@ -86,7 +85,6 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
         {
             (var res, var status) = await _userService.Update(request);

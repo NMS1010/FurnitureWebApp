@@ -45,11 +45,13 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> CreateReviewItem(ReviewItemCreateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
-            if (session == null)
+            string session = "";
+            if (_httpContextAccessor.HttpContext.Request.Path.Value.Contains("admin"))
             {
-                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
             }
+            else
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -107,7 +109,13 @@ namespace FurnitureWeb.APICaller.ReviewItem
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateReviewItem(ReviewItemUpdateRequest request)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
+            string session = "";
+            if (_httpContextAccessor.HttpContext.Request.Path.Value.Contains("admin"))
+            {
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            }
+            else
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
             var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);

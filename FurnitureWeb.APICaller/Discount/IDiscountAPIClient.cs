@@ -15,5 +15,7 @@ namespace FurnitureWeb.APICaller.Discount
         Task<CustomAPIResponse<DiscountViewModel>> GetDiscountById(int discountId);
 
         Task<CustomAPIResponse<NoContentAPIResponse>> DeleteDiscount(int discountId);
+
+        Task<CustomAPIResponse<string>> ApplyDiscount(string discountCode);
     }
 }

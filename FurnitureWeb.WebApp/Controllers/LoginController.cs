@@ -46,6 +46,7 @@ namespace FurnitureWeb.WebApp.Controllers
         [HttpGet("login-google")]
         public async Task<IActionResult> GoogleLoginResponse()
         {
+            HttpContext.Response.Cookies.Delete("X-Access-Token-User");
             ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
                 return RedirectToAction(nameof(Login));
@@ -126,6 +127,7 @@ namespace FurnitureWeb.WebApp.Controllers
             var token = res.Data;
             if (token == "banned")
                 return Ok("banned");
+            HttpContext.Response.Cookies.Delete("X-Access-Token-User");
             await AssignCookies(token);
             return Redirect("/home");
         }

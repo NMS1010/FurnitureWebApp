@@ -24,8 +24,12 @@ namespace FurnitureWeb.APICaller.Common
 
         public async Task<TResponse> GetAsync<TResponse>(string url)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
-            if (session == null)
+            string session = "";
+            if (_httpContextAccessor.HttpContext.Request.Path.Value.Contains("admin"))
+            {
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            }
+            else
                 session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -43,8 +47,12 @@ namespace FurnitureWeb.APICaller.Common
 
         public async Task<CustomAPIResponse<NoContentAPIResponse>> Delete(string url)
         {
-            var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
-            if (session == null)
+            string session = "";
+            if (_httpContextAccessor.HttpContext.Request.Path.Value.Contains("admin"))
+            {
+                session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];
+            }
+            else
                 session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-User"];
 
             var httpClient = _httpClientFactory.CreateClient();

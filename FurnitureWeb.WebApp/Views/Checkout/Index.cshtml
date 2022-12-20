@@ -129,8 +129,9 @@
                                             <tr class="checkout__total--items">
                                                 <td class="checkout__total--title text-left">Giảm giá</td>
                                                 <td class="checkout__total--calculated__text text-right">
-                                                    <input value="@discount %" name="discountValue" id="discountValue" class="primary__btn" size="8" type="text" readonly />
+                                                    <input value="@discount %" name="discountVal" id="discountVal" class="primary__btn" size="8" type="text" readonly />
                                                     <input type="hidden" value="" name="discountId" id="discountId" />
+                                                    <input type="hidden" value="" name="discountValue" id="discountValue" />
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -146,7 +147,7 @@
                                 </div>
                                 <div class="payment__history mb-30">
                                     <h3 class="payment__history--title mb-20">Phương thức thanh toán</h3>
-                                    <select class="product__view--select payment__history--inner" name="payment">
+                                    <select class="product__view--select payment__history--inner" id="payment" name="payment">
                                         <option value="@ORDER_PAYMENT.PAYPAL">PayPal</option>
                                         <option value="@ORDER_PAYMENT.COD">COD</option>
                                     </select>

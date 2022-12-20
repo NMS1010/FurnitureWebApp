@@ -10,6 +10,7 @@ namespace FurnitureWeb.ViewModels.Catalog.Orders
         public string UserId { get; set; }
 
         public int? DiscountId { get; set; }
+        public decimal DiscountValue { get; set; }
 
         [Required]
         public decimal TotalItemPrice { get; set; }

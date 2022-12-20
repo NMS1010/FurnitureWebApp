@@ -33,7 +33,7 @@ namespace FurnitureWeb.WebApp.Controllers
         public async Task<IActionResult> GetOrder()
         {
             var user = (await _userAPIClient.RetrieveByClaimsPrincipal(User))?.Data;
-            var orders = user.Orders;
+            var orders = user?.Orders;
             return View("UserOrder", orders);
         }
 

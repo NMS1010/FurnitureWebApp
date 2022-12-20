@@ -10,7 +10,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Admin,Customer")]
     public class WishItemsController : ControllerBase
     {
         private readonly IWishItemServices _wishItemServices;

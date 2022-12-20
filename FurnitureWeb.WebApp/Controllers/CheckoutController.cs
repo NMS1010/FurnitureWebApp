@@ -1,4 +1,5 @@
 ﻿using FurnitureWeb.APICaller.CartItem;
+using FurnitureWeb.APICaller.Discount;
 using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Services.External.Paypal;
@@ -23,13 +24,16 @@ namespace FurnitureWeb.WebApp.Controllers
         private readonly IUserAPIClient _userAPIClient;
         private readonly IOrderAPIClient _orderAPIClient;
         private readonly IPaypalService _paypalService;
+        private readonly IDiscountAPIClient _discountAPIClient;
 
-        public CheckoutController(ICartItemAPIClient cartItemAPIClient, IUserAPIClient userAPIClient, IOrderAPIClient orderAPIClient, IPaypalService paypalService)
+        public CheckoutController(ICartItemAPIClient cartItemAPIClient, IUserAPIClient userAPIClient, IOrderAPIClient orderAPIClient
+            , IPaypalService paypalService, IDiscountAPIClient discountAPIClient)
         {
             _cartItemAPIClient = cartItemAPIClient;
             _userAPIClient = userAPIClient;
             _orderAPIClient = orderAPIClient;
             _paypalService = paypalService;
+            _discountAPIClient = discountAPIClient;
         }
 
         [HttpGet("checkout")]
@@ -64,6 +68,13 @@ namespace FurnitureWeb.WebApp.Controllers
             {
                 return Redirect("~/cart/items?error");
             }
+        }
+
+        [HttpGet("discount/apply")]
+        public async Task<IActionResult> ApplyDiscount(string discountCode)
+        {
+            var state = await _discountAPIClient.ApplyDiscount(discountCode);
+            return Ok(state.Data ?? "error");
         }
 
         [HttpPost("create-order")]

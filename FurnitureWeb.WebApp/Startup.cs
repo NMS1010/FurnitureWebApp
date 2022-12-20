@@ -3,6 +3,7 @@ using Domain.Entities;
 using FurnitureWeb.APICaller.Brand;
 using FurnitureWeb.APICaller.CartItem;
 using FurnitureWeb.APICaller.Category;
+using FurnitureWeb.APICaller.Discount;
 using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.Product;
 using FurnitureWeb.APICaller.ReviewItem;
@@ -53,6 +54,7 @@ namespace FurnitureWeb.WebApp
             services.AddScoped<IWishItemAPIClient, WishItemAPIClient>();
             services.AddScoped<IPaypalService, PaypalService>();
             services.AddScoped<IReviewItemAPIClient, ReviewItemAPIClient>();
+            services.AddScoped<IDiscountAPIClient, DiscountAPIClient>();
             services.TryAddScoped<SignInManager<AppUser>>();
             services.AddHttpClient();
             services.AddSingleton<IConfiguration>(sp =>
@@ -138,9 +140,8 @@ namespace FurnitureWeb.WebApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseRouting();
             app.UseAuthentication();
+            app.UseRouting();
 
             app.UseAuthorization();
             app.UseCookiePolicy();

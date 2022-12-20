@@ -3,6 +3,11 @@
 
 @inject IUserAPIClient _userAPIClient
 @{
+    var pageSize = ViewData["pageSize"];
+    if (pageSize != null)
+        pageSize = (int)ViewData["pageSize"];
+    else
+        pageSize = 2;
     UserViewModel user = null;
     var totalCartItem = 0;
     var totalWishItem = 0;
@@ -134,7 +139,7 @@
                 <a class="offcanvas__menu_item" href="~/home">Home</a>
               </li>
               <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="~/products">Shop</a>
+                <a class="offcanvas__menu_item" href="~/products/list">Shop</a>
               </li>
               <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="~/about">About US</a></li>
             </ul>
@@ -175,7 +180,7 @@
             </a>
           </li>
           <li class="offcanvas__stikcy--toolbar__list">
-            <a class="offcanvas__stikcy--toolbar__btn" href="~/products">
+            <a class="offcanvas__stikcy--toolbar__btn" href="~/products/list">
                         <span class="offcanvas__stikcy--toolbar__icon">
                             <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443" viewBox="0 0 448 512"><path d="M416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-16 48v152H248V80zm-200 0v152H48V80zM48 432V280h152v152zm200 0V280h152v152z"></path></svg>
                             </span>
@@ -221,9 +226,9 @@
       <div class="predictive__search--box " tabindex="-1">
         <div class="predictive__search--box__inner">
           <h2 class="predictive__search--title">Tìm kiếm sản phẩm</h2>
-          <form class="predictive__search--form" action="~/products">
-            <input type="hidden" name="pageSize" value="${pageSize}"/>
-            <input type="hidden" name="sortBy" value="${sortBy}"/>
+          <form class="predictive__search--form" action="~/products/list">
+            <input type="hidden" name="pageSize" value="@pageSize"/>
+            @*<input type="hidden" name="sortBy" value="${sortBy}"/>*@
             <label>
               <input class="predictive__search--input" placeholder="Nhập tên sản phẩm" type="text" name="keyword" id="keyword">
             </label>

@@ -64,6 +64,11 @@ namespace FurnitureWeb.APICaller.Discount
             return await GetAsync<CustomAPIResponse<DiscountViewModel>>($"/api/discounts/{discountId}");
         }
 
+        public async Task<CustomAPIResponse<string>> ApplyDiscount(string discountCode)
+        {
+            return await GetAsync<CustomAPIResponse<string>>($"/api/discounts/apply/{discountCode}");
+        }
+
         public async Task<CustomAPIResponse<NoContentAPIResponse>> UpdateDiscount(DiscountUpdateRequest request)
         {
             var session = _httpContextAccessor.HttpContext.Request.Cookies["X-Access-Token-Admin"];

@@ -33,6 +33,8 @@ namespace FurnitureWeb.Services.Catalog.Discounts
                     return "out";
                 if (discount.StartDate > DateTime.Now || discount.EndDate < DateTime.Now)
                     return "expired";
+                if (discount.Status == DISCOUNT_STATUS.IN_ACTIVE)
+                    return "suspended";
                 discount.Quantity -= 1;
                 if (discount.Quantity <= 0)
                 {
