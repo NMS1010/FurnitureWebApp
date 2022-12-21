@@ -1,6 +1,7 @@
 ﻿using Domain.EF;
 using Domain.Entities;
 using FurnitureWeb.Services.Catalog.OrderItems;
+using FurnitureWeb.Services.External.MailJet;
 using FurnitureWeb.Utilities.Constants.Orders;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
@@ -15,11 +16,13 @@ namespace FurnitureWeb.Services.Catalog.Orders
     {
         private readonly AppDbContext _context;
         private readonly IOrderItemServices _orderItemServices;
+        private readonly IMailJetServices _mailJetServices;
 
-        public OrderServices(AppDbContext context, IOrderItemServices orderItemServices)
+        public OrderServices(AppDbContext context, IOrderItemServices orderItemServices, IMailJetServices mailJetServices)
         {
             _context = context;
             _orderItemServices = orderItemServices;
+            _mailJetServices = mailJetServices;
         }
 
         public async Task<int> Create(OrderCreateRequest request)
@@ -76,6 +79,14 @@ namespace FurnitureWeb.Services.Catalog.Orders
                 }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
+                bool res = await _mailJetServices.SendMail(user.FirstName + " " + user.LastName, user.Email,
+              "<h2>Chào " + user.FirstName + " " + user.LastName + " </h2>, <h3>FurSshop cảm ơn vì đã tin tưởng mua sản phẩm, đơn hàng sẽ nhanh chóng đến tay của bạn.<br />Bạn có thể xem chi tiết đơn hàng trong mục Đơn hàng của tôi. </h3><h4>Xin chân thành cảm ơn bạn !!! Rất vui được phục vụ.</h4>",
+              "Đơn xác nhận đặt hàng");
+                if (!res)
+                {
+                    await transaction.RollbackAsync();
+                    return -1;
+                }
                 return order.OrderId;
             }
             catch

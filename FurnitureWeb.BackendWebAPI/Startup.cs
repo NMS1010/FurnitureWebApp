@@ -13,6 +13,7 @@ using FurnitureWeb.Services.Catalog.Products;
 using FurnitureWeb.Services.Catalog.ReviewItems;
 using FurnitureWeb.Services.Catalog.WishItems;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Services.External.MailJet;
 using FurnitureWeb.Services.System.Roles;
 using FurnitureWeb.Services.System.Users;
 using FurnitureWeb.Utilities.Constants.Systems;
@@ -88,6 +89,7 @@ namespace FurnitureWeb.BackendWebAPI
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();
+            services.AddScoped<IMailJetServices, MailJetServices>();
 
             services.AddHttpContextAccessor();
             services.AddHttpClient();
