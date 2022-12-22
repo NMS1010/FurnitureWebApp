@@ -67,12 +67,27 @@
 <!-- End login section  -->
 <div class="modal" id="modal-error" data-animation="slideInUp" style="z-index: 999;">
     <div class="modal-dialog quickview__main--wrapper">
-        <h3 class="modal-header border-bottom-0">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
+        <h3 class="modal-header border-bottom-0" id="notify">Thao tác bị lỗi, vui lòng thực hiện lại</h3>
     </div>
 </div>
 <div class="modal" id="modal-register" data-animation="slideInUp" style="z-index: 999;">
     <div class="modal-dialog quickview__main--wrapper">
-        <h3 class="modal-header border-bottom-0">Đăng kí tài khoản thành công</h3>
+        <h3 class="modal-header border-bottom-0">Đăng kí tài khoản thành công, vui lòng kiểm tra email để xác nhận tài khoản</h3>
+    </div>
+</div>
+<div class="modal" id="modal-unconfirm" data-animation="slideInUp" style="z-index: 999;">
+    <div class="modal-dialog quickview__main--wrapper">
+        <h3 class="modal-header border-bottom-0">Tài khoản của bạn chưa xác nhận email. Vui lòng kiểm tra email</h3>
+    </div>
+</div>
+<div class="modal" id="modal-confirm-error" data-animation="slideInUp" style="z-index: 999;">
+    <div class="modal-dialog quickview__main--wrapper">
+        <h3 class="modal-header border-bottom-0">Xác nhận email đã xảy ra lỗi. Vui lòng thử lại</h3>
+    </div>
+</div>
+<div class="modal" id="modal-confirm-success" data-animation="slideInUp" style="z-index: 999;">
+    <div class="modal-dialog quickview__main--wrapper">
+        <h3 class="modal-header border-bottom-0">Xác nhận email thành công, bạn có thể đăng nhập</h3>
     </div>
 </div>
 <div class="modal" id="modal-banned" data-animation="slideInUp" style="z-index: 999;">
@@ -84,20 +99,36 @@
 @section Scripts {
     <script>
         $(window).on('load', function () {
+            let errs = true;
             @if(ViewData["Error"] != null)
             {
                 <text>
-                    document.getElementById("modal-error").classList.add('is-visible')
+                    document.getElementById("notify").innerHTML = 'Thao tác bị lỗi, vui lòng thực hiện lại'
                 </text>
             }
             if (window.location.href.includes("error")) {
-                document.getElementById("modal-error").classList.add('is-visible')
+                document.getElementById("notify").innerHTML = 'Thao tác bị lỗi, vui lòng thực hiện lại'
             }
             else if (window.location.href.includes("banned")) {
-                document.getElementById("modal-banned").classList.add('is-visible')
-            } else if (window.location.href.includes("register")) {
-                document.getElementById("modal-register").classList.add('is-visible')
+                document.getElementById("notify").innerHTML = 'Tài khoản của bạn đã bị vô hiệu hoá, vui lòng liên hệ quản trị viên'
+            } 
+            else if (window.location.href.includes("unconfirm")) {
+                document.getElementById("notify").innerHTML = 'Tài khoản của bạn chưa xác nhận email. Vui lòng kiểm tra email'
+            } 
+            else if (window.location.href.includes("register")) {
+                document.getElementById("notify").innerHTML = 'Đăng kí tài khoản thành công, vui lòng kiểm tra email để xác nhận tài khoản'
+            } 
+            else if (window.location.href.includes("confirm-error")) {
+                document.getElementById("notify").innerHTML = 'Xác nhận email đã xảy ra lỗi. Vui lòng thử lại'
             }
+            else if (window.location.href.includes("confirm-success")) {
+                document.getElementById("notify").innerHTML = 'Xác nhận email thành công, bạn có thể đăng nhập'
+            }
+            else{
+                errs = false
+            }
+            if(errs)
+                document.getElementById("modal-error").classList.add('is-visible')
          }
         );
         $('#form-login').submit(function (e) {
@@ -123,6 +154,9 @@
                         noError = false;
                     } else if (str.includes("banned") && str.length <= 10) {
                         $('#authenticationValidateMessage').html('Tài khoản bị cấm hoạt động').css('color', 'red')
+                        noError = false;
+                    } else if (str.includes("unconfirm") && str.length <= 10) {
+                        $('#authenticationValidateMessage').html('Tài khoản chưa xác nhận email').css('color', 'red')
                         noError = false;
                     }
                 },

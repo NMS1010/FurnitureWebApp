@@ -14,6 +14,8 @@ namespace FurnitureWeb.Services.System.Users
 
         Task<(bool, string)> Register(RegisterRequest request);
 
+        Task<bool> VerifyToken(string email, string token);
+
         Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request);
 
         Task<UserViewModel> RetrieveById(string userId);

@@ -107,6 +107,16 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
+        [HttpGet("register-confirm")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterConfirm([FromQuery] string email, [FromQuery] string token)
+        {
+            var res = await _userService.VerifyToken(email, token);
+            if (!res)
+                return Ok(CustomAPIResponse<string>.Success("confirm-error", StatusCodes.Status400BadRequest));
+            return Ok(CustomAPIResponse<string>.Success("confirm-success", StatusCodes.Status200OK));
+        }
+
         [HttpPost("check-add")]
         [AllowAnonymous]
         public async Task<IActionResult> CheckNewUser(UserCheckNewRequest request)

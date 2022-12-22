@@ -2,11 +2,14 @@
 using Domain.Entities;
 using FurnitureWeb.Services.Catalog.Orders;
 using FurnitureWeb.Services.Common.FileStorage;
+using FurnitureWeb.Services.External.MailJet;
 using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -30,12 +33,14 @@ namespace FurnitureWeb.Services.System.Users
         private readonly IFileStorageService _fileStorage;
         private readonly AppDbContext _context;
         private readonly IOrderServices _orderServices;
+        private readonly IMailJetServices _mailJetServices;
 
         public UserServices(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
             IFileStorageService fileStorage,
-            RoleManager<IdentityRole> roleManager, AppDbContext context, IOrderServices orderServices)
+            RoleManager<IdentityRole> roleManager, AppDbContext context, IOrderServices orderServices,
+            IMailJetServices mailJetServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +49,7 @@ namespace FurnitureWeb.Services.System.Users
             _roleManager = roleManager;
             _context = context;
             _orderServices = orderServices;
+            _mailJetServices = mailJetServices;
         }
 
         private async Task<string> WriteJWT(AppUser user)
@@ -82,6 +88,8 @@ namespace FurnitureWeb.Services.System.Users
                 return null;
             if (user.Status == USER_STATUS.IN_ACTIVE)
                 return "banned";
+            if (!user.EmailConfirmed)
+                return "unconfirm";
 
             return await WriteJWT(user);
         }
@@ -123,6 +131,15 @@ namespace FurnitureWeb.Services.System.Users
                     if (!string.IsNullOrEmpty(request.LoginProvider))
                     {
                         await _userManager.AddLoginAsync(user, new UserLoginInfo(request.LoginProvider, request.ProviderKey, request.LoginProvider));
+                    }
+                    if (!string.IsNullOrEmpty(request.Host))
+                    {
+                        string confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
+                        string confirmUrl = request.Host + $"/register-confirm?token={confirmToken}&email={user.Email}";
+                        string content = "<h2>Chào " + user.FirstName + " " + user.LastName + ", </h2><h3>Link xác nhận đăng ký cho tài khoản <em>" + user.UserName + "</em>: <a href = \"" + confirmUrl + "\">Confirm account</a> </h3>" + "<h4>Bạn vui lòng xác nhận ngay khi thấy tin nhắn này. Xin cảm ơn!!!</h4>";
+                        string title = "Xác nhận đăng ký tài khoản";
+                        await _mailJetServices.SendMail($"{user.FirstName} {user.LastName}", user.Email, content, title);
                     }
                     return (true, "successfull");
                 }
@@ -389,8 +406,21 @@ namespace FurnitureWeb.Services.System.Users
                 return null;
             if (user.Status == USER_STATUS.IN_ACTIVE)
                 return "banned";
+            if (!user.EmailConfirmed)
+                return "unconfirm";
 
             return await WriteJWT(user);
+        }
+
+        public async Task<bool> VerifyToken(string email, string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded) return true;
+            return false;
         }
     }
 }

@@ -54,6 +54,10 @@ namespace FurnitureWeb.WebApp.Controllers
             var result = await _userAPIClient.LoginWithGoogle(info.Principal.FindFirst(ClaimTypes.Email).Value, info.LoginProvider, info.ProviderKey);
             if (result.IsSuccesss)
             {
+                if (result.Data == "banned")
+                    return Redirect("~/signin?banned");
+                if (result.Data == "unconfirm")
+                    return Redirect("~/signin?unconfirm");
                 await AssignCookies(result.Data);
                 return Redirect("/home");
             }
@@ -127,6 +131,8 @@ namespace FurnitureWeb.WebApp.Controllers
             var token = res.Data;
             if (token == "banned")
                 return Ok("banned");
+            if (token == "unconfirm")
+                return Ok("unconfirm");
             HttpContext.Response.Cookies.Delete("X-Access-Token-User");
             await AssignCookies(token);
             return Redirect("/home");
@@ -138,11 +144,23 @@ namespace FurnitureWeb.WebApp.Controllers
             return View("Register");
         }
 
+        [HttpGet("register-confirm")]
+        public async Task<IActionResult> RegisterConfirm([FromQuery] string token, [FromQuery] string email)
+        {
+            var res = await _userAPIClient.VerifyToken(email, token);
+            if (res.Data == null)
+            {
+                return Redirect($"signin?error");
+            }
+            return Redirect($"signin?{res.Data}");
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterRequest request)
         {
             request.Status = USER_STATUS.ACTIVE;
             request.Roles = new string[] { "Customer" };
+            request.Host = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
             var res = await _userAPIClient.Register(request);
 
             if (!res.IsSuccesss)

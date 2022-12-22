@@ -79,6 +79,7 @@ namespace FurnitureWeb.APICaller.User
                 { new StringContent(request.ConfirmPassword), "ConfirmPassword" },
                 { new StringContent(request.PhoneNumber), "PhoneNumber" },
                 { new StringContent(request.UserName), "UserName" },
+                { new StringContent(request.Host), "Host" },
                 { new StringContent(request.DisplayName), "DisplayName" },
                 { new StringContent(request.LoginProvider), "LoginProvider" },
                 { new StringContent(request.ProviderKey), "ProviderKey" },
@@ -211,6 +212,11 @@ namespace FurnitureWeb.APICaller.User
             var response = await httpClient.PostAsync($"/api/users/google-login", requestContent);
             var body = await response.Content.ReadAsStringAsync();
             return (CustomAPIResponse<string>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<string>));
+        }
+
+        public async Task<CustomAPIResponse<string>> VerifyToken(string email, string token)
+        {
+            return await GetAsync<CustomAPIResponse<string>>($"/api/users/register-confirm?token={token}&email={email}");
         }
     }
 }
