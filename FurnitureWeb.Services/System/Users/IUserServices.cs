@@ -16,6 +16,10 @@ namespace FurnitureWeb.Services.System.Users
 
         Task<bool> VerifyToken(string email, string token);
 
+        Task<bool> ForgotPassword(string email, string host);
+
+        Task<bool> VerifyForgotPasswordToken(string email, string token, string password);
+
         Task<PagedResult<UserViewModel>> RetrieveAll(UserGetPagingRequest request);
 
         Task<UserViewModel> RetrieveById(string userId);
@@ -27,5 +31,7 @@ namespace FurnitureWeb.Services.System.Users
         Task<List<string>> CheckNewUser(UserCheckNewRequest request);
 
         Task<List<string>> CheckEditUser(UserCheckEditRequest request);
+
+        Task<bool> CheckEmail(string email);
     }
 }

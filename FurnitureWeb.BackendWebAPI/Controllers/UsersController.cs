@@ -117,6 +117,36 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<string>.Success("confirm-success", StatusCodes.Status200OK));
         }
 
+        [HttpGet("check-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckEmail([FromQuery] string email)
+        {
+            var res = await _userService.CheckEmail(email);
+            if (!res)
+                return Ok(CustomAPIResponse<string>.Success("error", StatusCodes.Status400BadRequest));
+            return Ok(CustomAPIResponse<string>.Success("success", StatusCodes.Status200OK));
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromForm] string email, [FromForm] string host)
+        {
+            var res = await _userService.ForgotPassword(email, host);
+            if (!res)
+                return Ok(CustomAPIResponse<string>.Success("error", StatusCodes.Status400BadRequest));
+            return Ok(CustomAPIResponse<string>.Success("success", StatusCodes.Status200OK));
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromForm] string email, [FromForm] string token, [FromForm] string password)
+        {
+            var res = await _userService.VerifyForgotPasswordToken(email, token, password);
+            if (!res)
+                return Ok(CustomAPIResponse<string>.Success("error", StatusCodes.Status400BadRequest));
+            return Ok(CustomAPIResponse<string>.Success("success", StatusCodes.Status200OK));
+        }
+
         [HttpPost("check-add")]
         [AllowAnonymous]
         public async Task<IActionResult> CheckNewUser(UserCheckNewRequest request)

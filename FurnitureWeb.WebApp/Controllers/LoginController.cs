@@ -155,6 +155,54 @@ namespace FurnitureWeb.WebApp.Controllers
             return Redirect($"signin?{res.Data}");
         }
 
+        [HttpGet("check-email")]
+        public async Task<IActionResult> CheckEmail([FromQuery] string email)
+        {
+            var res = await _userAPIClient.CheckEmail(email);
+            if (res.Data == null)
+            {
+                return Ok("error");
+            }
+            return Ok(res.Data);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromForm] string email)
+        {
+            string host = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            var res = await _userAPIClient.ForgotPassword(email, host);
+            if (res == null || res.Data == "error")
+            {
+                return Redirect("~/signin?forgot-error");
+            }
+            return Redirect("~/signin?forgot-success");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromForm] string email, [FromForm] string token, [FromForm] string password)
+        {
+            var res = await _userAPIClient.ResetPassword(email, token, password);
+            if (res == null || res.Data == "error")
+            {
+                return Redirect("~/signin?reset-error");
+            }
+            return Redirect("~/signin?reset-success");
+        }
+
+        [HttpGet("forgot-password")]
+        public IActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+
+        [HttpGet("reset-password")]
+        public IActionResult ResetPassword([FromQuery] string email, [FromQuery] string token)
+        {
+            ViewData["token"] = token;
+            ViewData["email"] = email;
+            return View("ResetPassword");
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterRequest request)
         {

@@ -422,5 +422,40 @@ namespace FurnitureWeb.Services.System.Users
             if (result.Succeeded) return true;
             return false;
         }
+
+        public async Task<bool> CheckEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> ForgotPassword(string email, string host)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            string confirmUrl = host + $"/reset-password?token={token}&email={user.Email}";
+            string content = "<h2>Chào " + user.FirstName + " " + user.LastName + ", </h2><h3>Link xác nhận đặt lại mật khẩu cho tài khoản <em>" + user.UserName + "</em>: <a href = \"" + confirmUrl + "\">Confirm account</a> </h3>" + "<h4>Bạn vui lòng xác nhận ngay khi thấy tin nhắn này. Xin cảm ơn!!!</h4>";
+            string title = "FurSshop - Xác nhận đặt lại mật khẩu";
+
+            return await _mailJetServices.SendMail($"{user.FirstName} {user.LastName}", user.Email, content, title);
+        }
+
+        public async Task<bool> VerifyForgotPasswordToken(string email, string token, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ResetPasswordAsync(user, code, password);
+            if (result.Succeeded)
+                return true;
+            return false;
+        }
     }
 }

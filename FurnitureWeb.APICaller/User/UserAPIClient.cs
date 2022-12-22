@@ -3,6 +3,7 @@ using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -217,6 +218,44 @@ namespace FurnitureWeb.APICaller.User
         public async Task<CustomAPIResponse<string>> VerifyToken(string email, string token)
         {
             return await GetAsync<CustomAPIResponse<string>>($"/api/users/register-confirm?token={token}&email={email}");
+        }
+
+        public async Task<CustomAPIResponse<string>> CheckEmail(string email)
+        {
+            return await GetAsync<CustomAPIResponse<string>>($"/api/users/check-email?email={email}");
+        }
+
+        public async Task<CustomAPIResponse<string>> ForgotPassword(string email, string host)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var requestContent = new MultipartFormDataContent
+            {
+                { new StringContent(email), "email" },
+                { new StringContent(host), "host" }
+            };
+
+            var response = await httpClient.PostAsync($"/api/users/forgot-password", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<string>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<string>));
+        }
+
+        public async Task<CustomAPIResponse<string>> ResetPassword(string email, string token, string password)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var requestContent = new MultipartFormDataContent
+            {
+                { new StringContent(email), "email" },
+                { new StringContent(token), "token" },
+                { new StringContent(password), "password" }
+            };
+
+            var response = await httpClient.PostAsync($"/api/users/reset-password", requestContent);
+            var body = await response.Content.ReadAsStringAsync();
+            return (CustomAPIResponse<string>)JsonConvert.DeserializeObject(body, typeof(CustomAPIResponse<string>));
         }
     }
 }

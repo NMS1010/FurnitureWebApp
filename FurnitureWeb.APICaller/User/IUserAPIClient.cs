@@ -25,6 +25,12 @@ namespace FurnitureWeb.APICaller.User
 
         Task<CustomAPIResponse<NoContentAPIResponse>> CheckNewUser(UserCheckNewRequest request);
 
+        Task<CustomAPIResponse<string>> CheckEmail(string email);
+
+        Task<CustomAPIResponse<string>> ForgotPassword(string email, string host);
+
+        Task<CustomAPIResponse<string>> ResetPassword(string email, string token, string password);
+
         Task<CustomAPIResponse<NoContentAPIResponse>> CheckEditUser(UserCheckEditRequest request);
 
         Task<CustomAPIResponse<UserViewModel>> RetrieveByClaimsPrincipal(ClaimsPrincipal claims);

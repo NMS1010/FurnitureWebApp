@@ -56,6 +56,11 @@
                                     <span class="account__login--divide__text">Hoặc</span>
                                 </div>
                                 <p class="account__login--signup__text">Bạn chưa có tài khoản? <a class="text__secondary" href="~/register">Đăng ký ngay</a></p>
+
+                                <div class="account__login--divide">
+                                    <span class="account__login--divide__text">Hoặc</span>
+                                </div>
+                                <p class="account__login--signup__text">Bạn không thể đăng nhập? <a class="text__secondary" href="~/forgot-password">Quên mật khẩu</a></p>
                             </div>
                         </div>
                     </div>
@@ -123,6 +128,18 @@
             }
             else if (window.location.href.includes("confirm-success")) {
                 document.getElementById("notify").innerHTML = 'Xác nhận email thành công, bạn có thể đăng nhập'
+            }
+            else if (window.location.href.includes("forgot-success")) {
+                document.getElementById("notify").innerHTML = 'Vui lòng kiểm tra email để tiến hành đổi mật khẩu'
+            }
+            else if (window.location.href.includes("forgot-error")) {
+                document.getElementById("notify").innerHTML = 'Thao tác gửi mail thất bại, vui lòng thử lại sau'
+            }
+            else if (window.location.href.includes("reset-success")) {
+                document.getElementById("notify").innerHTML = 'Đặt lại mật khẩu thành công, bạn có thể đăng nhập'
+            }
+            else if (window.location.href.includes("reset-error")) {
+                document.getElementById("notify").innerHTML = 'Đặt lại mật khẩu thất bại, vui lòng thử lại sau'
             }
             else{
                 errs = false
