@@ -46,7 +46,6 @@ namespace FurnitureWeb.BackendWebAPI
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
-            //adding customs roles : Question 1
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             foreach (var roleName in SystemConstants.UserRoles.Roles.Values)

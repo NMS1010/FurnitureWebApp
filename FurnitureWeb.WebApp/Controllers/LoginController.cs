@@ -46,7 +46,7 @@ namespace FurnitureWeb.WebApp.Controllers
         [HttpGet("login-google")]
         public async Task<IActionResult> GoogleLoginResponse()
         {
-            HttpContext.Response.Cookies.Delete("X-Access-Token-User");
+            //HttpContext.Response.Cookies.Delete("X-Access-Token-User");
             ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
                 return RedirectToAction(nameof(Login));
@@ -77,7 +77,7 @@ namespace FurnitureWeb.WebApp.Controllers
         [HttpGet("login-with-google")]
         public IActionResult GoogleLogin()
         {
-            string redirectUrl = Url.Action("GoogleLoginResponse", "Login");
+            string redirectUrl = $"/login-google";
             var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
             return new ChallengeResult("Google", properties);
         }

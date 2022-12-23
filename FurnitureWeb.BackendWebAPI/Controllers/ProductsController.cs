@@ -24,6 +24,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("all")]
+        [AllowAnonymous]
         public async Task<IActionResult> RetrieveAllPaging([FromQuery] ProductGetPagingRequest request)
         {
             var products = await _productService.RetrieveAll(request);
@@ -47,6 +48,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("{productId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> RetrieveById(int productId)
         {
             var product = await _productService.RetrieveById(productId);
@@ -79,6 +81,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
 
         ////Product Images
         [HttpGet("{productId}/images/all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RetrieveImageByProductId(int productId)
         {
             var productImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = productId });
@@ -88,6 +91,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
         }
 
         [HttpGet("images/{productImageId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RetrieveImageById(int productImageId)
         {
             var productImage = await _productImageService.RetrieveById(productImageId);

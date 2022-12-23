@@ -63,7 +63,7 @@ namespace FurnitureWeb.Services.External.Paypal
                     sku = "sku",
                     tax = "0",
                 });
-                total += price;
+                total += price * item.Quantity;
             }
             //if (orderCreateRequest.DiscountId.HasValue)
             //{

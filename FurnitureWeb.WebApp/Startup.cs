@@ -11,6 +11,7 @@ using FurnitureWeb.APICaller.User;
 using FurnitureWeb.APICaller.WishItem;
 using FurnitureWeb.Services.External.Paypal;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -120,7 +121,7 @@ namespace FurnitureWeb.WebApp
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => false; //true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
             });
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
@@ -138,7 +139,7 @@ namespace FurnitureWeb.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();
