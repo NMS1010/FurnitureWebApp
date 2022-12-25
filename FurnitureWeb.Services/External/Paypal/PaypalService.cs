@@ -1,22 +1,16 @@
 ﻿using FurnitureWeb.ViewModels.Catalog.CartItems;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
-using Microsoft.AspNetCore.Http;
-using PayPal.Api.OpenIdConnect;
 using PayPal.Api;
-using PayPal.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.External.Paypal
 {
     public class PaypalService : IPaypalService
     {
-        private readonly string CLIENT_ID = "AR52hDoJM7wVzALLe_nPlzKxMS8CTJfoUAeRt9IocXy4c4EDG0T2KPBwG4f38RtLYz9Pem_DDPkT0-ID";
-        private readonly string CLIENT_SECRET = "EHv86VipUu7nzvBRTw1Sff3BeTjPkmIjekg_Uemr-T3im9MzUJQusec2B8boB2MxwklloYQNL0RfpQqD";
+        private readonly string CLIENT_ID = "";
+        private readonly string CLIENT_SECRET = "";
         private readonly decimal VND_TO_USD = 24455;
 
         public bool ExecutePayment(string payerID, string paymentID)

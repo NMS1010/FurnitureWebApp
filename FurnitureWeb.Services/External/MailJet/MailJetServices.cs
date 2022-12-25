@@ -1,17 +1,14 @@
 ﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.External.MailJet
 {
     public class MailJetServices : IMailJetServices
     {
-        private readonly string MJ_APIKEY_PUBLIC = "5469fcd0f7928e3e7e6a30893195bc43";
-        private readonly string MJ_APIKEY_PRIVATE = "fd4a44689e032f7633e7dc6f0f31d059";
+        private readonly string MJ_APIKEY_PUBLIC = "";
+        private readonly string MJ_APIKEY_PRIVATE = "";
 
         public async Task<bool> SendMail(string name, string email, string content, string title)
         {

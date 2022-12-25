@@ -7,7 +7,6 @@ using FurnitureWeb.Utilities.Constants.Users;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;

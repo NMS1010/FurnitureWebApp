@@ -1,6 +1,5 @@
 ﻿using FurnitureWeb.Services.Common.Interfaces;
 using FurnitureWeb.ViewModels.Catalog.Orders;
-using FurnitureWeb.ViewModels.Common;
 using System.Threading.Tasks;
 
 namespace FurnitureWeb.Services.Catalog.Orders

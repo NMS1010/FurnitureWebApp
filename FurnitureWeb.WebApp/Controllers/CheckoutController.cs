@@ -4,13 +4,11 @@ using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Services.External.Paypal;
 using FurnitureWeb.Utilities.Constants.Orders;
-using FurnitureWeb.ViewModels.Catalog.OrderItems;
 using FurnitureWeb.ViewModels.Catalog.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 

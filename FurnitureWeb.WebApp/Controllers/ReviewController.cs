@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using FurnitureWeb.APICaller.Order;
+﻿using FurnitureWeb.APICaller.Order;
 using FurnitureWeb.APICaller.ReviewItem;
 using FurnitureWeb.APICaller.User;
 using FurnitureWeb.Utilities.Constants.Orders;

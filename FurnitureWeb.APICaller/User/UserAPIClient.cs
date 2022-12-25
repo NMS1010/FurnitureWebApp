@@ -3,7 +3,6 @@ using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
 using System.IO;

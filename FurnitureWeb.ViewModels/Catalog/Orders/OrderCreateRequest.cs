@@ -1,6 +1,4 @@
-﻿using FurnitureWeb.ViewModels.Catalog.OrderItems;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureWeb.ViewModels.Catalog.Orders
 {

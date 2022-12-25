@@ -11,7 +11,6 @@ using FurnitureWeb.APICaller.User;
 using FurnitureWeb.APICaller.WishItem;
 using FurnitureWeb.Services.External.Paypal;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

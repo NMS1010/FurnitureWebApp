@@ -1,6 +1,5 @@
 ﻿using FurnitureWeb.ViewModels.Common;
 using FurnitureWeb.ViewModels.System.Users;
-using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
