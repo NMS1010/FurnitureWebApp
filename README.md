@@ -1,10 +1,10 @@
-# FurnitureWebApp - personal project using ASP.NET Core 3.1
+# FurnitureWebApp - personal project using ASP.NET 6.0.0
 
 ## Technologies
-- ASP.NET Core 3.1
+- ASP.NET 6.0
 - Entity Framework Core 5.0.17
 ## Install Tools
-- .NET Core SDK 3.1
+- .NET SDK 6.0.0
 - Git client
 - Visual Studio 2022
 - SQL Server 2019
