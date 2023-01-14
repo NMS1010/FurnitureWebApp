@@ -191,8 +191,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                         StatusClass = GenerateProductStatusClass(x.Status),
                         ProductReview = new PagedResult<ReviewItemViewModel>()
                         {
-                            TotalItem = x.ReviewItems.Count,
-                            Items = x.ReviewItems.Select(g => new ReviewItemViewModel()
+                            TotalItem = x.ReviewItems.Where(r => r.Status == 1).Count(),
+                            Items = x.ReviewItems.Where(r => r.Status == 1).Select(g => new ReviewItemViewModel()
                             {
                                 Content = g.Content,
                                 DateCreated = g.DateCreated,
@@ -211,7 +211,7 @@ namespace FurnitureWeb.Services.Catalog.Products
                                 UserName = g.User.UserName
                             }).ToList()
                         },
-                        AverageRating = x?.ReviewItems.Count > 0 ? (int)x?.ReviewItems.Average(x => x.Rating) : 0
+                        AverageRating = x?.ReviewItems.Where(r => r.Status == 1).Count() > 0 ? (int)x?.ReviewItems.Where(r => r.Status == 1).Average(x => x.Rating) : 0
                     }).ToList();
 
                 foreach (var product in data)
@@ -270,8 +270,8 @@ namespace FurnitureWeb.Services.Catalog.Products
                     SubImages = await _productImageService.RetrieveAll(new ProductImageGetPagingRequest() { ProductId = product.ProductId }),
                     ProductReview = new PagedResult<ReviewItemViewModel>()
                     {
-                        TotalItem = product.ReviewItems.Count,
-                        Items = product.ReviewItems.Select(g => new ReviewItemViewModel()
+                        TotalItem = product.ReviewItems.Where(r => r.Status == 1).Count(),
+                        Items = product.ReviewItems.Where(r => r.Status == 1).Select(g => new ReviewItemViewModel()
                         {
                             Content = g.Content,
                             DateCreated = g.DateCreated,
@@ -290,7 +290,7 @@ namespace FurnitureWeb.Services.Catalog.Products
                             UserName = g.User.UserName
                         }).ToList()
                     },
-                    AverageRating = product?.ReviewItems.Count > 0 ? (int)product?.ReviewItems.Average(x => x.Rating) : 0
+                    AverageRating = product?.ReviewItems.Where(r => r.Status == 1).Count() > 0 ? (int)product?.ReviewItems.Where(r => r.Status == 1).Average(x => x.Rating) : 0
                 };
             }
             catch

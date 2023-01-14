@@ -7,8 +7,8 @@ namespace FurnitureWeb.Services.External.MailJet
 {
     public class MailJetServices : IMailJetServices
     {
-        private readonly string MJ_APIKEY_PUBLIC = "";
-        private readonly string MJ_APIKEY_PRIVATE = "";
+        private readonly string MJ_APIKEY_PUBLIC = "5469fcd0f7928e3e7e6a30893195bc43";
+        private readonly string MJ_APIKEY_PRIVATE = "fd4a44689e032f7633e7dc6f0f31d059";
 
         public async Task<bool> SendMail(string name, string email, string content, string title)
         {

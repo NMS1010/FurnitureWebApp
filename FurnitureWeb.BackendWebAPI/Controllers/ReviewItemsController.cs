@@ -31,7 +31,7 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<PagedResult<ReviewItemViewModel>>.Success(reviews, StatusCodes.Status200OK));
         }
 
-        [HttpPut("status/change")]
+        [HttpPut("status/change/{reviewItemId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeStatus(int reviewItemId)
         {
@@ -83,11 +83,11 @@ namespace FurnitureWeb.BackendWebAPI.Controllers
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status200OK));
         }
 
-        [HttpDelete("delete/{reviewId}")]
+        [HttpDelete("delete/{reviewItemId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int reviewId)
+        public async Task<IActionResult> Delete(int reviewItemId)
         {
-            var count = await _reviewServices.Delete(reviewId);
+            var count = await _reviewServices.ChangeReviewStatus(reviewItemId);
 
             if (count <= 0)
                 return BadRequest(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this review"));

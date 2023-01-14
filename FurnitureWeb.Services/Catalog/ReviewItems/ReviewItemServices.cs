@@ -174,7 +174,7 @@ namespace FurnitureWeb.Services.Catalog.ReviewItems
                 if (reviewItem == null)
                     return -1;
                 reviewItem.Status = reviewItem.Status == 1 ? 0 : 1;
-
+                _context.ReviewItems.Update(reviewItem);
                 return await _context.SaveChangesAsync();
             }
             catch

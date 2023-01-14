@@ -74,9 +74,13 @@ namespace FurnitureWeb.Services.Catalog.Orders
                         UnitPrice = cartItem.Product.Price,
                         TotalPrice = cartItem.Quantity * cartItem.Product.Price,
                     };
+                    var product = await _context.Products.FindAsync(cartItem.ProductId);
+                    product.Quantity -= 1;
+                    _context.Products.Update(product);
                     _context.OrderItems.Add(orderItem);
                     _context.CartItems.Remove(cartItem);
                 }
+
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 bool res = await _mailJetServices.SendMail(user.FirstName + " " + user.LastName, user.Email,

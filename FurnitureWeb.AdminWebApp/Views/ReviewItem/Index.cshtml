@@ -42,18 +42,27 @@
                                     <td>@review.UserName</td>
                                     <td>
                                         <div class="ec-t-rate">
-                                            <c:forEach begin="1" end="@review.Rating" var="r">
+                                            @for(int i=1;i <= @review.Rating; i++)
+                                            {
                                                 <i class="mdi mdi-star is-rated"></i>
-                                            </c:forEach>
-                                            <c:forEach begin="@review.Rating + 1" end="5" var="r">
+                                            }
+                                            @for(int i=@review.Rating + 1;i <= 5; i++)
+                                            {
                                                 <i class="mdi mdi-star"></i>
-                                            </c:forEach>
+                                            }
                                         </div>
                                     </td>
                                     <td>@review.Content</td>
                                     <td>@review.DateCreated</td>
                                     <td>@review.DateUpdated</td>
-                                    <td>@review.Status == 1 ? "ACTIVE" : "INACTIVE"</td>
+                                    @if(review.Status == 1)
+                                    {
+                                        <td>Đang hiển thị</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Đã ẩn</td>
+                                    }
                                     <td>
                                         <div class="btn-group mb-1">
                                             <button type="button"
