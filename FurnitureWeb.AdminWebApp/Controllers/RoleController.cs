@@ -20,7 +20,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _roleAPIClient.GetAllRoleAsync(new RoleGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
@@ -29,21 +29,21 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(RoleCreateRequest request)
         {
             var res = await _roleAPIClient.CreateRole(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("delete/{roleId}")]
         public async Task<IActionResult> Delete(string roleId)
         {
             var res = await _roleAPIClient.DeleteRole(roleId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [Route("get/{roleId}")]
         public async Task<IActionResult> GetById(string roleId)
         {
             var res = await _roleAPIClient.GetRoleById(roleId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -52,7 +52,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(RoleUpdateRequest request)
         {
             var res = await _roleAPIClient.UpdateRole(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }

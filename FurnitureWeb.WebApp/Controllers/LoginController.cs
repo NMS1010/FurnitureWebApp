@@ -48,7 +48,7 @@ namespace FurnitureWeb.WebApp.Controllers
                 return RedirectToAction(nameof(Login));
 
             var result = await _userAPIClient.LoginWithGoogle(info.Principal.FindFirst(ClaimTypes.Email).Value, info.LoginProvider, info.ProviderKey);
-            if (result.IsSuccesss)
+            if (result.IsSuccess)
             {
                 if (result.Data == "banned")
                     return Redirect("~/signin?banned");
@@ -120,7 +120,7 @@ namespace FurnitureWeb.WebApp.Controllers
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             var res = await _userAPIClient.Login(request);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 return Ok("error");
             }
@@ -207,7 +207,7 @@ namespace FurnitureWeb.WebApp.Controllers
             request.Host = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
             var res = await _userAPIClient.Register(request);
 
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 return Redirect("signin?error");
             }

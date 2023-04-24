@@ -46,7 +46,7 @@ namespace FurnitureWeb.WebApp.Controllers
         public async Task<IActionResult> UpdateInfo([FromForm] UserUpdateRequest request)
         {
             var res = (await _userAPIClient.UpdateUser(request));
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 return Redirect("~/my-account?error");
             }

@@ -100,7 +100,7 @@ namespace FurnitureWeb.APICaller.Category
             else
             {
                 CustomAPIResponse<CategoryViewModel> res = await GetCategoryById(request.CategoryId);
-                if (!res.IsSuccesss)
+                if (!res.IsSuccess)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
                 string path = _configuration["BaseAddress"] + res.Data.Image;
                 WebClient webClient = new WebClient();

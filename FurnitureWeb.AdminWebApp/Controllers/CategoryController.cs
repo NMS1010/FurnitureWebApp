@@ -24,7 +24,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         {
             var res = await _categoryAPIClient.GetAllCategoryAsync(new CategoryGetPagingRequest());
 
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             ViewData["parentCategories"] = res.Data.Items.Where(x => x.ParentCategoryId == null).ToList();
             res.Data.Items.RemoveAll(x => x.ParentCategoryId == null);
@@ -45,7 +45,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         {
             var res = await _categoryAPIClient.CreateCategory(request);
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, new { error = !res.IsSuccesss });
+            return RedirectToAction(action, new { error = !res.IsSuccess });
         }
 
         [HttpGet("delete/{categoryId}/{sub?}")]
@@ -54,14 +54,14 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             var res = await _categoryAPIClient.DeleteCategory(categoryId);
 
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, new { error = !res.IsSuccesss });
+            return RedirectToAction(action, new { error = !res.IsSuccess });
         }
 
         [Route("get/{categoryId}")]
         public async Task<IActionResult> GetById(int categoryId)
         {
             var res = await _categoryAPIClient.GetCategoryById(categoryId);
-            if (res == null || !res.IsSuccesss)
+            if (res == null || !res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -71,7 +71,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         {
             var res = await _categoryAPIClient.UpdateCategory(request);
             string action = sub == null ? nameof(Index) : nameof(SubCategory);
-            return RedirectToAction(action, new { error = !res.IsSuccesss });
+            return RedirectToAction(action, new { error = !res.IsSuccess });
         }
     }
 }

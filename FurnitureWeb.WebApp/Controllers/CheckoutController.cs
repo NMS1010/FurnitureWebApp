@@ -56,7 +56,7 @@ namespace FurnitureWeb.WebApp.Controllers
                 if (!exePayment)
                     return Redirect("~/cart/items?error");
                 var res = await _orderAPIClient.CreateOrder(orderCreateReq);
-                if (!res.IsSuccesss)
+                if (!res.IsSuccess)
                 {
                     return Redirect("~/cart/items?error");
                 }
@@ -94,7 +94,7 @@ namespace FurnitureWeb.WebApp.Controllers
                 return Redirect("~/cart/items?error");
             }
             var res = await _orderAPIClient.CreateOrder(request);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 return Redirect("~/cart/items?error");
             }

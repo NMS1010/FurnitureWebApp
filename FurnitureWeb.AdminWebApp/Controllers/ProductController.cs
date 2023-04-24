@@ -29,7 +29,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _productAPIClient.GetAllProductAsync(new ProductGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             else
                 ViewData["Error"] = null;
@@ -40,7 +40,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(ProductCreateRequest request)
         {
             var res = await _productAPIClient.CreateProduct(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("add/get")]
@@ -71,7 +71,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> GetImageById(int productImageId)
         {
             var res = await _productAPIClient.GetProductImageById(productImageId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -80,14 +80,14 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Delete(int productId)
         {
             var res = await _productAPIClient.DeleteProduct(productId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("get/{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
         {
             var res = await _productAPIClient.GetProductById(productId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -117,7 +117,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(ProductUpdateRequest request)
         {
             var res = await _productAPIClient.UpdateProduct(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }

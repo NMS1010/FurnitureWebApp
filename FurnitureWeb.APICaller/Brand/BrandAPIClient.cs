@@ -96,7 +96,7 @@ namespace FurnitureWeb.APICaller.Brand
             else
             {
                 CustomAPIResponse<BrandViewModel> res = await GetBrandById(request.BrandId);
-                if (!res.IsSuccesss)
+                if (!res.IsSuccess)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
                 string path = _configuration["BaseAddress"] + res.Data.Image;
                 WebClient webClient = new WebClient();

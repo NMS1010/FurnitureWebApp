@@ -38,7 +38,7 @@ namespace FurnitureWeb.WebApp.Controllers
             if (reviewItemId != 0)
             {
                 var res = await _reviewAPIClient.GetReviewItemById(reviewItemId);
-                if (res == null || !res.IsSuccesss)
+                if (res == null || !res.IsSuccess)
                 {
                     ViewData["Error"] = "Error";
                 }
@@ -59,7 +59,7 @@ namespace FurnitureWeb.WebApp.Controllers
             request.UserId = user?.UserId;
             var res = await _reviewAPIClient.CreateReviewItem(request);
             string status = "";
-            if (res == null || !res.IsSuccesss)
+            if (res == null || !res.IsSuccess)
             {
                 status = "?error";
             }
@@ -71,7 +71,7 @@ namespace FurnitureWeb.WebApp.Controllers
         {
             var res = await _reviewAPIClient.UpdateReviewItem(request);
             string status = "";
-            if (res == null || !res.IsSuccesss)
+            if (res == null || !res.IsSuccess)
             {
                 status = "?error";
             }

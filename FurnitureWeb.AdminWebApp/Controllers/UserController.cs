@@ -24,7 +24,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _userAPIClient.GetAllUserAsync(new UserGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = "error";
             ViewData["roles"] = await _roleManager.Roles.ToListAsync();
             return View(res.Data);
@@ -34,21 +34,21 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(RegisterRequest request)
         {
             var res = await _userAPIClient.Register(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("delete/{userId}")]
         public async Task<IActionResult> Delete(string userId)
         {
             var res = await _userAPIClient.DeleteUser(userId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [Route("detail/{userId}")]
         public async Task<IActionResult> GetDetail(string userId)
         {
             var res = await _userAPIClient.GetUserById(userId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 ViewData["Error"] = res.Errors;
             }
@@ -61,7 +61,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> GetById(string userId)
         {
             var res = await _userAPIClient.GetUserById(userId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }

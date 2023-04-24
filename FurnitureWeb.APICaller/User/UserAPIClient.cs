@@ -155,7 +155,7 @@ namespace FurnitureWeb.APICaller.User
             else
             {
                 CustomAPIResponse<UserViewModel> user = await GetUserById(request.UserId);
-                if (!user.IsSuccesss)
+                if (!user.IsSuccess)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(user.StatusCode, user.Errors);
                 string path = _configuration["BaseAddress"] + user.Data.Avatar;
                 WebClient webClient = new WebClient();

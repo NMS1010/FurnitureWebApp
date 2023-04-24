@@ -167,7 +167,7 @@ namespace FurnitureWeb.APICaller.Product
             else
             {
                 CustomAPIResponse<ProductViewModel> res = await GetProductById(request.ProductId);
-                if (!res.IsSuccesss)
+                if (!res.IsSuccess)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
                 string path = _configuration["BaseAddress"] + res.Data.ImagePath;
                 WebClient webClient = new WebClient();
@@ -207,7 +207,7 @@ namespace FurnitureWeb.APICaller.Product
             else
             {
                 CustomAPIResponse<ProductImageViewModel> res = await GetProductImageById(request.ProductImageId);
-                if (!res.IsSuccesss)
+                if (!res.IsSuccess)
                     return CustomAPIResponse<NoContentAPIResponse>.Fail(res.StatusCode, res.Errors);
                 string path = _configuration["BaseAddress"] + res.Data.Image;
                 WebClient webClient = new WebClient();

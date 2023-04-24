@@ -49,7 +49,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             var res = await _userAPIClient.Login(request);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 return Index("Username/Password không chính xác");
             }

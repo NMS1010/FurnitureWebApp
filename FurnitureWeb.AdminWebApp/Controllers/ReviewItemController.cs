@@ -20,7 +20,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _reviewItemAPIClient.GetAllReviewItemAsync(new ReviewItemGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
@@ -29,7 +29,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Delete(int reviewItemId)
         {
             var res = await _reviewItemAPIClient.DeleteReviewItem(reviewItemId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }

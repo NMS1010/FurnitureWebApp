@@ -22,7 +22,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _orderAPIClient.GetAllOrderAsync(new OrderGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
@@ -58,7 +58,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> GetOrderDetail(int orderId)
         {
             var res = await _orderAPIClient.GetOrderById(orderId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
             {
                 ViewData["Error"] = res.Errors;
             }
@@ -69,7 +69,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(OrderUpdateRequest request)
         {
             var res = await _orderAPIClient.UpdateOrder(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }

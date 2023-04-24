@@ -36,16 +36,16 @@ namespace FurnitureWeb.AdminWebApp.Controllers
             var userRes = await _userAPIClient.GetAllUserAsync(new UserGetPagingRequest());
             var orderRes = await _orderAPIClient.GetAllOrderAsync(new OrderGetPagingRequest());
             var orderStatictis = await _orderAPIClient.GetOverviewStatictis();
-            ViewData["orders"] = orderRes.IsSuccesss ? orderRes.Data : new PagedResult<OrderViewModel>();
-            ViewData["statistics"] = orderStatictis.IsSuccesss ? orderStatictis.Data : new OrderOverviewViewModel();
-            ViewData["totalUsers"] = userRes.IsSuccesss ? userRes.Data.TotalItem : 0;
-            ViewData["totalOrders"] = orderRes.IsSuccesss ? orderRes.Data.TotalItem : 0;
-            ViewData["totalRevenue"] = orderRes.IsSuccesss ? orderRes.Data.Items.Sum(x => x.TotalPrice) : 0;
-            if (!orderRes.IsSuccesss || !orderStatictis.IsSuccesss || !userRes.IsSuccesss)
+            ViewData["orders"] = orderRes.IsSuccess ? orderRes.Data : new PagedResult<OrderViewModel>();
+            ViewData["statistics"] = orderStatictis.IsSuccess ? orderStatictis.Data : new OrderOverviewViewModel();
+            ViewData["totalUsers"] = userRes.IsSuccess ? userRes.Data.TotalItem : 0;
+            ViewData["totalOrders"] = orderRes.IsSuccess ? orderRes.Data.TotalItem : 0;
+            ViewData["totalRevenue"] = orderRes.IsSuccess ? orderRes.Data.Items.Sum(x => x.TotalPrice) : 0;
+            if (!orderRes.IsSuccess || !orderStatictis.IsSuccess || !userRes.IsSuccess)
             {
                 ViewData["Error"] = true;
             }
-            return View(userRes.IsSuccesss ? userRes.Data : new PagedResult<UserViewModel>());
+            return View(userRes.IsSuccess ? userRes.Data : new PagedResult<UserViewModel>());
         }
     }
 }

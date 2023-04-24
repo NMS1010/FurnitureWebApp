@@ -20,7 +20,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _brandAPIClient.GetAllBrandAsync(new BrandGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
@@ -29,21 +29,21 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(BrandCreateRequest request)
         {
             var res = await _brandAPIClient.CreateBrand(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("delete/{brandId}")]
         public async Task<IActionResult> Delete(int brandId)
         {
             var res = await _brandAPIClient.DeleteBrand(brandId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [Route("get/{brandId}")]
         public async Task<IActionResult> GetById(int brandId)
         {
             var res = await _brandAPIClient.GetBrandById(brandId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -52,7 +52,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(BrandUpdateRequest request)
         {
             var res = await _brandAPIClient.UpdateBrand(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }

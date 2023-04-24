@@ -20,7 +20,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Index(bool error = false)
         {
             var res = await _discountAPIClient.GetAllDiscountAsync(new DiscountGetPagingRequest());
-            if (error || !res.IsSuccesss)
+            if (error || !res.IsSuccess)
                 ViewData["Error"] = res.Errors;
             return View(res.Data);
         }
@@ -29,21 +29,21 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Create(DiscountCreateRequest request)
         {
             var res = await _discountAPIClient.CreateDiscount(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [HttpGet("delete/{discountId}")]
         public async Task<IActionResult> Delete(int discountId)
         {
             var res = await _discountAPIClient.DeleteDiscount(discountId);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
 
         [Route("get/{discountId}")]
         public async Task<IActionResult> GetById(int discountId)
         {
             var res = await _discountAPIClient.GetDiscountById(discountId);
-            if (!res.IsSuccesss)
+            if (!res.IsSuccess)
                 return NotFound(res.Errors);
             return Ok(res.Data);
         }
@@ -52,7 +52,7 @@ namespace FurnitureWeb.AdminWebApp.Controllers
         public async Task<IActionResult> Edit(DiscountUpdateRequest request)
         {
             var res = await _discountAPIClient.UpdateDiscount(request);
-            return RedirectToAction(nameof(Index), new { error = !res.IsSuccesss });
+            return RedirectToAction(nameof(Index), new { error = !res.IsSuccess });
         }
     }
 }
